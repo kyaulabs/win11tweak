@@ -276,7 +276,7 @@ reg add "HKLM\Software\Policies\Microsoft\WindowsInkWorkspace" /v "AllowSuggeste
 ECHO [1;36m■[1;37m Install:[0m Chocolatey
 PowerShell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))" >nul
 ECHO [1;36m■[1;37m Install:[0m Packages
-for %%a in (7zip autoruns ccleaner ccenhancer chocolateygui cpu-z.install displayfusion eartrumpet Firefox foxitreader gitkraken gpu-z hashcheck hwmonitor imageglass kdiff3 keepassxc mediainfo microsoft-windows-terminal mpv putty.install sharex simplewall speedcrunch sysinternals typora windirstat winscp.install youtube-dl) do (
+for %%a in (7zip autoruns ccleaner ccenhancer chocolateygui cpu-z.install eartrumpet foxitreader gpu-z hashcheck imageglass kdiff3 keepassxc mediainfo mpv putty.install sharex simplewall speedcrunch sysinternals typora windirstat winscp.install youtube-dl) do (
     %ProgramData%\chocolatey\bin\choco.exe install %%a -y -r >nul
 )
 PowerShell -Command "[Environment]::SetEnvironmentVariable('Path', '%USERPROFILE%\AppData\Local\Microsoft\WindowsApps;%ProgramData%\chocolatey', 'User')"

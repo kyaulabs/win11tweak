@@ -43,11 +43,9 @@ function CreateShortcut {
     $Shortcut.Save()
 }
 
-CreateShortcut "Apps\Firefox" "$($env:ProgramFiles)\Mozilla Firefox\firefox.exe" ""
 CreateShortcut "Apps\Foxit Reader" "$($env:SystemDrive)\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe" "foxit-reader"
 CreateShortcut "Apps\KeePassXC" "$($env:ProgramFiles)\KeePassXC\KeePassXC.exe" "keepassxc"
 CreateShortcut "Apps\SSH Agent" "$($env:ProgramFiles)\PuTTY\pageant.exe" "ssh-askpass-gnome" "F:\Private\SSH\id_ed25519.ppk"
-CreateShortcut "Development\GitKraken" "$($env:UserProfile)\AppData\Local\gitkraken\Update.exe --processStart gitkraken.exe" ""
 CreateShortcut "Development\KDiff3" "$($env:ProgramFiles)\KDiff3\kdiff3.exe" "kdiff3"
 CreateShortcut "Development\Typora" "$($env:ProgramFiles)\Typora\Typora.exe" ""
 CreateShortcut "Media\ImageGlass" "$($env:ProgramFiles)\ImageGlass\ImageGlass.exe" ""
@@ -58,7 +56,6 @@ CreateShortcut "Utilities\CCleaner" "$($env:ProgramFiles)\CCleaner\CCleaner64.ex
 CreateShortcut "Utilities\CCEnhancer" "$($env:SystemDrive)\Program Files (x86)\CCEnhancer\CCEnhancer.exe" ""
 CreateShortcut "Utilities\Chocolatey GUI" "$($env:SystemDrive)\Program Files (x86)\Chocolatey GUI\ChocolateyGui.exe" ""
 CreateShortcut "Utilities\Core Temp" "$($env:ProgramData)\chocolatey\lib\coretemp\tools\Core Temp.exe" "thermal-monitor"
-CreateShortcut "Utilities\DisplayFusion" "$($env:SystemDrive)\Program Files (x86)\DisplayFusion\DisplayFusionCommand.exe -windowsettings" ""
 CreateShortcut "Utilities\ShareX" "$($env:ProgramFiles)\ShareX\ShareX.exe" ""
 CreateShortcut "Utilities\SimpleWall" "$($env:ProgramFiles)\simplewall\simplewall.exe" ""
 CreateShortcut "Utilities\WinDirStat" "$($env:SystemDrive)\Program Files (x86)\WinDirStat\windirstat.exe" "partitionmanager"

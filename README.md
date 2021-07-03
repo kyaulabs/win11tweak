@@ -1,4 +1,4 @@
-# Windows 11 Tweaks - Build 21996
+# Windows 11 Tweaks - Build 22000.51
 
 ![LOGO](README_media/LOGO.png)
 
@@ -14,15 +14,17 @@ This script is meant to be utilized immediately after a fresh installation of Wi
 
 ## Features
 
+This set of scripts attempts to maintain a vanilla appearance while gutting most of the unneeded and/or unwanted items from the operating system. Privacy is another focus and as such any call home or telemetry functions have been disabled or out-right removed.
 
+Similar to Linux or Mac OSX a package manager will be installed to manage software updates. If you do not look at any other part of the script it is encouraged upon you to at least read the list of software that chocolatey (the package manager) will be installing by default.
 
 ## Windows 11 Tweaks Guide
 
 ### Installation
 
-While this can be used with any version of Windows 11, this guide revolves around Windows 11 Pro N.
+While this can be used with any version of Windows 11, this guide revolves around Windows 11 Pro N. In order to bypass the Microsoft Account requirements it is advised that you pull your network cable until Windows 11 is fully installed.
 
-*At this time of this writing, all of the N installs have a broken OOBE which results in a black screen upon first boot after install.*
+*While broken in the original leaked versions of Windows 11, all of the N version installs are now working as intended.*
 
 ![Install_01](README_media/Install_01.png)
 
@@ -32,22 +34,13 @@ After installing Windows to the selected hard drive you will be prompted to rebo
 
 ![Install_03](README_media/Install_03.png)
 
-
-Designate that you are setting up a Windows for personal use.
+Confirm that you don't have internet access (remember you are supposed to pull the cable?).
 
 ![Install_05](README_media/Install_05.png)
 
-On the Sign In with Microsoft screen, select `Sign-in options`.
+Confirm you do not want a Microsoft Account by selecting `Continue with limited setup`.
 
 ![Install_06](README_media/Install_06.png)
-
-Confirm that you wish you use an offline account.
-
-![Install_07a](README_media/Install_07a.png)
-
-Confirm again that you wish to have a limited experience.
-
-![Install_07b](README_media/Install_07b.png)
 
 Choose a username.
 
@@ -67,7 +60,11 @@ Finally on the privacy settings screen, make sure you deselect every single opti
 
 ### Windows Update
 
-Eventually you will be able to login and will be presented with the desktop. Right-click on the Start Menu icon (bottom center of screen, left most icon). From here you will want to select `Settings`.
+Eventually you will be able to login and will be presented with the desktop.
+
+*Note: now would be an acceptable time to plug your network cable back in.*
+
+Right-click on the Start Menu icon (bottom center of screen, left most icon). From here you will want to select `Settings`.
 
 ![Windows_01](README_media/Windows_01.png)
 
@@ -80,6 +77,8 @@ From here update Windows, you need to continue to check for updates after every 
 ![Windows_03](README_media/Windows_03.png)
 
 Don't forget to also install optional updates as these tend to contain drivers.
+
+*Note: these have been moved inside Advanced options.*
 
 ![Windows_04](README_media/Windows_04.png)
 
@@ -127,7 +126,7 @@ Set the accent color to a custom color of `#131313` (Black) and enable accent co
 
 OpenShell, which is the new version of ClassicShell should be on the desktop with a settings XML file. Install, removing Classic Explorer and Classic IE (do not install these). After installation click on the Start Menu in order to open the Settings for Open-Shell Menu dialog. Select `Backup` and then `Load from an XML file...` choosing the provided XML file on the desktop.
 
-*Note: OpenShell has not yet been updated for Windows 11, as such if you run the start menu in the center instead of the left you will run into issues.*
+*Note: OpenShell has not yet been updated for Windows 11!*
 
 ![Config_04](README_media/Config_04.png)
 
