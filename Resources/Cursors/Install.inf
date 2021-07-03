@@ -1,0 +1,58 @@
+; Snow Leopard Cursor Set
+; Right click on the file "Install.inf" and select "Install". Then in the Mouse control panel apply Entis cursors.
+
+[Version]
+signature="$CHICAGO$"
+
+[DefaultInstall]
+CopyFiles = Scheme.Cur, Scheme.Txt
+AddReg    = Scheme.Reg
+
+[DestinationDirs]
+Scheme.Cur = 10,"%CUR_DIR%"
+Scheme.Txt = 10,"%CUR_DIR%"
+
+[Scheme.Reg]
+HKCU,"Control Panel\Cursors\Schemes","%SCHEME_NAME%",,"%10%\%CUR_DIR%\%pointer%,%10%\%CUR_DIR%\%help%,%10%\%CUR_DIR%\%work%,%10%\%CUR_DIR%\%busy%,%10%\%CUR_DIR%\%cross%,%10%\%CUR_DIR%\%Text%,%10%\%CUR_DIR%\%Hand%,%10%\%CUR_DIR%\%unavailiable%,%10%\%CUR_DIR%\%Vert%,%10%\%CUR_DIR%\%Horz%,%10%\%CUR_DIR%\%Dgn1%,%10%\%CUR_DIR%\%Dgn2%,%10%\%CUR_DIR%\%move%,%10%\%CUR_DIR%\%alternate%,%10%\%CUR_DIR%\%link%"
+
+; -- Installed files
+
+[Scheme.Cur]
+alternate.cur
+arrow.cur
+background.ani
+busy.ani
+forbidden.cur
+help.cur
+horizontal.cur
+Install.inf
+link.cur
+move.cur
+pencil.cur
+precision.cur
+resize_down_left.cur
+resize_down_right.cur
+text.cur
+vertical.cur
+
+[Scheme.Txt]
+readme.txt
+
+[Strings]
+CUR_DIR       = "Cursors\Snow Leopard"
+SCHEME_NAME   = "Snow Leopard"
+pointer       = "arrow.cur"
+help          = "help.cur"
+work          = "background.ani"
+busy          = "busy.ani"
+text          = "text.cur"
+unavailiable  = "forbidden.cur"
+vert          = "vertical.cur"
+horz          = "horizontal.cur"
+dgn1          = "resize_down_right.cur"
+dgn2          = "resize_down_left.cur"
+move          = "move.cur"
+link          = "link.cur"
+cross         = "precision.cur"
+hand          = "pencil.cur"
+alternate     = "alternate.cur"
