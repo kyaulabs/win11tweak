@@ -8,8 +8,8 @@
 :: ▄ ▀▀ ▀ ▀▀▀▀ ▀▀ ▀ ▀▀▀▀    ▀▀▀▀ ▀▀ ▀ ▀▀▀▀ ▀▀▀  █
 :: ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 ::
-:: Win10Tweaks (KYAU Labs Edition)
-:: Copyright (C) 2020 KYAU Labs (https://kyaulabs.com)
+:: Win11Tweaks (KYAU Labs Edition)
+:: Copyright (C) 2022 KYAU Labs (https://kyaulabs.com)
 ::
 :: This program is free software: you can redistribute it and/or modify
 :: it under the terms of the GNU Affero General Public License as
@@ -24,15 +24,39 @@
 :: You should have received a copy of the GNU Affero General Public License
 :: along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-taskkill /IM explorer.exe /F >nul
-PowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0msedge.ps1"
-If exist del /A /F /Q "%iconcache%" >nul
-If exist del /A /F /Q "%iconcache_x%" >nul
-RD "%UserProfile%\OneDrive" /Q /S >nul
-RD "%LocalAppData%\Microsoft\OneDrive" /Q /S >nul
-RD "%ProgramData%\Microsoft OneDrive" /Q /S >nul
-RD "%SystemDrive%\OneDriveTemp" /Q /S >nul
+:: Check privileges 
+net file 1>NUL 2>NUL
+if not '%errorlevel%' == '0' (
+    powershell Start-Process -FilePath "%0" -ArgumentList "%cd%" -verb runas >NUL 2>&1
+    exit /b
+)
+
+:: Change directory with passed argument. Processes started with
+:: "runas" start with forced C:\Windows\System32 workdir
+cd /d %~dp0
+
+:: Script
+ECHO [1;36m■[1;37m PostFix:[0m Terminating Explorer.exe...
+taskkill /F /IM explorer.exe >nul
+
+ECHO [1;36m■[1;37m PostFix:[0m This Window Will Close When Finished
+PowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0cleanup.ps1"
+
+::MOVE /Y %UserProfile%\Contacts\desktop.ini2 %UserProfile%\Contacts\desktop.ini
+ECHO [1;36m■[1;37m PostFix:[0m Install Typora
+%UserProfile%\Desktop\typora-update-x64-1117.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-
+IF EXIST "%ProgramFiles(x86)%\RivaTuner Statistics Server\Uninstall.exe" (
+	ECHO [1;36m■[1;37m PostFix:[0m Remove RivaTuner
+	"%ProgramFiles(x86)%\RivaTuner Statistics Server\Uninstall.exe" /S /SUPPRESSMSGBOXES
+	RD "%ProgramFiles(x86)%\RivaTuner Statistics Server" /Q /S /NO >nul
+)
+DEL /F /Q %UserProfile%\Desktop\typora-update-x64-1117.exe
+taskkill /F /IM typora.exe >nul
 REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "PostFix" /F >nul
-MOVE /Y %UserProfile%\Contacts\desktop.ini2 %UserProfile%\Contacts\desktop.ini >nul
-COPY %~dp0..\Tools\OpenShell*.* %UserProfile%\Desktop /Y >nul
+ECHO [1;36m■[1;37m PostFix:[0m Restarting Explorer.exe
 start explorer.exe
+
+ECHO [37m [0m
+ECHO [37mPress any key to exit...[0m
+PAUSE >nul
+exit
