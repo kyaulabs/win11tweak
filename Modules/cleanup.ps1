@@ -27,6 +27,17 @@
 . "${PSScriptRoot}\_funcs.ps1"
 . "${PSScriptRoot}\msedge.ps1"
 . "${PSScriptRoot}\defender.ps1"
+. "${PSScriptRoot}\mapdrives.ps1"
+
+# Mapped Network Drives
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "NoLogo -NoProfile -ExecutionPolicy Bypass -File `"${PSScriptRoot}\mapdrives.ps1"`"
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+$principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty UserName)
+$task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
+Register-ScheduledTask KL_MapDrives -InputObject $task | Out-Null
+Start-ScheduledTask -TaskName KL_MapDrives | Out-Null
+Start-Sleep -Seconds 10 | Out-Null
+Unregister-ScheduledTask -TaskName KL_MapDrives -Confirm:$false | Out-Null
 
 $Location = Get-Location
 Del-Reg -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_gui" -Recursive
@@ -35,8 +46,6 @@ Output-Section -Section "Cleanup" -Desc "Download Brave"
 Invoke-WebRequest https://laptop-updates.brave.com/latest/winx64 -OutFile ${Env:UserProfile}\Desktop\BraveSetup.exe | Out-Null
 Output-Section -Section "Cleanup" -Desc "Download OpenShell"
 Invoke-WebRequest https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.170/OpenShellSetup_4_4_170.exe -OutFile ${Env:UserProfile}\Desktop\OpenShellSetup.exe | Out-Null
-Output-Section -Section "Cleanup" -Desc "Download Typora"
-Invoke-WebRequest https://download.typora.io/windows/typora-update-x64-1117.exe -OutFile ${Env:UserProfile}\Desktop\typora-update-x64-1117.exe | Out-Null
 
 Output-Section -Section "Cleanup" -Desc "Last Minute Removals"
 If (-NOT $WinDefender) {
@@ -64,11 +73,26 @@ Unregister-ScheduledTask -TaskName "Microsoft Compatibility Appraiser" -Confirm:
 Output-Section -Section "Cleanup" -Desc "User Configs"
 Copy-Item ${Location}\..\Tools\OpenShell.xml ${Env:UserProfile}\Desktop -Force | Out-Null
 Copy-Item ${Location}\..\Tools\wt.json ${Env:LocalAppData}\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json -Force | Out-Null
-Copy-Item ${Location}\..\Tools\gpg-bridge.exe ${Env:ProgramFiles}\Bin -Force | Out-Null
 
-If ($CryptoApps) {
-    Remove-Item -Path "${Env:UserProfile}\Desktop\exodus-windows*.exe" -Force | Out-Null
-}
+# %AppData%\mpv
+New-Item -Type Directory -Path "${Env:AppData}\mpv" | Out-Null
+Invoke-WebRequest https://github.com/kyaulabs/mpv-config/archive/refs/heads/master.zip -OutFile ${Env:UserProfile}\Downloads\mpv-config.zip | Out-Null
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory("${Env:UserProfile}\Downloads\mpv-config.zip", "${Env:AppData}\mpv")
+Remove-Item -Path "${Env:UserProfile}\Downloads\mpv-config.zip" -Force | Out-Null
+Move-Item -Path "${Env:AppData}\mpv\mpv-config-master\*" -Destination "${Env:AppData}\mpv" -Force | Out-Null
+Remove-Item -Path "${Env:AppData}\mpv\mpv-config-master" -Force | Out-Null
+$fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
+dir ${Env:AppData}\mpv\fonts\*.ttf | %%{ $fonts.CopyHere($_.fullname) }
+
+# %ProgramFiles%\Git\usr\lib\winhello.dll
+Invoke-WebRequest https://github.com/tavrez/openssh-sk-winhello/releases/download/v2.0.0/winhello.dll -OutFile ${Env:ProgramFiles}\Git\usr\lib\winhello.dll -Force | Out-Null
+
+# %ProgramFiles%\Bin\gpg-bridge.exe
+Invoke-WebRequest https://github.com/BusyJay/gpg-bridge/releases/download/v0.1.0/gpg-bridge-v0.1.0.zip -OutFile ${Env:UserProfile}\Downloads\gpg-bridge.zip | Out-Null
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory("${Env:UserProfile}\Downloads\gpg-bridge.zip", "${Env:ProgramFiles}\Bin")
+Remove-Item -Path "${Env:UserProfile}\Downloads\gpg-bridge.zip" -Force | Out-Null
 
 # %ProgramFiles%\Bin\gpg-forward.bat
 $gpgforward = @"
@@ -193,3 +217,4 @@ Del-Reg -Path "HKCR:\LibraryFolder\background\shell\git_shell" -Recursive
 # Clean StartMenu
 Remove-Item -Path "${Env:UserProfile}\Desktop\*.LNK" -Force | Out-Null
 Remove-Item -Path "${Env:Public}\Desktop\*.LNK" -Force | Out-Null
+Remove-Item -Path "${Env:ProgramData}\Microsoft\Windows\Start Menu\*.LNK" -Force | Out-Null

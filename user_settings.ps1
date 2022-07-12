@@ -29,7 +29,7 @@
  #>
 
 # Computer Name
-$ComputerName = "WIN11"
+$ComputerName = "WIN11TWEAK"
 
 # Network WorkGroup
 $WorkGroupName = "KYAULABS"
@@ -47,6 +47,26 @@ $Microsoft365 = $false
 $WallpaperPath = "${Env:WINDIR}\Web\4K\Wallpaper\Windows\img19_1920x1200.jpg"
 #$imagePath =  "${env:USERPROFILE}\Pictures\wallpaper-21_9.png"
 
+# Mapped Network Drives
+#
+# $MappedDrives = @(
+#     [PSCustomObject]@{
+#         DriveLetter = "Z"
+#         RemotePath = "\\server\location"
+#         Name = "SHARENAME"
+#         Icon = "%ProgramData%\Windows Icons\drive-network.ico"
+#     },
+#     ...
+# )
+$MappedDrives = @(
+    [PSCustomObject]@{
+        DriveLetter = "N"
+        RemotePath = "\\10.0.10.20\archive"
+        Name = "ARCHiVE"
+        Icon = "%ProgramData%\Windows Icons\drive-network.ico"
+    }
+)
+
 
 <#
  # Chocolatey
@@ -55,11 +75,11 @@ $WallpaperPath = "${Env:WINDIR}\Web\4K\Wallpaper\Windows\img19_1920x1200.jpg"
 # Default Packages to Install
 $ChocoPkgs = @(
     # default applications
-    "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","foxitreader","hashcheck","heidisql",
+    "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","hashcheck","heidisql",
     "imageglass","kdiff3","mediainfo","mpv","nfopad","reshack","scrcpy","sharex","simplewall","speedcrunch",
-    "sublimetext4","sysinternals","virt-viewer","windirstat","youtube-dl",
+    "sublimetext4","sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
     # gaming
-    "playnite","battle.net","goggalaxy","origin","steam","ubisoft-connect",
+    "playnite","amazongames","battle.net","epicgameslauncher","goggalaxy","origin","steam","ubisoft-connect",
     # hardware applications/drivers
     "adb","cpu-z.install","ddu","eartrumpet","msiafterburner","voicemeeter-potato",
     # security applications
@@ -85,11 +105,3 @@ $Email = "kyau@kyau.net"
 #
 # gpg --list-secret-keys --keyid-format LONG
 $GPG_Key = "1F125B5425110CCE"
-
-
-<#
- # Cryptocurrency
- #>
-
-# Install Cryptocurrency Apps?
-$CryptoApps = $false

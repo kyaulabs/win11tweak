@@ -35,9 +35,6 @@ New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\AdobeCC" | Out-
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\Apps" | Out-Null
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\BBS" | Out-Null
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\Creative" | Out-Null
-If ($CryptoApps) {
-    New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\Crypto" | Out-Null
-}
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\Development" | Out-Null
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\Games" | Out-Null
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\Hardware" | Out-Null
@@ -53,21 +50,17 @@ New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\RTSP-Local" | O
 Output-Section -Section "StartMenu" -Desc "Creating Shortcuts"
 # Add-Shortcut "SubMenu\Application OR Startup" "target.exe" "icon-name" "arguments" "working-directory"
 Add-Shortcut "Apps\Brave" "${Env:ProgramFiles}\BraveSoftware\Brave-Browser\Application\brave.exe" ""
-Add-Shortcut "Apps\Foxit PDF Reader" "${Env:ProgramFiles(x86)}\Foxit Software\Foxit PDF Reader\FoxitPDFReader.exe" "foxit-reader"
+Add-Shortcut "Apps\SumatraPDF" "${Env:ProgramFiles}\SumatraPDF\SumatraPDF.exe" "gnome-books"
 Add-Shortcut "Apps\KeePassXC" "${Env:ProgramFiles}\KeePassXC\KeePassXC.exe" "keepassxc"
 Add-Shortcut "Apps\Kleopatra" "${Env:ProgramFiles(x86)}\gpg4win\bin\kleopatra.exe" ""
 Add-Shortcut "Apps\Yubico Authenticator" "${Env:ProgramFiles}\Yubico\Yubico Authenticator\yubioath-desktop.exe" "yubioath"
 Add-Shortcut "Apps\Yubico Manager" "${Env:ProgramFiles}\Yubico\YubiKey Manager\ykman-gui.exe" "yubikey-personalization-gui"
 Add-Shortcut "Apps\Yubico PIV Manager" "${Env:ProgramFiles}\Yubico\YubiKey PIV Manager\pivman.exe" "yubikey-piv-manager"
-If ($CryptoApps) {
-    Add-Shortcut "Crypto\Exodus" "${Env:LocalAppData}\exodus\Exodus.exe" ""
-    Add-Shortcut "Crypto\TradingView" "${Env:SystemRoot}\explorer.exe" "" "shell:AppsFolder\TradingView.Desktop_n534cwy3pjxzj!TradingView"
-}
 Add-Shortcut "Development\HeidiSQL" "${Env:ProgramFiles}\HeidiSQL\heidisql.exe" "sqlninja"
 Add-Shortcut "Development\KDiff3" "${Env:ProgramFiles}\KDiff3\kdiff3.exe" "kdiff3"
+Add-Shortcut "Development\MarkText" "${Env:LocalAppData}\Programs\MarkText\MarkText.exe" ""
 Add-Shortcut "Development\Resource Hacker" "${Env:ProgramFiles(x86)}\Resource Hacker\ResourceHacker.exe" "teighaviewer"
 Add-Shortcut "Development\Sublime Text" "${Env:ProgramFiles}\Sublime Text\sublime_text.exe" ""
-Add-Shortcut "Development\Typora" "${Env:ProgramFiles}\Typora\Typora.exe" "typora"
 Add-Shortcut "Hardware\CPU-Z" "${Env:ProgramFiles}\CPUID\CPU-Z\cpuz.exe" ""
 Add-Shortcut "Hardware\EarTrumpet" "${Env:ProgramData}\chocolatey\lib\eartrumpet\tools\EarTrumpet\EarTrumpet.exe" ""
 Add-Shortcut "Hardware\MSI Afterburner" "${Env:ProgramFiles(x86)}\MSI Afterburner\MSIAfterburner.exe" ""

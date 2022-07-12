@@ -37,9 +37,14 @@ Output-Section -Section "Packages" -Desc "Install"
 Write-Host " " -NoNewline
 Start-Process -FilePath "${Env:ProgramData}\chocolatey\bin\CHOCO.EXE" -ArgumentList "install powershell-core --install-arguments=`"ENABLE_PSREMOTING=1`" -y -r" -NoNewWindow -Wait -RedirectStandardOutput "${Env:UserProfile}\choco_install.txt"
 Foreach ($pkg in $ChocoPkgs) {
+    $ipkg = $pkg
     $runtest = ""
     if ($pkg -eq "sharex" -Or $pkg -eq "simplewall") {
         $runtest = "${Env:SystemRoot}\system32\taskkill.exe /F /IM ${pkg}.exe >nul"
+    }
+    if ($pkg -eq "amazongames") {
+        $pkg = "${pkg} --checksum 49DD00B312A87B9E40695D68D0680360C97189251EE2EF91C8BDABEC40FFFDD7"
+        $runtest = "${Env:SystemRoot}\system32\taskkill.exe /F /IM `"Amazon Games UI.exe`" >nul"
     }
     $runcmd = @"
 @ECHO OFF
@@ -51,46 +56,15 @@ $runtest
     Start-Process -FilePath "${Env:UserProfile}\runcmd.bat" -NoNewWindow -Wait
     Remove-Item -Path "${Env:UserProfile}\runcmd.bat" -Force | Out-Null
     #Start-Process -FilePath "${Env:ProgramData}\chocolatey\bin\CHOCO.EXE" -ArgumentList "install $pkg -y -r --ignore-package-codes" -NoNewWindow -Wait -RedirectStandardOutput "${Env:UserProfile}\choco_install.txt"
-    Write-Host " : ${pkg} [1;32m${check}[0m" -NoNewline
+    Write-Host " : ${ipkg} [1;32m${check}[0m" -NoNewline
+    if ($ipkg -eq "amazongames") {
+
+    }
 }
 Write-Host "`n" -NoNewline
 
 # Change Calculator Keyboard Key to Speedcrunch
 Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AppKey\18" -Name "ShellExecute" -Type String -Value "%ProgramFiles(x86)%\SpeedCrunch\speedcrunch.exe"
-
-if ($CryptoApps) {
-    # Install Exodus Wallet
-    $UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"
-    $Links = $(Invoke-WebRequest -URI "https://www.exodus.com/releases/" -UserAgent $UA).Links | Select href | Out-String
-    Foreach ($Link in $Links -split "`n") {
-        $Match = $Link | Select-String -Pattern "releases\/hashes" -CaseSensitive
-        if ($Match) {
-            #Write-Output $Link
-            $Exodus = $(Invoke-WebRequest -URI $Link -UserAgent $UA).Content | Out-String
-            Foreach ($Line in $Exodus -split "`n") {
-                $Match = $Line | Select-String -Pattern "windows-x64(.*)exe" -CaseSensitive
-                if ($Match) {
-                    #Write-Output $line
-                    $File = $Line -split " "
-                    $URL = "https://downloads.exodus.com/releases/" + $File[1]
-                    $Out = "${Env:UserProfile}\" + $File[1]
-                    $SHA = $File[0]
-                    Invoke-WebRequest $URL -OutFile $Out | Out-Null
-                    If (( Get-FileHash -Algorithm SHA256 $Out ).Hash -eq $SHA) {
-                        Start-Process -FilePath $Out -ArgumentList "/s /v`"/qn`"" -NoNewWindow -Wait | Out-Null
-                    }
-                }
-            }
-        }
-    }
-    # Install TradingView
-    Invoke-WebRequest "https://tvd-packages.tradingview.com/stable/latest/win32/TradingView.appinstaller" -OutFile "${Env:UserProfile}\TradingView.appinstaller"
-    $msix = Select-String -Path "${Env:UserProfile}\TradingView.appinstaller" -Pattern "\.msix" | %{ ([regex]::match( $_ , '(?<=")(.+)(?=")' )).value }
-    Invoke-WebRequest $msix -OutFile "${Env:UserProfile}\TradingView.msix"
-    Remove-Item -Path "${Env:UserProfile}\TradingView.appinstaller" -Force | Out-Null
-    Add-AppxPackage -Path "${Env:UserProfile}\TradingView.msix" -Confirm:$false
-    Remove-Item -Path "${Env:UserProfile}\TradingView.msix" -Force | Out-Null
-}
 
 # Cleanup
 Remove-Item -Path "${Env:UserProfile}\choco_install.txt" -Force | Out-Null

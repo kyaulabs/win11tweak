@@ -36,8 +36,8 @@ Set-NetConnectionProfile -NetworkCategory Private | Out-Null
 NETSH.EXE advfirewall firewall set rule group="Network Discovery" new enable=Yes | Out-Null
 Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "LocalAccountTokenFilterPolicy" -Type Dword -Value "1"
 # Rename Computer & Set Workgroup
-Rename-Computer -NewName $ComputerName -NoRestart | Out-Null
-Add-Computer -WorkGroupName $WorkGroupName -NoRestart | Out-Null
+Rename-Computer -NewName $ComputerName | Out-Null
+Add-Computer -WorkGroupName $WorkGroupName | Out-Null
 
 # Remove System Restore
 Output-Section -Section "Defaults" -Desc "Remove System Restore"
@@ -238,6 +238,9 @@ Start-Process -FilePath "${Env:SystemRoot}\system32\WindowsPowerShell\v1.0\power
 
 # Start Menu
 . "${PSScriptRoot}\startmenu.ps1"
+
+# Mapped Network Drives
+. "${PSScriptRoot}\mapdrives.ps1"
 
 # Reboot
 Write-Output "[37m [0m"

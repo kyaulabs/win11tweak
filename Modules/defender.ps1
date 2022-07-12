@@ -91,6 +91,8 @@ If (-NOT $WinDefender) {
     Del-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Sense" -Recursive
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontReportInfectionInformation" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontOfferThroughWUAU" -Type Dword -Value "1"
+    Add-Reg -Path "HKLM:\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" -Name "Start" -Type Dword -Value "0"
+    Add-Reg -Path "HKLM:\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" -Name "Start" -Type Dword -Value "0"
 
     If (-NOT $SecurityHealth) {
         Output-Section -Section "Anti-Virus" -Desc "Removing Windows Security"

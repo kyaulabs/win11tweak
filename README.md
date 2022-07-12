@@ -1,4 +1,4 @@
-#   Windows 11 Tweaks - Build 22000.434
+# Windows 11 Tweaks - Build 22621.169
 
 ![LOGO](README_media/LOGO.png)
 
@@ -8,9 +8,28 @@ Let's be honest, Windows has become a mammoth of an OS that is generically geare
 
 *This repository is provided for archival/educational purposes, I am not responsible for any data loss or damage that may ensue.*
 
+* [Introduction](#introduction)
+* [Features](#features)
+  * [Configuration](#configuration)
+* [Windows 11 Tweaks Guide](#windows-11-tweaks-guide)
+  * [Installation](#installation)
+  * [Windows Update](#windows-update)
+  * [Windows Defender (optional)](#windows-defender-optional)
+  * [Download Win11Tweaks](#download-win11tweaks)
+  * [Anti-Virus (optional)](#anti-virus-optional)
+  * [Running Win11Tweaks](#running-win11tweaks)
+  * [Anti-Virus Removal (optional)](#anti-virus-removal-optional)
+  * [Configuring Windows](#configuring-windows)
+  * [Windows Terminal](#windows-terminal)
+  * [OpenShell](#openshell)
+  * [Brave](#brave)
+  * [Firewall](#firewall)
+  * [Chocolatey](#chocolatey)
+* [Attribution & References](#attribution--references)
+
 ## Introduction
 
-This script is meant to be utilized immediately after a fresh installation of Windows 11. Before the script can be run, Windows itself needs to be installed properly. The following will walk you through setting up Windows 11 with a local user account. This guide can also be adapted to be used with a Domain Account, however Microsoft Accounts will not work.
+This script is meant to be utilized immediately after a fresh installation of Windows 11. Before the script can be run, Windows itself needs to be installed properly. The following will walk you through setting up Windows 11 with a local user account.
 
 ## Features
 
@@ -34,35 +53,29 @@ While not required, in order to personalize your installation, it is recommended
 
 While this can be used with any version of Windows 11, this guide revolves around Windows 11 Pro N. In order to bypass the Microsoft Account requirements it is advised that you pull your network cable until Windows 11 is fully installed.
 
-*While broken in the original leaked versions of Windows 11, all of the N version installs are now working as intended.*
+*If you do not plan on pulling your network cable you will be forced into logging in with a Microsoft Account.*
 
 ![Install_01](README_media/Install_01.png)
 
-After installing Windows to the selected hard drive you will be prompted to reboot the computer. Upon completion you will begin the configuration of Windows. Begin by selecting a region and keyboard (and a secondary keyboard layout if necessary).
+After installing Windows to the selected hard drive you will be prompted to reboot the computer. Upon completion, press `SHIFT+F10` to bring up a command prompt window.
 
-![Install_02](README_media/Install_02.png)
+![Install_02](README_media/Install_02b.png)
+
+Run `oobe\bypassnro` in the command prompt window, this will reboot the machine automatically and then return you to the region selection window.
+
+![Install_02](README_media/Install_02a.png)
+
+Begin by selecting a region and keyboard (and a secondary keyboard layout if necessary).
 
 ![Install_03](README_media/Install_03.png)
 
-Windows will now configure itself for a moment and then ask you to name the current device.
+Windows will now prompt you about having no internet connection, select `I don't have internet`.
+
+![Install_05](README_media/Install_04.png)
+
+It will double check that you are sure about using an offline account, select `Continue with limited setup`.
 
 ![Install_05](README_media/Install_05.png)
-
-Windows will now finalize the setup by rebooting with the new device name. Once it boots back into the setup you will be prompted with the device setup. Choose `Set up for personal use`.
-
-![Install_06a](README_media/Install_06a.png)
-
-Being prompted for sign in, select `Sign-in options`.
-
-![Install_06b](README_media/Install_06b.png)
-
-Finally selecting the desired option `Offline account`.
-
-![Install_06b](README_media/Install_06c.png)
-
-And confirm your decision by selecting `Skip for now`.
-
-![Install_06b](README_media/Install_06d.png)
 
 Set your desired username.
 
@@ -90,7 +103,7 @@ Right-click on the Start Menu icon (bottom center of screen, left most icon). Fr
 
 ![Windows_01](README_media/Windows_01.png)
 
-Navigate to `Update & Security`.
+Navigate to `Windows Update`.
 
 ![Windows_02](README_media/Windows_02.png)
 
@@ -118,15 +131,13 @@ Verify that you have performed all updates by the store telling you `You're good
 
 At this point (if it has not been done already) activate Windows.
 
-With the computer updated and activated it is now time to download the script. Download the latest version of Win11Tweaks. Extract the contents of the ZIP file to the Desktop, this should place a folder `wintweak` on the Desktop.
+With the computer updated and activated it is now time to download the script. Download the latest version of Win11Tweaks. Extract the contents of the ZIP file to the Desktop, this should place a folder `win11tweak` on the Desktop.
 
-### Anti-Virus (optional)
+### Windows Defender (optional)
 
-*This section is only required if you chosen to disable Windows Defender in the Win11Tweaks config.*
+*If you choose to keep Windows Defender installed, the script used to disable Defender `defender.ps1` will get flagged by Defender itself, this is normal behavior.*
 
 Before the main script can be run Windows Defender needs to be disabled along with tamper protection.
-
-*While this use to be possible via script in Windows 10, Microsoft has made significant changes to this over the course of Windows 11 development and now much of the process needs to be performed manually.*
 
 Select the Security Center icon in the system tray and navigate to the security dashboard.
 
@@ -140,33 +151,45 @@ Turn off `Real-time protection`,  `Cloud-delivered protection`, `Automatic sampl
 
 ![Defender_03](README_media/Defender_03.png)
 
-Next install Kaspersky Security Cloud free edition from inside the `win11tweak\Tools` folder on the Desktop. Uncheck all additional options during install. 
+### Download Win11Tweaks
 
-![Kaspersky_01](README_media/Kaspersky_01.png)
+Right-click on the Start Menu icon and select `Terminal (Admin)`. Run the following command in PowerShell.
 
-![Kaspersky_02](README_media/Kaspersky_02.png)
+```powershell
+iex ((New-Object System.Net.WebClient).DownloadString('https://github.com/kyaulabs/win11tweak/raw/master/Modules/download.ps1'))
+```
 
-Once installed, sign up with a throw-away email address in order to get the software enabled (no need to signup for premium).
+![Download_01](README_media/Download_01.png)
 
-![Kaspersky_03](README_media/Kaspersky_03.png)
+This will download a copy of Win11Tweaks and place it on your desktop. You can then close out of Windows Terminal.
 
-Finally, once it is finished you should be greeted with the Free edition and a notification that says `Protection is enabled`. Click the settings icon in the bottom left.
+### Anti-Virus (optional)
 
-![Kaspersky_04](README_media/Kaspersky_04.png)
+Run `download_av.cmd` inside of the `win11tweak` folder on the desktop.
 
-In the `Protection` tab disable everything except `File Anti-Virus`.
+![AntiVirus_01](README_media/AntiVirus_01.png)
 
-![Kaspersky_05](README_media/Kaspersky_05.png)
+This will download Adaware Antivirus to your desktop, then run the installer `Adaware.exe`. Select `Install` to install Adaware.
 
-Finally, navigate to the `Interface` tab and disable all of the `News notifications` and `Promotional materials`. Save and close the KSC (Kaspersky Security Cloud) window.
+![AntiVirus_02](README_media/AntiVirus_02.png)
 
-![Kaspersky_06](README_media/Kaspersky_06.png)
+When asked if you want an extra layer of protection, select `NO THANKS`.
 
-Kaspersky needs to stay installed until you have completed this guide. At which point you can choose to uninstall Kaspersky VPN and retain anti-virus protection or remove Kaspersky Security Cloud/VPN, which will in turn leave you with Anti-Virus completely disabled.
+![AntiVirus_03](README_media/AntiVirus_03.png)
+
+Once installation is finished, feel free to delete the `Adaware.exe` on your desktop.  If by chance MSEdge pops up with incoherent text, go to the Task Manager by right clicking on the Start Menu and selecting `Task Manager`. Find `Microsoft Edge` and expand it to find `Browser`, right-click on this and choose `End task`.
+
+![AntiVirus_04](README_media/AntiVirus_04.png)
+
+Given a bit of time Adaware should finish its initial scan and present you with a screen similar to the following.
+
+![AntiVirus_05](README_media/AntiVirus_05.png)
+
+Close out of Adaware.
 
 *Installation of a 3rd party Anti-Virus product has been added in order to get Windows Defender to disable itself. Without this step you will be unable to completely remove Windows Defender from Windows 11.*
 
-### Tweaks
+### Running Win11Tweaks
 
 Assuming the scripts have been extracted to your Desktop... Open the start menu and search for `cmd`, this should bring up the listing for Command Prompt. Make sure you choose the option on the right `Run as administrator`.
 
@@ -186,11 +209,19 @@ The script will take quite a while to finish, at some point it will ask you to u
 
 *Note: it is possible that the second of which, uninstalling MSEdge itself, will popup two Internet Explorer errors in the background. These errors will need to be cleared by ALT+TABing and selecting `OK` before the script can continue.*
 
-Once the script reaches the section where it starts to install third-party applications you will see the following popup on the screen, simply click `OK` to continue. It will not reboot instantly.
-
-![Script_02](README_media/Script_02.png)
-
 Upon completion it will reboot automatically. After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task).
+
+### Anti-Virus Removal (optional)
+
+Once Win11Tweaks is completely done with all of its scripts, you will be left at the Windows Desktop. If you wish to remove all anti-virus completely, right-click the Start Menu and select `Installed apps`. Select the three-dot menu to the right of `adaware antivirus` and choose `Uninstall`.
+
+![AntiVirus_06](README_media/AntiVirus_06.png)
+
+Make sure to select `SKIP` when asked if you want to reenable Windows Defender.
+
+![AntiVirus_07](README_media/AntiVirus_07.png)
+
+Go ahead and reboot to complete the uninstallation.
 
 ### Configuring Windows
 
@@ -208,7 +239,7 @@ Set the accent color to `Manual` then click `View colors`. Selecting `More` will
 
 ### Windows Terminal
 
-Windows Terminal (WT) is now the defacto Windows terminal and can easily be used for CMD, PowerShell, SSH, WSL and more. To access WT right-click the Start Menu and select `Windows Terminal (Admin)`. Select `Open Settings` from the toolbar warning about the default terminal application.
+Windows Terminal (WT) is now the defacto Windows terminal and can easily be used for CMD, PowerShell, SSH, WSL and more. To access WT right-click the Start Menu and select `Terminal (Admin)`. Select `Open Settings` from the toolbar warning about the default terminal application.
 
 ![WT_01](README_media/WT_01.png)
 
@@ -216,7 +247,7 @@ Once open, use the dropdown menu underneath `Default terminal application` and s
 
 ![WT_02](README_media/WT_02.png)
 
-After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the KYAU Labs section (feel free to rename to the name of your network).
+*After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the KYAU Labs section (feel free to rename to the name of your network).*
 
 ### OpenShell
 
@@ -224,7 +255,7 @@ OpenShell, which is the continued version of ClassicShell, should be on the desk
 
 ![OpenShell_01](README_media/OpenShell_01.png)
 
-After installation press the windows key on your keyboard in order to open the settings dialog for Open-Shell. Click `Backup` and then `Load from an XML file...` choosing the provided XML file on the desktop.
+After installation press the Windows key on your keyboard in order to open the settings dialog for Open-Shell. Click `Backup` and then `Load from an XML file...` choosing the provided XML file on the desktop.
 
 ![OpenShell_02](README_media/OpenShell_02.png)
 
@@ -236,7 +267,9 @@ When finished, select `OK` in the bottom right to save the changes. It will prom
 
 ### Brave
 
-Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Skip tour` in the bottom-left corner.
+*Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave a try if you have never used it.*
+
+Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Skip welcome tour` in the bottom-left corner.
 
 Navigate to the hamburger menu in the upper-right and select `Extensions`. In the center you should see `Find extensions and themes in the Web Store`, click on `Web Store` to continue, this should launch in a separate tab.
 
@@ -245,8 +278,49 @@ Extensions are typical revolve heavily around personal choice, however there are
 * [Cookie AutoDelete](https://chrome.google.com/webstore/detail/cookie-autodelete/fhcgjolkccmbidfldomjliifgaodjagh)
 * [Decentraleyes](https://chrome.google.com/webstore/detail/decentraleyes/ldpochfccmkkmhdbclfhpagapcfdljkj)
 * [Enhancer for YouTube™](https://chrome.google.com/webstore/detail/enhancer-for-youtube/ponfpcnoihfmfllpaingbgckeeldkhle)
-* [HTTPS Everywhere](https://chrome.google.com/webstore/detail/https-everywhere/gcbommkclmclpchllfjekcdonpmejbdp)
 * [Privacy Badger](https://chrome.google.com/webstore/detail/privacy-badger/pkehgijcmpdhfbdbbnkijodmdjhbjlgp)
+
+Navigate to the hamburger menu again and select Settings. Under `Appearance` set `Brave colors` to `Dark` to force Brave into dark mode.
+
+![Brave_01a](README_media/Brave_01a.png)
+
+Then deselect `Show top sites in autocomplete suggestions` and select `Always show full URLs`.
+
+![Brave_01b](README_media/Brave_01b.png)
+
+Under `Shields` change `Trackers & ad blocking` to `Aggressive`.
+
+![Brave_02](README_media/Brave_02.png)
+
+Under `Social media blocking` deselect all platforms that you do not use.
+
+![Brave_03](README_media/Brave_03.png)
+
+Under `Privacy and security` deselect everything.
+
+![Brave_04](README_media/Brave_04.png)
+
+Under `Search engine` swap the `Search engine used in the address bar` to the one of your choice, I recommend `DuckDuckGo` personally.
+
+![Brave_05](README_media/Brave_05.png)
+
+Under `Extensions` deselect `WebTorrent` if you use an external torrent client, and select `Widevine` if you plan on using streaming services with this browser.
+
+*Enabling `Widevine` DRM will require a restart of Brave.*
+
+![Brave_06](README_media/Brave_06.png)
+
+Under `Autofill` > `Passwords` deselect `Offer to save passwords` and `Auto Sign-In`.
+
+![Brave_07](README_media/Brave_07.png)
+
+Under `Autofill` > `Payment methods` deselect `Save and fill payment methods` and `Allow sites to check if you have payment methods saved`.
+
+![Brave_08](README_media/Brave_08.png)
+
+Under `Autofill` > `Addresses and more` deselect `Save and fill addresses`.
+
+![Brave_09](README_media/Brave_09.png)
 
 ### Firewall
 
@@ -293,7 +367,6 @@ Default Application Allow List:
 * `ccenhancer.exe`: CCEnhancer downloader
 * `ccleaner64.exe`: Utilities > CCleaner
 * `chocolateygui.exe`: Chocolatey GUI is the interface for the package manager
-* `exodus.exe`: Exodus crypto wallet w/ hardware support
 * `heidisql.exe`: SQL client
 * `igcmd.exe`: ImageGlass image viewer update checker
 * `nextcloud.exe`: Nextcloud cloud service client
@@ -350,3 +423,5 @@ Without all of the following this guide would not have been possible.
 * [Flat-Remix Icon Theme](https://github.com/daniruiz/flat-remix)
 * [agave font](https://github.com/agarick/agave)
 * [Mixed wallpaper](https://www.deviantart.com/i5yal/art/Mixed-wallpaper-744877376)
+* [gpg-bridge](https://github.com/BusyJay/gpg-bridge)
+* [openssh-sk-winhello](https://github.com/tavrez/openssh-sk-winhello)
