@@ -10,8 +10,8 @@ Let's be honest, Windows has become a mammoth of an OS that is generically geare
 
 ```
 🚧 WARNING
-This repository is provided for archival/educational purposes, I am not responsible for any data loss or damage that
-may ensue.
+This repository is provided for archival/educational purposes, I am not responsible for any data loss or
+damage that may ensue.
 ```
 
 * [Introduction](#introduction)
@@ -73,8 +73,8 @@ While not required, in order to personalize your installation, it is recommended
 
 ```
 📌 NOTE
-By default this file contains all of my own personal settings. At the very least you should change the Git Email,
-GPG Public Key and then review over the list of software that Chocolatey is going to be installing.
+By default this file contains all of my own personal settings. At the very least you should change the Git
+Email, GPG Public Key and then review over the list of software that Chocolatey is going to be installing.
 ```
 
 ![Features_01](README_media/Features_01.png)
@@ -87,7 +87,8 @@ While this can be used with any version of Windows 11, this guide revolves aroun
 
 ```
 ❗ DO NOT SKIP ❗
-If you do not plan on pulling your network cable you will be forced into logging in with a Microsoft Account.
+If you do not plan on pulling your network cable you will be forced into logging in with a Microsoft
+Account.
 ```
 
 ![Install_01](README_media/Install_01.png)
@@ -173,8 +174,8 @@ With the computer updated and activated it is now time to download the script. D
 
 ```
 🚧 WARNING
-If you choose to keep Windows Defender installed, the script used to disable Defender _defender.ps1_ will get flagged
-by Defender itself, this is normal behavior.
+If you choose to keep Windows Defender installed, the script used to disable Defender _defender.ps1_ will
+get flagged by Defender itself, this is normal behavior.
 ```
 
 Before the main script can be run Windows Defender needs to be disabled along with tamper protection.
@@ -229,8 +230,8 @@ Close out of Adaware.
 
 ```
 📌 NOTE
-Installation of a 3rd party Anti-Virus product has been added in order to get Windows Defender to disable itself.
-Without this step you will be unable to completely remove Windows Defender from Windows 11.
+Installation of a 3rd party Anti-Virus product has been added in order to get Windows Defender to disable
+itself. Without this step you will be unable to completely remove Windows Defender from Windows 11.
 ```
 
 ### Running Win11Tweaks
@@ -256,8 +257,9 @@ The script will take quite a while to finish, at some point it will ask you to u
 
 ```
 ❗ DO NOT SKIP ❗
-It is possible that the second of which, uninstalling MSEdge itself, will popup two Internet Explorer errors in the
-background. These errors will need to be cleared by ALT+TABing and selecting _OK_ before the script can continue.
+It is possible that the second of which, uninstalling MSEdge itself, will popup two Internet Explorer
+errors in the background. These errors will need to be cleared by ALT+TABing and selecting _OK_ before
+the script can continue.
 ```
 
 Upon completion it will reboot automatically. After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task).
@@ -304,8 +306,8 @@ Once open, use the dropdown menu underneath `Default terminal application` and s
 
 ```
 📌 NOTE
-After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the KYAU Labs
-section (feel free to rename to the name of your network).
+After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the
+KYAU Labs section (feel free to rename to the name of your network).
 ```
 
 ### OpenShell
@@ -331,8 +333,8 @@ When finished, select `OK` in the bottom right to save the changes. It will prom
 
 ```
 🚧 WARNING
-Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave a try if you
-have never used it.
+Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave a
+try if you have never used it.
 ```
 
 Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Skip welcome tour` in the bottom-left corner.
@@ -375,8 +377,8 @@ Under `Extensions` deselect `WebTorrent` if you use an external torrent client, 
 
 ```
 📌 NOTE
-Enabling Widevine DRM will require a restart of Brave, you will be returned to where you left off in Settings after
-the restart.
+Enabling Widevine DRM will require a restart of Brave, you will be returned to where you left off in
+Settings after the restart.
 ```
 
 ![Brave_06](README_media/Brave_06.png)
