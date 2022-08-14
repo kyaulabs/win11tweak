@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -26,7 +26,7 @@
 
 . "${PSScriptRoot}\_funcs.ps1"
 
-Output-Section -Section "Apps" -Desc "Remove Bloated Defaults"
+Show-Section -Section "Apps" -Desc "Remove Bloated Defaults"
 
 $Whitelist = 'Microsoft.DesktopAppInstaller|Microsoft.GetHelp|Microsoft.MicrosoftSolitaireCollection|Microsoft.Paint|Microsoft.WindowsNotepad|Microsoft.WindowsTerminal'
 $NonRemovable = 'Microsoft.549981C3F5F10|Microsoft.MicrosoftEdge.Stable|Microsoft.StorePurchaseApp|Microsoft.UI*|Microsoft.VCLibs*|Microsoft.Windows.FilePicker*|Microsoft.WindowsStore'
@@ -48,7 +48,7 @@ Foreach ($pkg in $remove) {
     Remove-AppxProvisionedPackage -PackageName $pkg.PackageName -Online -WarningAction:SilentlyContinue -ErrorAction:SilentlyContinue | Out-Null
 }
 # Only remove MediaPlayer on non-N versions
-$os = systeminfo.exe /fo csv | ConvertFrom-Csv | Select -ExpandProperty "OS Name"
+$os = systeminfo.exe /fo csv | ConvertFrom-Csv | Select-Object -ExpandProperty "OS Name"
 if ($os -match "N$") {
     $Blacklist = Get-WindowsPackage -Online | Where-Object {$_.PackageName -Match '^(OpenSSH-Client|Microsoft-Windows-Hello-Face|Microsoft-Windows-InternetExplorer|Microsoft-Windows-QuickAssist|Microsoft-Windows-TabletPCMath|Microsoft-Windows-StepsRecorder|Microsoft-Windows-WordPad).*'} | Select-Object PackageName,PackageState | Sort-Object PackageName
     foreach ($app in $Blacklist) {
@@ -74,23 +74,23 @@ Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "Co
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type Dword -Value "1"
 
 # Remove Movies-TypeV/Xbox
-Del-Service -Name "XblAuthManager"
-Del-Service -Name "XblGameSave"
-Del-Service -Name "XboxNetApiSvc"
-Del-Service -Name "XboxGipSvc"
+Remove-WService -Name "XblAuthManager"
+Remove-WService -Name "XblGameSave"
+Remove-WService -Name "XboxNetApiSvc"
+Remove-WService -Name "XboxGipSvc"
 Unregister-ScheduledTask -TaskName "XblGameSaveTask" -Confirm:$false
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type Dword -Value "0"
 Add-Reg -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -Type Dword -Value "0"
 Add-Reg -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Type Dword -Value "0"
 
 # Remove Maps
-Del-Service -Name "MapsBroker"
-Del-Service -Name "lfsvc"
+Remove-WService -Name "MapsBroker"
+Remove-WService -Name "lfsvc"
 Unregister-ScheduledTask -TaskName "MapsUpdateTask" -Confirm:$false
 Unregister-ScheduledTask -TaskName "MapsToastTask" -Confirm:$false
 
 # Remove Third Party Bloat
-Output-Section -Section "Apps" -Desc "Remove 3rd Party Bloat"
+Show-Section -Section "Apps" -Desc "Remove 3rd Party Bloat"
 Get-AppxPackage -Name *EclipseManager* | Remove-AppxPackage -WarningAction:SilentlyContinue | Out-Null
 Get-AppxPackage -Name *ActiproSoftwareLLC* | Remove-AppxPackage -WarningAction:SilentlyContinue | Out-Null
 Get-AppxPackage -Name *AdobeSystemsIncorporated.AdobePhotoshopExpress* | Remove-AppxPackage -WarningAction:SilentlyContinue | Out-Null
@@ -127,7 +127,7 @@ TASKKILL.EXE /F /IM explorer.exe | Out-Null
 
 If (-NOT $Microsoft365) {
     # Remove OneDrive
-    Output-Section -Section "Apps" -Desc "Remove OneDrive"
+    Show-Section -Section "Apps" -Desc "Remove OneDrive"
     TASKKILL.EXE /F /IM OneDrive.exe | Out-Null
     Start-Process -FilePath "${Env:SystemRoot}\SysWOW64\ONEDRIVESETUP.EXE" -ArgumentList "/uninstall" -NoNewWindow -Wait | Out-Null
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type Dword -Value "1"
@@ -135,6 +135,9 @@ If (-NOT $Microsoft365) {
     Remove-Item -Path "${Env:LocalAppData}\Microsoft\OneDrive" -Recurse -Force | Out-Null
     Remove-Item -Path "${Env:ProgramData}\Microsoft OneDrive" -Recurse -Force | Out-Null
     Remove-Item -Path "${Env:SystemDrive}\OneDriveTemp" -Recurse -Force | Out-Null
+    # Pinned Navigation Pane Icon
+    Remove-Reg -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recursive
+    Remove-Reg -Path "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recursive
 }
 
 Start-Process -FilePath "IE4UINIT.EXE" -ArgumentList "-show" -NoNewWindow -Wait | Out-Null

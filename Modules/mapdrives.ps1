@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -27,7 +27,7 @@
 . "${PSScriptRoot}\_funcs.ps1"
 
 # Map All Network Drives
-Output-Section -Section "Network" -Desc "Mapped Drives"
+Show-Section -Section "Network" -Desc "Mapped Drives"
 Foreach ($drive in $MappedDrives) {
     $Letter = $drive.DriveLetter
     $RemotePath = $drive.RemotePath

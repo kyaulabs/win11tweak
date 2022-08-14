@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -27,12 +27,12 @@
 #. "${PSScriptRoot}\_funcs.ps1"
 
 If (-NOT $WinDefender) {
-    Output-Section -Section "Anti-Virus" -Desc "Removing Defender"
+    Show-Section -Section "Anti-Virus" -Desc "Removing Defender"
 
-    Del-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\Windows Defender" -Recursive
-    Del-Service -Name "WdNisSvc"
-    Del-Service -Name "WinDefend"
-    Del-Service -Name "Sense"
+    Remove-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\Windows Defender" -Recursive
+    Remove-WService -Name "WdNisSvc"
+    Remove-WService -Name "WinDefend"
+    Remove-WService -Name "Sense"
     Set-MpPreference -DisableArchiveScanning $true | Out-Null
     Set-MpPreference -DisableBehaviorMonitoring $true | Out-Null
     Set-MpPreference -DisableDatagramProcessing $true | Out-Null
@@ -88,22 +88,22 @@ If (-NOT $WinDefender) {
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Services\WdNisSvc" -Name "Start" -Type Dword -Value "4"
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Services\WinDefend" -Name "Start" -Type Dword -Value "4"
     #Add-Reg -Path "HKLM:\Software\Microsoft\Windows Defender\Features" -Name "TamperProtection" -Type Dword -Value "0"
-    Del-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Sense" -Recursive
+    Remove-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Sense" -Recursive
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontReportInfectionInformation" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontOfferThroughWUAU" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" -Name "Start" -Type Dword -Value "0"
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" -Name "Start" -Type Dword -Value "0"
 
     If (-NOT $SecurityHealth) {
-        Output-Section -Section "Anti-Virus" -Desc "Removing Windows Security"
-        Del-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "SecurityHealth"
-        Del-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" -Name "SecurityHealth"
+        Show-Section -Section "Anti-Virus" -Desc "Removing Windows Security"
+        Remove-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "SecurityHealth"
+        Remove-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" -Name "SecurityHealth"
         Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\SecHealthUI.exe" -Name "Debugger" -Type String -Value "%windir%\System32\taskkill.exe"
         Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance" -Name "Enabled" -Type Dword -Value "0"
-        Del-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SecurityHealthService" -Recursive
+        Remove-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SecurityHealthService" -Recursive
     }
 
-    Output-Section -Section "Anti-Virus" -Desc "Removing Context Menu Handlers"
+    Show-Section -Section "Anti-Virus" -Desc "Removing Context Menu Handlers"
     REG.EXE delete "HKCR\*\shellex\ContextMenuHandlers\EPP" /f | Out-Null
     REG.EXE delete "HKCR\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f | Out-Null
     REG.EXE delete "HKCR\Directory\shellex\ContextMenuHandlers\EPP" /f | Out-Null

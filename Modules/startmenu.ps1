@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -26,7 +26,7 @@
 
 #. "${PSScriptRoot}\_funcs.ps1"
 
-Output-Section -Section "StartMenu" -Desc "Creating Folders"
+Show-Section -Section "StartMenu" -Desc "Creating Folders"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MMTaskbarEnabled" -Type Dword -Value "1"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Type Dword -Value "0"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarMn" -Type Dword -Value "0"
@@ -47,12 +47,12 @@ New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\RDP-Local" | Ou
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\RDP-Remote" | Out-Null
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Start\RTSP-Local" | Out-Null
 
-Output-Section -Section "StartMenu" -Desc "Creating Shortcuts"
+Show-Section -Section "StartMenu" -Desc "Creating Shortcuts"
 # Add-Shortcut "SubMenu\Application OR Startup" "target.exe" "icon-name" "arguments" "working-directory"
 Add-Shortcut "Apps\Brave" "${Env:ProgramFiles}\BraveSoftware\Brave-Browser\Application\brave.exe" ""
 Add-Shortcut "Apps\SumatraPDF" "${Env:ProgramFiles}\SumatraPDF\SumatraPDF.exe" "gnome-books"
 Add-Shortcut "Apps\KeePassXC" "${Env:ProgramFiles}\KeePassXC\KeePassXC.exe" "keepassxc"
-Add-Shortcut "Apps\Kleopatra" "${Env:ProgramFiles(x86)}\gpg4win\bin\kleopatra.exe" ""
+#Add-Shortcut "Apps\Kleopatra" "${Env:ProgramFiles(x86)}\gpg4win\bin\kleopatra.exe" ""
 Add-Shortcut "Apps\Yubico Authenticator" "${Env:ProgramFiles}\Yubico\Yubico Authenticator\yubioath-desktop.exe" "yubioath"
 Add-Shortcut "Apps\Yubico Manager" "${Env:ProgramFiles}\Yubico\YubiKey Manager\ykman-gui.exe" "yubikey-personalization-gui"
 Add-Shortcut "Apps\Yubico PIV Manager" "${Env:ProgramFiles}\Yubico\YubiKey PIV Manager\pivman.exe" "yubikey-piv-manager"
@@ -61,6 +61,7 @@ Add-Shortcut "Development\KDiff3" "${Env:ProgramFiles}\KDiff3\kdiff3.exe" "kdiff
 Add-Shortcut "Development\MarkText" "${Env:LocalAppData}\Programs\MarkText\MarkText.exe" ""
 Add-Shortcut "Development\Resource Hacker" "${Env:ProgramFiles(x86)}\Resource Hacker\ResourceHacker.exe" "teighaviewer"
 Add-Shortcut "Development\Sublime Text" "${Env:ProgramFiles}\Sublime Text\sublime_text.exe" ""
+Add-Shortcut "Hardware\Core Temp" "${Env:ProgramData}\chocolatey\lib\coretemp\tools\Core Temp.exe" "thermal-monitor"
 Add-Shortcut "Hardware\CPU-Z" "${Env:ProgramFiles}\CPUID\CPU-Z\cpuz.exe" ""
 Add-Shortcut "Hardware\EarTrumpet" "${Env:ProgramData}\chocolatey\lib\eartrumpet\tools\EarTrumpet\EarTrumpet.exe" ""
 Add-Shortcut "Hardware\MSI Afterburner" "${Env:ProgramFiles(x86)}\MSI Afterburner\MSIAfterburner.exe" ""
@@ -79,14 +80,13 @@ Add-Shortcut "Utilities\Autoruns" "${Env:ProgramData}\chocolatey\lib\AutoRuns\to
 Add-Shortcut "Utilities\CCEnhancer" "${Env:ProgramFiles(x86)}\CCEnhancer\CCEnhancer.exe" ""
 Add-Shortcut "Utilities\CCleaner" "${Env:ProgramFiles}\CCleaner\CCleaner64.exe" ""
 Add-Shortcut "Utilities\Chocolatey GUI" "${Env:ProgramFiles(x86)}\Chocolatey GUI\ChocolateyGui.exe" ""
-Add-Shortcut "Utilities\Core Temp" "${Env:ProgramData}\chocolatey\lib\coretemp\tools\Core Temp.exe" "thermal-monitor"
 Add-Shortcut "Utilities\NFOPad" "${Env:ProgramFiles(x86)}\NFOPad\NFOPad.exe" ""
 Add-Shortcut "Utilities\ShareX" "${Env:ProgramFiles}\ShareX\ShareX.exe" ""
 Add-Shortcut "Utilities\SimpleWall" "${Env:ProgramFiles}\simplewall\simplewall.exe" ""
 Add-Shortcut "Utilities\WinDirStat" "${Env:ProgramFiles(x86)}\WinDirStat\windirstat.exe" "partitionmanager"
 
 # Remove Startup / Add Postfix
-Del-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "KeePassXC"
-$edgerun = Get-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" | Select-Object -ExpandProperty Property | where { $_ -like "MicrosoftEdgeAutoLaunch*" }
-Del-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name $edgerun
+Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "KeePassXC"
+$edgerun = Get-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" | Select-Object -ExpandProperty Property | Where-Object { $_ -like "MicrosoftEdgeAutoLaunch*" }
+Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name $edgerun
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "PostFix" -Type String -Value "`"${PSScriptRoot}\postfix.cmd`""

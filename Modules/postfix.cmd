@@ -35,22 +35,11 @@ if not '%errorlevel%' == '0' (
 :: "runas" start with forced C:\Windows\System32 workdir
 cd /d %~dp0
 
-:: Script
-ECHO [1;36m■[1;37m PostFix:[0m Terminating Explorer.exe...
-taskkill /F /IM explorer.exe >nul
-
-ECHO [1;36m■[1;37m PostFix:[0m This Window Will Close When Finished
+:: Execute PowerShell Script
 PowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0cleanup.ps1"
 
-IF EXIST "%ProgramFiles(x86)%\RivaTuner Statistics Server\Uninstall.exe" (
-	ECHO [1;36m■[1;37m PostFix:[0m Remove RivaTuner
-	"%ProgramFiles(x86)%\RivaTuner Statistics Server\Uninstall.exe" /S /SUPPRESSMSGBOXES
-	RD "%ProgramFiles(x86)%\RivaTuner Statistics Server" /Q /S >nul
-)
-REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "PostFix" /F >nul
-ECHO [1;36m■[1;37m PostFix:[0m Restarting Explorer.exe
+:: Restart Explorer.EXE and exit
 start explorer.exe
-
 ECHO [37m [0m
 ECHO [37mPress any key to exit...[0m
 PAUSE >nul

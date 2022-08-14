@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -26,14 +26,14 @@
 
 #. "${PSScriptRoot}\_funcs.ps1"
 
-Output-Section -Section "Icons" -Desc "Copying Icon Theme"
+Show-Section -Section "Icons" -Desc "Copying Icon Theme"
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Start" | Out-Null
 New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Apps" | Out-Null
 Copy-Item ${PSScriptRoot}\..\Resources\Icons\*.ico -Destination "${Env:ProgramData}\Windows Icons\" -Force | Out-Null
 Copy-Item ${PSScriptRoot}\..\Resources\Icons\start\*.ico -Destination "${Env:ProgramData}\Windows Icons\Start\" -Force | Out-Null
 Copy-Item ${PSScriptRoot}\..\Resources\Icons\apps\*.ico -Destination "${Env:ProgramData}\Windows Icons\Apps\" -Force | Out-Null
 
-Output-Section -Section "Icons" -Desc "System Icons"
+Show-Section -Section "Icons" -Desc "System Icons"
 # youtube-dl
 New-Item -ItemType SymbolicLink -Path "${Env:ProgramData}\chocolatey\lib\mpv.install\tools\youtube-dl.exe" -Target "${Env:ProgramData}\chocolatey\lib\youtube-dl\tools\youtube-dl.exe" | Out-Null
 # .gnupg
@@ -91,7 +91,7 @@ Add-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
 # Navigation Pane - Remove Quick Access
 Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "HubMode" -Type Dword -Value "1"
 # Navigation Pane - Remove Libraries from Desktop
-Del-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{031E4825-7B94-4dc3-B131-E946B44C8DD5}"
+Remove-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{031E4825-7B94-4dc3-B131-E946B44C8DD5}"
 # Control Panel
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\{26EE0668-A00A-44D7-9371-BEB064C98683}"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CLSID\{26EE0668-A00A-44D7-9371-BEB064C98683}\DefaultIcon"

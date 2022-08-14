@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -24,84 +24,94 @@
  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #>
 
-<#
- # Windows Defaults
- #>
+function Add-Configuration {
+    # PSScriptAnalyzer - ignore system state change
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "", Justification = "Settings assignments are imported by other scripts.")]
+    param()
 
-# Computer Name
-$ComputerName = "WIN11TWEAK"
+    <#
+     # Windows Defaults
+     #>
 
-# Network WorkGroup
-$WorkGroupName = "KYAULABS"
+    # Computer Name
+    $script:ComputerName = "WIN11TWEAK"
 
-# Keep Windows Defender? ($true / $false)
-$WinDefender = $false
+    # Network WorkGroup
+    $script:WorkGroupName = "KYAULABS"
 
-# Keep Windows Security? ($true/$false)
-$SecurityHealth = $true
+    # Keep Windows Defender? ($true / $false)
+    $script:WinDefender = $false
 
-# Keep Microsoft 365 / OneDrive ($true/$false)
-$Microsoft365 = $false
+    # Keep Windows Security? ($true/$false)
+    $script:SecurityHealth = $true
 
-# Desktop / Lock Screen Wallpaper
-$WallpaperPath = "${Env:WINDIR}\Web\4K\Wallpaper\Windows\img19_1920x1200.jpg"
-#$imagePath =  "${env:USERPROFILE}\Pictures\wallpaper-21_9.png"
+    # Keep Microsoft 365 / OneDrive ($true/$false)
+    $script:Microsoft365 = $false
 
-# Mapped Network Drives
-#
-# $MappedDrives = @(
-#     [PSCustomObject]@{
-#         DriveLetter = "Z"
-#         RemotePath = "\\server\location"
-#         Name = "SHARENAME"
-#         Icon = "%ProgramData%\Windows Icons\drive-network.ico"
-#     },
-#     ...
-# )
-$MappedDrives = @(
-    [PSCustomObject]@{
-        DriveLetter = "N"
-        RemotePath = "\\10.0.10.20\archive"
-        Name = "ARCHiVE"
-        Icon = "%ProgramData%\Windows Icons\drive-network.ico"
-    }
-)
+    # Desktop / Lock Screen Wallpaper
+    $script:WallpaperPath = "${Env:WINDIR}\Web\4K\Wallpaper\Windows\img19_1920x1200.jpg"
+    #$imagePath =  "${env:USERPROFILE}\Pictures\wallpaper-21_9.png"
 
-
-<#
- # Chocolatey
- #>
-
-# Default Packages to Install
-$ChocoPkgs = @(
-    # default applications
-    "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","hashcheck","heidisql",
-    "imageglass","kdiff3","mediainfo","mpv","nfopad","reshack","scrcpy","sharex","simplewall","speedcrunch",
-    "sublimetext4","sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
-    # gaming
-    "playnite","amazongames","battle.net","epicgameslauncher","goggalaxy","origin","steam","ubisoft-connect",
-    # hardware applications/drivers
-    "adb","cpu-z.install","ddu","eartrumpet","msiafterburner","voicemeeter-potato",
-    # security applications
-    "gpg4win","git","keepassxc","yubico-authenticator","yubikey-manager","yubikey-piv-manager"
-)
+    # Mapped Network Drives
+    #
+    # $MappedDrives = @(
+    #     [PSCustomObject]@{
+    #         DriveLetter = "Z"
+    #         RemotePath = "\\server\location"
+    #         Name = "SHARENAME"
+    #         Icon = "%ProgramData%\Windows Icons\drive-network.ico"
+    #     },
+    #     ...
+    # )
+    $script:MappedDrives = @(
+        [PSCustomObject]@{
+            DriveLetter = "N"
+            RemotePath = "\\10.0.10.20\archive"
+            Name = "ARCHiVE"
+            Icon = "%ProgramData%\Windows Icons\drive-network.ico"
+        }
+    )
 
 
-<#
- # Git
- #>
+    <#
+     # Chocolatey
+     #>
 
-# Git - UserName (default: Windows login username)
-$UserName = ${Env:UserName}.ToLower()
+    # Default Packages to Install
+    $script:ChocoPkgs = @(
+        # default applications
+        "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","hashcheck","heidisql",
+        "imageglass","kdiff3","marktext","mediainfo","mpv","nfopad","reshack","scrcpy","sharex","simplewall","speedcrunch",
+        "sublimetext4","sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
+        # gaming
+        "playnite","amazongames","battle.net","epicgameslauncher","goggalaxy","origin","steam","ubisoft-connect",
+        # hardware applications/drivers
+        "adb","cpu-z.install","eartrumpet","msiafterburner","voicemeeter-potato",
+        # security applications
+        #"gpg4win"
+        "keepassxc","yubico-authenticator","yubikey-manager","yubikey-piv-manager"
+    )
 
-# Git - Email Address
-$Email = "kyau@kyau.net"
 
-# Git - GPG Key
-#
-# Run the following command and look for the "sec#" line and get the key 
-# listed after the encryption type
-# (ex. "sec#  ed25519/GPG_SHORT_KEY DATE-MM-DD [C]")
-#
-# gpg --list-secret-keys --keyid-format LONG
-$GPG_Key = "1F125B5425110CCE"
+    <#
+     # Git
+     #>
+
+    # Git - UserName (default: Windows login username)
+    $script:UserName = ${Env:UserName}.ToLower()
+
+    # Git - Email Address
+    $script:Email = "kyau@kyau.net"
+
+    # Git - GPG Key
+    #
+    # Run the following command and look for the "sec#" line and get the key
+    # listed after the encryption type
+    # (ex. "sec#  ed25519/GPG_SHORT_KEY DATE-MM-DD [C]")
+    #
+    # gpg --list-secret-keys --keyid-format LONG
+    $script:GPG_Key = "1F125B5425110CCE"
+
+}
+
+Add-Configuration
