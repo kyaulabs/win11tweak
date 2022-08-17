@@ -25,7 +25,6 @@
 #>
 
 Invoke-WebRequest https://github.com/kyaulabs/win11tweak/archive/refs/heads/master.zip -OutFile ${Env:UserProfile}\Downloads\win11tweak.zip | Out-Null
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory("${Env:UserProfile}\Downloads\win11tweak.zip", "${Env:UserProfile}\Desktop")
+Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\win11tweak.zip" -DestinationPath "${Env:UserProfile}\Desktop"
 Rename-Item -Path "${Env:UserProfile}\Desktop\win11tweak-master" -NewName "${Env:UserProfile}\Desktop\win11tweak"
 Remove-Item -Path "${Env:UserProfile}\Downloads\win11tweak.zip" -Force | Out-Null

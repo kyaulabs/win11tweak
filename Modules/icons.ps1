@@ -35,32 +35,8 @@ Copy-Item ${PSScriptRoot}\..\Resources\Icons\apps\*.ico -Destination "${Env:Prog
 
 Show-Section -Section "Icons" -Desc "System Icons"
 # youtube-dl
-New-Item -ItemType SymbolicLink -Path "${Env:ProgramData}\chocolatey\lib\mpv.install\tools\youtube-dl.exe" -Target "${Env:ProgramData}\chocolatey\lib\youtube-dl\tools\youtube-dl.exe" | Out-Null
-# .gnupg
-New-Item -ItemType SymbolicLink -Path ($Env:UserProfile + "\.gnupg") -Target ($Env:AppData + "\gnupg") | Out-Null
-$file = "${Env:UserProfile}\.gnupg\desktop.ini"
-$text = @"
-[.ShellClassInfo]
-IconIndex=0
-IconResource=%ProgramData%\Windows Icons\folder-gpg.ico,0
-ConfirmFileOp=0
-DefaultDropEffect=1
-"@
-New-Item -ItemType File -Path $file -Value $text | Out-Null
-Set-ItemProperty $file -Name Attributes -Value "ReadOnly,System,Hidden"
-(Get-Item "${Env:UserProfile}\.gnupg").Attributes = "ReadOnly, Directory"
-# .ssh
-$file = "${Env:UserProfile}\.ssh\desktop.ini"
-$text = @"
-[.ShellClassInfo]
-IconIndex=0
-IconResource=%ProgramData%\Windows Icons\folder-private.ico,0
-ConfirmFileOp=0
-DefaultDropEffect=1
-"@
-New-Item -ItemType File -Path $file -Value $text | Out-Null
-Set-ItemProperty $file -Name Attributes -Value "ReadOnly,System,Hidden"
-(Get-Item "${Env:UserProfile}\.ssh").Attributes = "ReadOnly, Directory"
+New-Item -ItemType SymbolicLink -Path "${Env:ProgramData}\chocolatey\lib\mpv.install\tools\yt-dlp.exe" -Target "${Env:ProgramData}\chocolatey\lib\yt-dlp\tools\x64\yt-dlp.exe" | Out-Null
+
 # User Folders
 Set-UserFolderIcon -Name "Contacts" -ImageRes 181 -Icon "folder-contacts"
 Set-UserFolderIcon -Name "Desktop" -ImageRes 183 -Icon "desktop"

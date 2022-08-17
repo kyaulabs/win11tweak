@@ -26,6 +26,8 @@
 
 . "${PSScriptRoot}\_funcs.ps1"
 
+$Location = Get-Location
+
 Show-Logo "Windows 11 Tweaks"
 
 Show-Section -Section "PostFix" -Desc "Terminating Explorer.EXE!"
@@ -33,11 +35,18 @@ Start-Process -FilePath "${Env:WinDir}\System32\taskkill.exe" -ArgumentList "/F 
 
 Show-Section -Section "PostFix" -Desc "This Window Will Close When Finished"
 
-. "${PSScriptRoot}\msedge.ps1"
+If (-NOT $MicrosoftEdge) {
+    # Disable Microsoft Edge
+    . "${PSScriptRoot}\msedge.ps1"
+}
+
+# Remove Windows Defender
 . "${PSScriptRoot}\defender.ps1"
-. "${PSScriptRoot}\mapdrives.ps1"
 
 # Mapped Network Drives
+. "${PSScriptRoot}\mapdrives.ps1"
+
+# ScheduledTask: Mapped Network Drives
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "NoLogo -NoProfile -ExecutionPolicy Bypass -File `"${PSScriptRoot}\mapdrives.ps1"`"
 $trigger = New-ScheduledTaskTrigger -AtLogOn
 $principal = New-ScheduledTaskPrincipal -UserId (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty UserName)
@@ -47,11 +56,44 @@ Start-ScheduledTask -TaskName KL_MapDrives | Out-Null
 Start-Sleep -Seconds 10 | Out-Null
 Unregister-ScheduledTask -TaskName KL_MapDrives -Confirm:$false | Out-Null
 
-$Location = Get-Location
+# ScheduledTask: Remove Windows Defender Tasks
+If (-NOT $WinDefender) {
+    $windefend = @"
+$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='WdNisSvc'" | Out-Null
+If (-NOT ($null -eq $Service)) {
+    $Service.Delete() | Out-Null
+}
+$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='WinDefend'" | Out-Null
+If (-NOT ($null -eq $Service)) {
+    $Service.Delete() | Out-Null
+}
+$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='Sense'" | Out-Null
+If (-NOT ($null -eq $Service)) {
+    $Service.Delete() | Out-Null
+}
+Unregister-ScheduledTask -TaskName "Windows Defender Cache Maintenance" -Confirm:$false
+Unregister-ScheduledTask -TaskName "Windows Defender Cleanup" -Confirm:$false
+Unregister-ScheduledTask -TaskName "Windows Defender Scheduled Scan" -Confirm:$false
+Unregister-ScheduledTask -TaskName "Windows Defender Verification" -Confirm:$false
+"@
+    New-Item -ItemType File -Path "${Env:SystemRoot}\" -Name "windefend.ps1" -Value $windefend | Out-Null
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "NoLogo -NoProfile -ExecutionPolicy Bypass -File `"${Env:SystemRoot}\windefend.ps1"`"
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
+    $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
+    Register-ScheduledTask KL_WinDefendRemoval -InputObject $task | Out-Null
+    Start-ScheduledTask -TaskName KL_WinDefendRemoval | Out-Null
+}
+
+# Remove Git from right-click
 Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_gui" -Recursive
 Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_shell" -Recursive
+
+# Download Brave
 Show-Section -Section "Cleanup" -Desc "Download Brave"
 Invoke-WebRequest https://laptop-updates.brave.com/latest/winx64 -OutFile ${Env:UserProfile}\Desktop\BraveSetup.exe | Out-Null
+
+# Download OpenShell
 Show-Section -Section "Cleanup" -Desc "Download OpenShell"
 Invoke-WebRequest https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.170/OpenShellSetup_4_4_170.exe -OutFile ${Env:UserProfile}\Desktop\OpenShellSetup.exe | Out-Null
 
@@ -86,28 +128,47 @@ Copy-Item ${Location}\..\Tools\wt.json ${Env:LocalAppData}\Packages\Microsoft.Wi
 New-Item -Type Directory -Path "${Env:AppData}\mpv" | Out-Null
 Invoke-WebRequest https://github.com/kyaulabs/mpv-config/archive/refs/heads/master.zip -OutFile ${Env:UserProfile}\Downloads\mpv-config.zip | Out-Null
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory("${Env:UserProfile}\Downloads\mpv-config.zip", "${Env:AppData}\mpv")
-Remove-Item -Path "${Env:UserProfile}\Downloads\mpv-config.zip" -Force | Out-Null
+Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\mpv-config.zip" -DestinationPath "${Env:AppData}\mpv" | Out-Null
 Move-Item -Path "${Env:AppData}\mpv\mpv-config-master\*" -Destination "${Env:AppData}\mpv" -Force | Out-Null
 Remove-Item -Path "${Env:AppData}\mpv\mpv-config-master" -Force | Out-Null
 $fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
 Get-ChildItem ${Env:AppData}\mpv\fonts\*.ttf | %%{ $fonts.CopyHere($_.fullname) }
 
+# %UserProfile%\.cache
+New-Item -Type Directory -Path "${Env:UserProfile}\.cache" | Out-Null
+Add-UserFolderIcon -Name "${Env:UserProfile}\.cache" -Icon "folder-black-poly.ico" -ImageRes 0
+
+# %UserProfile%\.config
+New-Item -Type Directory -Path "${Env:UserProfile}\.config" | Out-Null
+Add-UserFolderIcon -Name "${Env:UserProfile}\.config" -Icon "folder-black-config.ico" -ImageRes 0
+
+# %UserProfile%\.gnupg
+New-Item -ItemType SymbolicLink -Path ($Env:UserProfile + "\.gnupg") -Target ($Env:AppData + "\gnupg") | Out-Null
+Add-UserFolderIcon -Name "${Env:UserProfile}\.gnupg" -Icon "folder-gpg.ico" -ImageRes 0
+
+# %UserProfile%\.local
+New-Item -Type Directory -Path "${Env:UserProfile}\.local" | Out-Null
+Add-UserFolderIcon -Name "${Env:UserProfile}\.local" -Icon "folder-black-coffee.ico" -ImageRes 0
+
+# %UserProfile%\.ssh
+New-Item -Type Directory -Path "${Env:UserProfile}\.ssh" | Out-Null
+Add-UserFolderIcon -Name "${Env:UserProfile}\.ssh" -Icon "folder-private.ico" -ImageRest 0
+
 # %ProgramFiles%\Git\usr\lib\winhello.dll
-#Invoke-WebRequest https://github.com/tavrez/openssh-sk-winhello/releases/download/v2.0.0/winhello.dll -OutFile ${Env:ProgramFiles}\Git\usr\lib\winhello.dll -Force | Out-Null
-Invoke-WebRequest https://github.com/tavrez/openssh-sk-winhello/releases/download/v2.0.0/winhello.dll -OutFile ${Env:SystemDrive}\msys64\usr\lib\winhello.dll -Force | Out-Null
+$URL = Find-GitRelease -Repo "tavrez/openssh-sk-winhello" "winhello.dll"
+Invoke-WebRequest $URL -OutFile ${Env:SystemDrive}\msys64\usr\lib\winhello.dll | Out-Null
 
 # %ProgramFiles%\Bin\gpg-bridge.exe
-Invoke-WebRequest https://github.com/BusyJay/gpg-bridge/releases/download/v0.1.0/gpg-bridge-v0.1.0.zip -OutFile ${Env:UserProfile}\Downloads\gpg-bridge.zip | Out-Null
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory("${Env:UserProfile}\Downloads\gpg-bridge.zip", "${Env:ProgramFiles}\Bin")
-Remove-Item -Path "${Env:UserProfile}\Downloads\gpg-bridge.zip" -Force | Out-Null
+$URL = Find-GitRelease -Repo "BusyJay/gpg-bridge" ".zip$"
+Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Downloads\gpg-bridge.zip | Out-Null
+Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\gpg-bridge.zip" -DestinationPath "${Env:SystemDrive}\msys64\usr\bin" -Force | Out-Null
+Remove-Item -Path "${Env:UserProfile}\Downloads\gpg-bridge.zip" | Out-Null
 
 # %ProgramFiles%\Bin\gpg-forward.bat
 $gpgforward = @"
 @ECHO OFF
 
-`"%Programfiles%\Bin\gpg-bridge.exe`" --extra 127.0.0.1:4321 --ssh \\.\pipe\openssh-ssh-agent --detach
+`"%SystemDrive%\msys64\usr\bin\gpg-bridge.exe`" --extra 127.0.0.1:4321 --ssh \\.\pipe\openssh-ssh-agent --detach
 "@
 New-Item -ItemType File -Path "${Env:ProgramFiles}\Bin\" -Name "gpg-forward.bat" -Value $gpgforward | Out-Null
 
@@ -242,12 +303,6 @@ Show-Package "msys2-update"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Suu --noconfirm`""
 #Show-Host " : pacman-update [1;32m${check}[0m" -NoNewline
 Show-Package "pacman-update"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S mingw-w64-x86_64-{git,git-doc-html,git-doc-man} openssh --noconfirm`""
-#Show-Host " : pacman-add-git [1;32m${check}[0m" -NoNewline
-Show-Package "pacman-add-git"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S colordiff fish p7zip rsync tmux unrar vim mingw-w64-x86_64-{starship,zstd} --noconfirm`""
-#Show-Host " : pacman-add-user [1;32m${check}[0m" -NoNewline
-Show-Package "pacman-add-user"
 
 # %SystemDrive%\msys64\etc\nsswitch.conf
 $nsswitch = @"
@@ -261,8 +316,16 @@ db_shell: cygwin desc
 db_gecos: cygwin desc
 "@
 New-Item -ItemType File -Path "${Env:SystemDrive}\msys64\etc\" -Name "nsswitch.conf" -Value $nsswitch -Force | Out-Null
-#Write-Host " : nsswitch.conf [1;32m${check}[0m" -NoNewline
 Show-Package "nsswitch.conf"
+Show-Package -NewLine
+
+# MSYS2 Additional Packages
+Show-Section -Section "MSYS2" -Desc "Packages"
+Show-Package
+Foreach ($pkg in $MsysPkgs) {
+    Show-Package "${pkg}"
+    Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S ${pkg} --noconfirm`""
+}
 Show-Package -NewLine
 
 # Clear Icon Cache

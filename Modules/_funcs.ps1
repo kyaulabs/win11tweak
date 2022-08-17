@@ -216,6 +216,36 @@ function Set-UserFolderIcon {
     ATTRIB +H +S $file
 }
 
+function Add-UserFolderIcon {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Name,
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Icon,
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [int] $ImageRes
+    )
+
+    If (-NOT (Test-Path $Name)) {
+        New-Item -Path $Name -Force | Out-Null
+    }
+    $File = "${Name}\desktop.ini"
+    $Text = @"
+[.ShellClassInfo]
+IconIndex=0
+IconResource=%ProgramData%\Windows Icons\${Icon},${ImageRes}
+ConfirmFileOp=0
+DefaultDropEffect=1
+"@
+    New-Item -ItemType File -Path $File -Value $Text | Out-Null
+    Set-ItemProperty $File -Name Attributes -Value "ReadOnly,System,Hidden"
+    (Get-Item "${Name}").Attributes = "ReadOnly, Directory"
+}
+
 function Show-RunAsUser {
     [CmdletBinding()]
     param (
@@ -258,4 +288,20 @@ function Show-Package {
             Write-Host " : ${Text} [1;32m${check}[0m" -NoNewline
         }
     }
+}
+
+function Find-GitRelease {
+    # PSScriptAnalyzer - ignore unused variables
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "", Justification = "False positive because variable is used inside of Where-Object.")]
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [string] $Repo,
+        [Parameter(Mandatory=$false)]
+        [string] $Search
+    )
+
+    $URI = "https://api.github.com/repos/${Repo}/releases/latest"
+    $Match = $Search
+    Return Invoke-RestMethod -uri $URI | Select-Object -ExpandProperty assets | Where-Object { $_.name -Match $Match } | Select-Object -expand browser_download_url
 }

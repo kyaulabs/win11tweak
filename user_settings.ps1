@@ -25,7 +25,7 @@
 #>
 
 function Add-Configuration {
-    # PSScriptAnalyzer - ignore system state change
+    # PSScriptAnalyzer - ignore unused variables
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "", Justification = "Settings assignments are imported by other scripts.")]
     param()
 
@@ -47,6 +47,9 @@ function Add-Configuration {
 
     # Keep Microsoft 365 / OneDrive ($true/$false)
     $script:Microsoft365 = $false
+
+    # Keep Microsoft Edge? ($true / $false)
+    $script:MicrosoftEdge = $true
 
     # Desktop / Lock Screen Wallpaper
     $script:WallpaperPath = "${Env:WINDIR}\Web\4K\Wallpaper\Windows\img19_1920x1200.jpg"
@@ -74,10 +77,10 @@ function Add-Configuration {
 
 
     <#
-     # Chocolatey
+     # Packages
      #>
 
-    # Default Packages to Install
+    # Default Chocolatey Packages to Install
     $script:ChocoPkgs = @(
         # default applications
         "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","hashcheck","heidisql",
@@ -90,6 +93,12 @@ function Add-Configuration {
         # security applications
         #"gpg4win"
         "keepassxc","yubico-authenticator","yubikey-manager","yubikey-piv-manager"
+    )
+
+    # Default MSYS2/Mingw64 Packages to Install
+    $script:MsysPkgs = @(
+        "mingw-w64-x86_64-{git,git-doc-html,git-doc-man,starship,toolchain,zstd}",
+        "colordiff","fish","openssh","p7zip","rsync","tmux","unrar","vim"
     )
 
 

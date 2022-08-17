@@ -2,7 +2,7 @@
 
 ![LOGO](README_media/LOGO.png)
 
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.2-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![CI](https://img.shields.io/github/workflow/status/kyaulabs/win11tweak/CI)](../../actions)
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.2-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/workflow/status/kyaulabs/win11tweak/CI)](https://github.com/kyaulabs/win11tweak/actions)
 
 ## Disclaimer
 
@@ -24,6 +24,7 @@ damage that may ensue.
   * [Download Win11Tweaks](#download-win11tweaks)
   * [Anti-Virus (optional)](#anti-virus-optional)
   * [Running Win11Tweaks](#running-win11tweaks)
+  * [Microsoft Edge Removal (optional)](#microsoft-edge-removal-optional)
   * [Anti-Virus Removal (optional)](#anti-virus-removal-optional)
   * [Configuring Windows](#configuring-windows)
   * [Windows Terminal](#windows-terminal)
@@ -45,15 +46,17 @@ This set of scripts attempts to maintain a vanilla appearance while gutting most
 
 * Microsoft Telemetry/Tracking Stripped
 
+* *(Optional)* Microsoft Edge Completed Removed
+
 * *(Optional)* Windows Defender Completed Removed
 
 * Chocolatey Package Manger, manage packages like a Linux system
 
 * MSYS2 is used for a Linux terminal
 
-* Git for Windows is directly integrated into MSYS2, this uses the faster native version of Git with the added benefit of being able to use the default MSYS2 package manager `pacman`
+* Git for Windows directly integrated into MSYS2, this uses the faster native version of Git with the added benefit of being able to use the default MSYS2 package manager `pacman` [^1]
 
-* YubiKey Ready! [^1]
+* YubiKey Ready! [^2]
 
 * *(Optional)* GPG and SSH key forwarding over SSH
 
@@ -65,7 +68,8 @@ This set of scripts attempts to maintain a vanilla appearance while gutting most
   
   * OpenShell is used for a customizable start menu experience
 
-[^1]: This assumes you followed [drduh's YubiKey Guide](https://github.com/drduh/YubiKey-Guide) in order to setup your YubiKey
+[^1]: Install Git for Windows inside MSYS2 proper [git-for-windows/git](https://github.com/git-for-windows/git/wiki/Install-inside-MSYS2-proper)
+[^2]: This assumes you followed [drduh's YubiKey Guide](https://github.com/drduh/YubiKey-Guide) in order to setup your YubiKey
 
 ### Configuration
 
@@ -174,7 +178,7 @@ With the computer updated and activated it is now time to download the script. D
 
 ```
 🚧 WARNING
-If you choose to keep Windows Defender installed, the script used to disable Defender _defender.ps1_ will
+If you choose to keep Windows Defender installed, the script used to disable Defender 'defender.ps1' will
 get flagged by Defender itself, this is normal behavior.
 ```
 
@@ -251,14 +255,18 @@ Finally run the script using `main.cmd`.
 
 ![Windows_09](README_media/Windows_09.png)
 
-The script will take quite a while to finish, at some point it will ask you to uninstall the two Microsoft Edge components. If this happens you will be presented with the following screen, make sure to select `Uninstall` for both.
+The script will take quite a while to finish.
+
+### Microsoft Edge Removal (optional)
+
+If chosen, at some point it will ask you to uninstall the two Microsoft Edge components. If this happens you will be presented with the following screen, make sure to select `Uninstall` for both.
 
 ![Script_01](README_media/Script_01.png)
 
 ```
 ❗ DO NOT SKIP ❗
 It is possible that the second of which, uninstalling MSEdge itself, will popup two Internet Explorer
-errors in the background. These errors will need to be cleared by ALT+TABing and selecting _OK_ before
+errors in the background. These errors will need to be cleared by ALT+TABing and selecting 'OK' before
 the script can continue.
 ```
 
@@ -333,8 +341,8 @@ When finished, select `OK` in the bottom right to save the changes. It will prom
 
 ```
 🚧 WARNING
-Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave a
-try if you have never used it.
+Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave
+a try if you have never used it.
 ```
 
 Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Skip welcome tour` in the bottom-left corner.
@@ -405,7 +413,15 @@ In the `Settings` menu enable `Load on system startup`,  `Start minimized`, and 
 
 ![Simplewall_02](README_media/Simplewall_02.png)
 
-Click `Enable filters` in the toolbar then again in the popup dialog in order to permanently replace the Windows Firewall with SimpleWall.
+Click `Enable filters` in the toolbar, making sure to uncheck `Disable Windows Firewall` then again clicking `Enable filters` in the popup dialog in order to permanently activate simplewall.
+
+![Simplewall_03](README_media/Simplewall_03.png)
+
+```
+📌 NOTE
+simplewall can fully replace Windows Firewall however in Windows 11 this will trip the firewall
+failure inside of Windows Security (what use to be called Security Center).
+```
 
 Applications will popup asking for internet access, stuff that is required for Windows to function are as follows (it is safe to allow everything in this list):
 
@@ -414,7 +430,10 @@ Applications will popup asking for internet access, stuff that is required for W
 * `Microsoft Content`: part of search
 * `Microsoft Store`: the store uwp app
 * `mousocoreworker.exe`: Windows update client
+* `microsoftedgeupdate.exe`: Microsoft Web Browser Update
+* `msedge.exe`: Microsoft Web Browser (if you are using a different one feel free to block this and the update above)
 * `mstsc.exe`: remote desktop connection
+* `pwsh.exe`: PowerShell v7.x
 * `sihclient.exe`: Windows update background installer
 * `simplewall.exe`: 3rd party firewall
 * `spoolsv.exe`: network printing
@@ -422,6 +441,7 @@ Applications will popup asking for internet access, stuff that is required for W
 * `svchost.exe`: Windows service host process
 * `System`: Windows NT kernel
 * `systemsettings.exe`: Windows update related
+* `taskhostw.exe`: scheduled tasks are needed for windows update
 * `usocoreworker.exe`: Windows update client
 
 NVIDIA Graphics Cards Allow List:
@@ -455,11 +475,8 @@ Things to block:
 * `foxitpdfreader.exe`: Foxit PDF Reader (pdf's themselves do not need internet)
 * `foxitpdfreaderupdater.exe`: Foxit PDF Reader update checker
 * `keepassxc.exe`: KeePassXC update checker
-* `microsoftedgeupdate.exe`: Microsoft Web Browser Update
-* `msedge.exe`: Microsoft Web Browser (if you are using a different one)
 * `msiexec.exe`: Microsoft Installer (system32 and syswow64)
 * `onedrivesetup.exe`: if you are not using OneDrive
-* `taskhostw.exe`: Scheduled tasks shouldn't need network access (unless you run tasks that do)
 * `wermgr.exe`: Windows error reporting manager (telemetry)
 * `Windows Feature Experience Pack`: Windows Start Menu ads and telemetry
 
@@ -469,23 +486,27 @@ When in doubt, choose the `X` instead of block and if the program fails to work,
 
 ### Chocolatey
 
-Launch the package manager `Chocolatey GUI` from the Start Menu in the Utilities submenu. Click the `settings` button in the upper right of the application.
+Launch the package manager `Chocolatey GUI` from the Start Menu in the Utilities sub-menu. The popup is from simplewall, this is what you will receive anytime a new application tries to access the internet. For Chocolatey GUI we naturally need it to access the internet so selecting `Allow` is the preferred option here.
 
 ![Choco_01](README_media/Choco_01.png)
 
-Turn off the options `DefaultToTileViewForLocalSource` and `DefaultToTileViewForRemoteSource`.
+Click the `settings` button in the upper right of the application.
 
-![Choco_02](README_media/Choco_02.png)
+![Choco_01](README_media/Choco_02.png)
 
-Scroll to the bottom and enable the two options `DefaultToDarkMode` and `PreventUsageOfUpdateAllButton`. Closing setting by clicking the round left arrow button to the left of the Settings title.
+Turn off the options `Default to Tile View for Local Source` and `Default to Tile View for Remote Source`, then turn on the option `Default to Dark Mode`.
 
-![Choco_03](README_media/Choco_03.png)
+![Choco_02](README_media/Choco_03.png)
+
+Scroll down near the bottom and enable the option `Prevent Usage of Update All Button`. Closing setting by clicking the round left arrow button to the left of the Settings title.
+
+![Choco_03](README_media/Choco_04.png)
 
 When updates are detected you will see a new version listed to the right of current versions highlighted with the color red. To update, simple right click the application and choose `Update`.
 
-![Choco_04](README_media/Choco_04.png)
+![Choco_04](README_media/Choco_05.png)
 
-## Attribution & References
+## Attribution
 
 Without all of the following this guide would not have been possible.
 
@@ -493,7 +514,7 @@ Without all of the following this guide would not have been possible.
 * [tweaks & fixes for windows 10 - mostly powershell](https://github.com/equk/windows)
 * [Win10 Initial Setup Script](https://github.com/Disassembler0/Win10-Initial-Setup-Script)
 * [Windows TenForums](https://www.tenforums.com/)
-* [Summary of AV Test Results - Jan 2022](https://www.reddit.com/r/antivirus/comments/rzw1me/summary_of_av_test_results_january_2022/)
+* [Summary of AV Test Results - July 2022](https://www.reddit.com/r/antivirus/comments/w1rcgi/summary_of_av_test_results_july_2022/)
 * [Flat-Remix Icon Theme](https://github.com/daniruiz/flat-remix)
 * [agave font](https://github.com/agarick/agave)
 * [Mixed wallpaper](https://www.deviantart.com/i5yal/art/Mixed-wallpaper-744877376)

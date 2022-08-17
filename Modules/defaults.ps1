@@ -217,7 +217,6 @@ Add-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name "
 
 # Create User Folders
 New-Item -Type Directory -Path "${Env:ProgramFiles}\Bin" | Out-Null
-New-Item -Type Directory -Path "${Env:UserProfile}\.ssh" | Out-Null
 New-Item -Type Directory -Path "${Env:AppData}\gnupg" | Out-Null
 
 # Remove Default Apps
@@ -226,8 +225,10 @@ Start-Process -FilePath "${Env:SystemRoot}\system32\WindowsPowerShell\v1.0\power
 # Remove Windows Defender
 . "${PSScriptRoot}\defender.ps1"
 
-# Disable Microsoft Edge
-. "${PSScriptRoot}\msedge.ps1"
+If (-NOT $MicrosoftEdge) {
+    # Disable Microsoft Edge
+    . "${PSScriptRoot}\msedge.ps1"
+}
 
 # Package Manager
 . "${PSScriptRoot}\packages.ps1"
@@ -248,6 +249,7 @@ Start-Process -FilePath "${Env:SystemRoot}\system32\WindowsPowerShell\v1.0\power
 Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "GalaxyClient"
 Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "GogGalaxy"
 Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam"
+
 If (-NOT $Microsoft365) {
     Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "OneDrive"
 }

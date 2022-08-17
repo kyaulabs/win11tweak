@@ -2,17 +2,19 @@
 
 # References
 
+# Gitleaks Output
+
+*Replace this text with the output of `gitleaks detect -v` wrapped in code block.*
+
 # PR Checklist
 
 ## All Submissions:
 
 * [ ] Have you followed the guidelines in our Contributing document?
 * [ ] Have you checked to ensure there aren't other open [Pull Requests](../../../pulls) for the same update/change?
-
-## New Feature Submissions:
-
 * [ ] Does your submission ensure overall functionality?
 * [ ] Have you lint your code locally prior to submission?
+* [ ] Have you run your code through `zricethezav/gitleaks` prior to submission?
 
 ## Changes to Core Features:
 
