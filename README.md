@@ -1,12 +1,18 @@
-# Windows 11 Tweaks - Build 22621.169
+# Windows 11 Tweaks - Build 22621.382
 
 ![LOGO](README_media/LOGO.png)
+
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.2-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/workflow/status/kyaulabs/win11tweak/CI)](https://github.com/kyaulabs/win11tweak/actions)
 
 ## Disclaimer
 
 Let's be honest, Windows has become a mammoth of an OS that is generically geared toward everyone. My goal with this set of scripts is to put the User back in control of the OS. That said, these scripts have been heavily customized to my own personal needs, it is highly recommended that if you are to use them you review them in their entirety first.
 
-*This repository is provided for archival/educational purposes, I am not responsible for any data loss or damage that may ensue.*
+```
+🚧 WARNING
+This repository is provided for archival/educational purposes, I am not responsible for any data loss or
+damage that may ensue.
+```
 
 * [Introduction](#introduction)
 * [Features](#features)
@@ -18,6 +24,7 @@ Let's be honest, Windows has become a mammoth of an OS that is generically geare
   * [Download Win11Tweaks](#download-win11tweaks)
   * [Anti-Virus (optional)](#anti-virus-optional)
   * [Running Win11Tweaks](#running-win11tweaks)
+  * [Microsoft Edge Removal (optional)](#microsoft-edge-removal-optional)
   * [Anti-Virus Removal (optional)](#anti-virus-removal-optional)
   * [Configuring Windows](#configuring-windows)
   * [Windows Terminal](#windows-terminal)
@@ -35,15 +42,44 @@ This script is meant to be utilized immediately after a fresh installation of Wi
 
 This set of scripts attempts to maintain a vanilla appearance while gutting most of the unneeded and/or unwanted items from the operating system. Privacy is another focus and as such any call home or telemetry functions have been disabled or out-right removed.
 
-Similar to Linux or Mac OSX a package manager will be installed to manage software updates. If you do not look at any other part of the script it is encouraged upon you to at least read the list of software that chocolatey (the package manager) will be installing by default.
+* Microsoft Bloat Removed
 
-GPG, Git and SSH have all been configured to work via the new Windows Terminal.
+* Microsoft Telemetry/Tracking Stripped
+
+* *(Optional)* Microsoft Edge Completed Removed
+
+* *(Optional)* Windows Defender Completed Removed
+
+* Chocolatey Package Manger, manage packages like a Linux system
+
+* MSYS2 is used for a Linux terminal
+
+* Git for Windows directly integrated into MSYS2, this uses the faster native version of Git with the added benefit of being able to use the default MSYS2 package manager `pacman` [^1]
+
+* YubiKey Ready! [^2]
+
+* *(Optional)* GPG and SSH key forwarding over SSH
+
+* Many Visual Changes!
+  
+  * Start Menu shifted back to the left
+  
+  * Original Windows right-click menu restored
+  
+  * OpenShell is used for a customizable start menu experience
+
+[^1]: Install Git for Windows inside MSYS2 proper [git-for-windows/git](https://github.com/git-for-windows/git/wiki/Install-inside-MSYS2-proper)
+[^2]: This assumes you followed [drduh's YubiKey Guide](https://github.com/drduh/YubiKey-Guide) in order to setup your YubiKey
 
 ### Configuration
 
 While not required, in order to personalize your installation, it is recommended to edit `user_settings.ps1`.  Use any text editor or regular old Notepad to edit the file. This step will need to be done before the script can be run on a fresh installation. However, as Win11Tweaks can be baked into an installation to be run automatically, I have added this section up near the top so it does not get skipped over.
 
-*By default this file contains all of my own personal settings. At the very least you should change the Git Email, GPG Public Key and then review over the list of software that Chocolatey is going to be installing.*
+```
+📌 NOTE
+By default this file contains all of my own personal settings. At the very least you should change the Git
+Email, GPG Public Key and then review over the list of software that Chocolatey is going to be installing.
+```
 
 ![Features_01](README_media/Features_01.png)
 
@@ -53,7 +89,11 @@ While not required, in order to personalize your installation, it is recommended
 
 While this can be used with any version of Windows 11, this guide revolves around Windows 11 Pro N. In order to bypass the Microsoft Account requirements it is advised that you pull your network cable until Windows 11 is fully installed.
 
-*If you do not plan on pulling your network cable you will be forced into logging in with a Microsoft Account.*
+```
+❗ DO NOT SKIP ❗
+If you do not plan on pulling your network cable you will be forced into logging in with a Microsoft
+Account.
+```
 
 ![Install_01](README_media/Install_01.png)
 
@@ -97,7 +137,10 @@ Finally on the privacy settings screen, make sure you deselect every single opti
 
 Eventually you will be able to login and will be presented with the desktop.
 
-*Note: now would be an acceptable time to plug your network cable back in.*
+```
+📌NOTE
+Now would be an acceptable time to plug your network cable back in.
+```
 
 Right-click on the Start Menu icon (bottom center of screen, left most icon). From here you will want to select `Settings`.
 
@@ -111,9 +154,7 @@ From here update Windows, you need to continue to check for updates after every 
 
 ![Windows_03](README_media/Windows_03.png)
 
-Don't forget to also install optional updates as these tend to contain drivers.
-
-*Note: these have been moved inside Advanced options.*
+Don't forget to also install optional updates as these tend to contain drivers, these have been moved inside Advanced options.
 
 ![Windows_04](README_media/Windows_04.png)
 
@@ -135,7 +176,11 @@ With the computer updated and activated it is now time to download the script. D
 
 ### Windows Defender (optional)
 
-*If you choose to keep Windows Defender installed, the script used to disable Defender `defender.ps1` will get flagged by Defender itself, this is normal behavior.*
+```
+🚧 WARNING
+If you choose to keep Windows Defender installed, the script used to disable Defender 'defender.ps1' will
+get flagged by Defender itself, this is normal behavior.
+```
 
 Before the main script can be run Windows Defender needs to be disabled along with tamper protection.
 
@@ -187,13 +232,20 @@ Given a bit of time Adaware should finish its initial scan and present you with 
 
 Close out of Adaware.
 
-*Installation of a 3rd party Anti-Virus product has been added in order to get Windows Defender to disable itself. Without this step you will be unable to completely remove Windows Defender from Windows 11.*
+```
+📌 NOTE
+Installation of a 3rd party Anti-Virus product has been added in order to get Windows Defender to disable
+itself. Without this step you will be unable to completely remove Windows Defender from Windows 11.
+```
 
 ### Running Win11Tweaks
 
 Assuming the scripts have been extracted to your Desktop... Open the start menu and search for `cmd`, this should bring up the listing for Command Prompt. Make sure you choose the option on the right `Run as administrator`.
 
-*Warning: Do not simply run the script from Windows Explorer, this will fail and/or produce unintentional results.*
+```
+🚧 WARNING
+Do not simply run the script from Windows Explorer, this will fail and/or produce unintentional results.
+```
 
 ![Windows_08](README_media/Windows_08.png)
 
@@ -203,13 +255,22 @@ Finally run the script using `main.cmd`.
 
 ![Windows_09](README_media/Windows_09.png)
 
-The script will take quite a while to finish, at some point it will ask you to uninstall the two Microsoft Edge components. If this happens you will be presented with the following screen, make sure to select `Uninstall` for both.
+The script will take quite a while to finish.
+
+Upon completion it will reboot automatically. After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task).
+
+### Microsoft Edge Removal (optional)
+
+If chosen, at some point it will ask you to uninstall the two Microsoft Edge components. If this happens you will be presented with the following screen, make sure to select `Uninstall` for both.
 
 ![Script_01](README_media/Script_01.png)
 
-*Note: it is possible that the second of which, uninstalling MSEdge itself, will popup two Internet Explorer errors in the background. These errors will need to be cleared by ALT+TABing and selecting `OK` before the script can continue.*
-
-Upon completion it will reboot automatically. After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task).
+```
+❗ DO NOT SKIP ❗
+It is possible that the second of which, uninstalling MSEdge itself, will popup two Internet Explorer
+errors in the background. These errors will need to be cleared by ALT+TABing and selecting 'OK' before
+the script can continue.
+```
 
 ### Anti-Virus Removal (optional)
 
@@ -222,6 +283,10 @@ Make sure to select `SKIP` when asked if you want to reenable Windows Defender.
 ![AntiVirus_07](README_media/AntiVirus_07.png)
 
 Go ahead and reboot to complete the uninstallation.
+
+Post reboot, if you open Security Center and navigate to `Virus & threat protection > Virus & threat protection settings` you will see that Windows Defender is completely disabled.
+
+![AntiVirus_08](README_media/AntiVirus_08.png)
 
 ### Configuring Windows
 
@@ -247,7 +312,11 @@ Once open, use the dropdown menu underneath `Default terminal application` and s
 
 ![WT_02](README_media/WT_02.png)
 
-*After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the KYAU Labs section (feel free to rename to the name of your network).*
+```
+📌 NOTE
+After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the
+KYAU Labs section (feel free to rename to the name of your network).
+```
 
 ### OpenShell
 
@@ -259,7 +328,10 @@ After installation press the Windows key on your keyboard in order to open the s
 
 ![OpenShell_02](README_media/OpenShell_02.png)
 
-*Note: OpenShell has not yet been fully updated for Windows 11, there are still quite a few bugs/glitches.*
+```
+📌 NOTE
+OpenShell has not yet been fully updated for Windows 11, there are still quite a few bugs/glitches.
+```
 
 If you need to make changes to the Start Menu, enable `Show all settings` and then navigate to the `Customize Start Menu` tab.
 
@@ -267,9 +339,15 @@ When finished, select `OK` in the bottom right to save the changes. It will prom
 
 ### Brave
 
-*Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave a try if you have never used it.*
+```
+🚧 WARNING
+Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave
+a try if you have never used it.
+```
 
 Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Skip welcome tour` in the bottom-left corner.
+
+Next scroll down a little to bring up the Brave News banner and select `No thanks`. The select the 3dots menu for `Brave Rewards` and select `Hide Brave Rewards`.
 
 Navigate to the hamburger menu in the upper-right and select `Extensions`. In the center you should see `Find extensions and themes in the Web Store`, click on `Web Store` to continue, this should launch in a separate tab.
 
@@ -277,7 +355,6 @@ Extensions are typical revolve heavily around personal choice, however there are
 
 * [Cookie AutoDelete](https://chrome.google.com/webstore/detail/cookie-autodelete/fhcgjolkccmbidfldomjliifgaodjagh)
 * [Decentraleyes](https://chrome.google.com/webstore/detail/decentraleyes/ldpochfccmkkmhdbclfhpagapcfdljkj)
-* [Enhancer for YouTube™](https://chrome.google.com/webstore/detail/enhancer-for-youtube/ponfpcnoihfmfllpaingbgckeeldkhle)
 * [Privacy Badger](https://chrome.google.com/webstore/detail/privacy-badger/pkehgijcmpdhfbdbbnkijodmdjhbjlgp)
 
 Navigate to the hamburger menu again and select Settings. Under `Appearance` set `Brave colors` to `Dark` to force Brave into dark mode.
@@ -306,7 +383,11 @@ Under `Search engine` swap the `Search engine used in the address bar` to the on
 
 Under `Extensions` deselect `WebTorrent` if you use an external torrent client, and select `Widevine` if you plan on using streaming services with this browser.
 
-*Enabling `Widevine` DRM will require a restart of Brave.*
+```
+📌 NOTE
+Enabling Widevine DRM will require a restart of Brave, you will be returned to where you left off in
+Settings after the restart.
+```
 
 ![Brave_06](README_media/Brave_06.png)
 
@@ -332,7 +413,15 @@ In the `Settings` menu enable `Load on system startup`,  `Start minimized`, and 
 
 ![Simplewall_02](README_media/Simplewall_02.png)
 
-Click `Enable filters` in the toolbar then again in the popup dialog in order to permanently replace the Windows Firewall with SimpleWall.
+Click `Enable filters` in the toolbar, making sure to uncheck `Disable Windows Firewall` then again clicking `Enable filters` in the popup dialog in order to permanently activate simplewall.
+
+![Simplewall_03](README_media/Simplewall_03.png)
+
+```
+📌 NOTE
+simplewall can fully replace Windows Firewall however in Windows 11 this will trip the firewall
+failure inside of Windows Security (what use to be called Security Center).
+```
 
 Applications will popup asking for internet access, stuff that is required for Windows to function are as follows (it is safe to allow everything in this list):
 
@@ -341,7 +430,10 @@ Applications will popup asking for internet access, stuff that is required for W
 * `Microsoft Content`: part of search
 * `Microsoft Store`: the store uwp app
 * `mousocoreworker.exe`: Windows update client
+* `microsoftedgeupdate.exe`: Microsoft Web Browser Update
+* `msedge.exe`: Microsoft Web Browser (if you are using a different one feel free to block this and the update above)
 * `mstsc.exe`: remote desktop connection
+* `pwsh.exe`: PowerShell v7.x
 * `sihclient.exe`: Windows update background installer
 * `simplewall.exe`: 3rd party firewall
 * `spoolsv.exe`: network printing
@@ -349,6 +441,7 @@ Applications will popup asking for internet access, stuff that is required for W
 * `svchost.exe`: Windows service host process
 * `System`: Windows NT kernel
 * `systemsettings.exe`: Windows update related
+* `taskhostw.exe`: scheduled tasks are needed for windows update
 * `usocoreworker.exe`: Windows update client
 
 NVIDIA Graphics Cards Allow List:
@@ -364,6 +457,7 @@ Default Application Allow List:
 
 * `autoruns.exe`: Autoruns VirusTotal scanning capability
 * `brave.exe`: Web browser
+* `braveupdate.exe`: Web browser auto-updater
 * `ccenhancer.exe`: CCEnhancer downloader
 * `ccleaner64.exe`: Utilities > CCleaner
 * `chocolateygui.exe`: Chocolatey GUI is the interface for the package manager
@@ -381,11 +475,8 @@ Things to block:
 * `foxitpdfreader.exe`: Foxit PDF Reader (pdf's themselves do not need internet)
 * `foxitpdfreaderupdater.exe`: Foxit PDF Reader update checker
 * `keepassxc.exe`: KeePassXC update checker
-* `microsoftedgeupdate.exe`: Microsoft Web Browser Update
-* `msedge.exe`: Microsoft Web Browser (if you are using a different one)
 * `msiexec.exe`: Microsoft Installer (system32 and syswow64)
 * `onedrivesetup.exe`: if you are not using OneDrive
-* `taskhostw.exe`: Scheduled tasks shouldn't need network access (unless you run tasks that do)
 * `wermgr.exe`: Windows error reporting manager (telemetry)
 * `Windows Feature Experience Pack`: Windows Start Menu ads and telemetry
 
@@ -395,33 +486,38 @@ When in doubt, choose the `X` instead of block and if the program fails to work,
 
 ### Chocolatey
 
-Launch the package manager `Chocolatey GUI` from the Start Menu in the Utilities submenu. Click the `settings` button in the upper right of the application.
+Launch the package manager `Chocolatey GUI` from the Start Menu in the Utilities sub-menu. The popup is from simplewall, this is what you will receive anytime a new application tries to access the internet. For Chocolatey GUI we naturally need it to access the internet so selecting `Allow` is the preferred option here.
 
 ![Choco_01](README_media/Choco_01.png)
 
-Turn off the options `DefaultToTileViewForLocalSource` and `DefaultToTileViewForRemoteSource`.
+Click the `settings` button in the upper right of the application.
 
-![Choco_02](README_media/Choco_02.png)
+![Choco_01](README_media/Choco_02.png)
 
-Scroll to the bottom and enable the two options `DefaultToDarkMode` and `PreventUsageOfUpdateAllButton`. Closing setting by clicking the round left arrow button to the left of the Settings title.
+Turn off the options `Default to Tile View for Local Source` and `Default to Tile View for Remote Source`, then turn on the option `Default to Dark Mode`.
 
-![Choco_03](README_media/Choco_03.png)
+![Choco_02](README_media/Choco_03.png)
+
+Scroll down near the bottom and enable the option `Prevent Usage of Update All Button`. Closing setting by clicking the round left arrow button to the left of the Settings title.
+
+![Choco_03](README_media/Choco_04.png)
 
 When updates are detected you will see a new version listed to the right of current versions highlighted with the color red. To update, simple right click the application and choose `Update`.
 
-![Choco_04](README_media/Choco_04.png)
+![Choco_04](README_media/Choco_05.png)
 
-## Attribution & References
+## Attribution
 
-Without all of the following this guide would not have been possible.
+Without all of the following this guide/script would not have been possible.
 
 * [Windows 10 Privacy Guide - 1903 Update](https://github.com/adolfintel/Windows10-Privacy)
 * [tweaks & fixes for windows 10 - mostly powershell](https://github.com/equk/windows)
 * [Win10 Initial Setup Script](https://github.com/Disassembler0/Win10-Initial-Setup-Script)
 * [Windows TenForums](https://www.tenforums.com/)
-* [Summary of AV Test Results - Jan 2022](https://www.reddit.com/r/antivirus/comments/rzw1me/summary_of_av_test_results_january_2022/)
+* [Summary of AV Test Results - July 2022](https://www.reddit.com/r/antivirus/comments/w1rcgi/summary_of_av_test_results_july_2022/)
 * [Flat-Remix Icon Theme](https://github.com/daniruiz/flat-remix)
 * [agave font](https://github.com/agarick/agave)
 * [Mixed wallpaper](https://www.deviantart.com/i5yal/art/Mixed-wallpaper-744877376)
 * [gpg-bridge](https://github.com/BusyJay/gpg-bridge)
 * [openssh-sk-winhello](https://github.com/tavrez/openssh-sk-winhello)
+* [Git for Windows inside MSYS2 proper](https://github.com/git-for-windows/git/wiki/Install-inside-MSYS2-proper)

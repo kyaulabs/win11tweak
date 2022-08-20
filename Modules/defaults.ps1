@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -26,10 +26,10 @@
 
 . "${PSScriptRoot}\_funcs.ps1"
 
-Output-Logo "Windows 11 Tweaks"
+Show-Logo "Windows 11 Tweaks"
 
 # Network
-Output-Section -Section "Defaults" -Desc "Network Configuration"
+Show-Section -Section "Defaults" -Desc "Network Configuration"
 # Set Network Connection to Private
 Set-NetConnectionProfile -NetworkCategory Private | Out-Null
 # Enable Network Discovery (Browsing)
@@ -40,7 +40,7 @@ Rename-Computer -NewName $ComputerName | Out-Null
 Add-Computer -WorkGroupName $WorkGroupName | Out-Null
 
 # Remove System Restore
-Output-Section -Section "Defaults" -Desc "Remove System Restore"
+Show-Section -Section "Defaults" -Desc "Remove System Restore"
 Disable-ComputerRestore -Drive ${Env:SystemDrive}
 VSSADMIN.EXE delete shadows /all /Quiet | Out-Null
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\SystemRestore" -Name "DisableConfig" -Type Dword -Value "1"
@@ -50,68 +50,68 @@ Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore"
 Unregister-ScheduledTask -TaskPath "\Microsoft\Windows\SystemRestore\" -TaskName "SR" -Confirm:$false
 
 # Remove Telemetry
-Output-Section -Section "Defaults" -Desc "Remove Telemetry"
-Add-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "MaxTelemetryAllowed" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "MaxTelemetryAllowed" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Name "AllowBuildPreview" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" -Name "NoGenTicket" -Type Dword -Value "1" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\SQMClient\Windows" -Name "CEIPEnable" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "AITEnable" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableInventory" -Type Dword -Value "1" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\AppV\CEIP" -Name "CEIPEnable" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\TabletPC" -Name "PreventHandwritingDataSharing" -Type Dword -Value "1" 
-Add-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\TextInput" -Name "AllowLinguisticDataCollection" -Type Dword -Value "0" 
-Add-Reg "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Type Dword -Value "1" 
-Add-Reg "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackProgs" -Type Dword -Value "0" 
-Add-Reg "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type Dword -Value "0" 
-Add-Reg "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitTextCollection" -Type Dword -Value "0" 
-Add-Reg "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type Dword -Value "0" 
-Add-Reg "HKCU:\Software\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Type Dword -Value "0" 
+Show-Section -Section "Defaults" -Desc "Remove Telemetry"
+Add-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "MaxTelemetryAllowed" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "MaxTelemetryAllowed" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Name "AllowBuildPreview" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" -Name "NoGenTicket" -Type Dword -Value "1"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\SQMClient\Windows" -Name "CEIPEnable" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "AITEnable" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableInventory" -Type Dword -Value "1"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\AppV\CEIP" -Name "CEIPEnable" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\TabletPC" -Name "PreventHandwritingDataSharing" -Type Dword -Value "1"
+Add-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\TextInput" -Name "AllowLinguisticDataCollection" -Type Dword -Value "0"
+Add-Reg "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Type Dword -Value "1"
+Add-Reg "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackProgs" -Type Dword -Value "0"
+Add-Reg "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type Dword -Value "0"
+Add-Reg "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitTextCollection" -Type Dword -Value "0"
+Add-Reg "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type Dword -Value "0"
+Add-Reg "HKCU:\Software\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Type Dword -Value "0"
 Unregister-ScheduledTask -TaskPath "Microsoft\Windows\Application Experience\" -TaskName "Microsoft Compatibility Appraiser" -Confirm:$false
 Unregister-ScheduledTask -TaskPath "Microsoft\Windows\Application Experience\" -TaskName "ProgramDataUpdater" -Confirm:$false
 Unregister-ScheduledTask -TaskPath "Microsoft\Windows\Autochk\" -TaskName "Proxy" -Confirm:$false
 Unregister-ScheduledTask -TaskPath "Microsoft\Windows\Customer Experience Improvement Program\" -TaskName "Consolidator" -Confirm:$false
 Unregister-ScheduledTask -TaskPath "Microsoft\Windows\Customer Experience Improvement Program\" -TaskName "UsbCeip" -Confirm:$false
 Unregister-ScheduledTask -TaskPath "Microsoft\Windows\DiskDiagnostic\" -TaskName "Microsoft-Windows-DiskDiagnosticDataCollector" -Confirm:$false
-Add-Reg "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" -Name "Value" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" -Name "Value" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "AutoConnectAllowedOEM" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "WiFISenseAllowed" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -Type Dword -Value "0" 
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type Dword -Value "0" 
+Add-Reg "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" -Name "Value" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" -Name "Value" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "AutoConnectAllowedOEM" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "WiFISenseAllowed" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -Type Dword -Value "0"
+Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type Dword -Value "0"
 
 # Remove Windows Services
-Output-Section -Section "Defaults" -Desc "Remove Services/Tasks"
+Show-Section -Section "Defaults" -Desc "Remove Services/Tasks"
 #Connected User Experiences and Telemetry
-Del-Service -Name DiagTrack
+Remove-WService -Name DiagTrack
 #WAP (Wireless Application Protocol) Push Message Routing Service
-Del-Service -Name dmwappushservice
+Remove-WService -Name dmwappushservice
 #Windows Error Reporting Service
-Del-Service -Name WerSvc
+Remove-WService -Name WerSvc
 #Calendar/Contacts/Mail Sync
-Del-Service -Name OneSyncSvc
+Remove-WService -Name OneSyncSvc
 #Text Messaging Support
-Del-Service -Name MessagingService
+Remove-WService -Name MessagingService
 #Problem Reports and Solutions Control Panel Support
-Del-Service -Name wercplsupport
+Remove-WService -Name wercplsupport
 #Program Compatibility Assistant Service
-Del-Service -Name PcaSvc
+Remove-WService -Name PcaSvc
 #Microsoft Account Sign-in Assistant
 SC.EXE config wlidsvc start=demand | Out-Null
 #Windows Insider Service
-Del-Service -Name wisvc
+Remove-WService -Name wisvc
 #Retail Demo Experience (RDX)
-Del-Service -Name RetailDemo
+Remove-WService -Name RetailDemo
 #Diagnostic Execution Service
-Del-Service -Name diagsvc
+Remove-WService -Name diagsvc
 #Shared PC Account Manager
-Del-Service -Name shpamsvc
+Remove-WService -Name shpamsvc
 #Recommended Troubleshooting Service
-Del-Service -Name TroubleshootingSvc
+Remove-WService -Name TroubleshootingSvc
 #Windows Search Indexing
 SC.EXE stop WSearch | Out-Null
 SC.EXE config WSearch start=disabled | Out-Null
@@ -147,7 +147,7 @@ Unregister-ScheduledTask -TaskPath "\Microsoft\Windows\NetTrace\" -TaskName "Gat
 Remove-Item -Path "C:\Windows\System32\Tasks\Microsoft\Windows\SettingSync\" -Recurse -Force | Out-Null
 
 # Disable Windows Spotlight
-Output-Section -Section "Defaults" -Desc "Disable Windows Spotlight"
+Show-Section -Section "Defaults" -Desc "Disable Windows Spotlight"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "ContentDeliveryAllowed" -Type Dword -Value "0"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "OemPreInstalledAppsEnabled" -Type Dword -Value "0"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "PreInstalledAppsEnabled" -Type Dword -Value "0"
@@ -166,7 +166,7 @@ Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryMa
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableSoftLanding" -Type Dword -Value "1"
 
 # Set Windows Update to Manual
-Output-Section -Section "Defaults" -Desc "Windows Update => Manual"
+Show-Section -Section "Defaults" -Desc "Windows Update => Manual"
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Type Dword -Value "1"
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUOptions" -Type Dword -Value "2"
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "ScheduledInstallDay" -Type Dword -Value "0"
@@ -176,9 +176,11 @@ Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name
 Add-Reg -Path "HKCU:\Control Panel\UnsupportedHardwareNotificationCache" -Name "SV2" -Type Dword -Value "0"
 # Disable License Check on Boot
 Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" -Name "NoGenTicket" -Type Dword -Value "1"
-# Disable Microsoft Account Sync
-Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\SettingSync" -Name "DisableSettingSync" -Type Dword -Value "2"
-Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\SettingSync" -Name "DisableSettingSyncUserOverride" -Type Dword -Value "1"
+If (-NOT $Microsoft365) {
+    # Disable Microsoft Account Sync
+    Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\SettingSync" -Name "DisableSettingSync" -Type Dword -Value "2"
+    Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\SettingSync" -Name "DisableSettingSyncUserOverride" -Type Dword -Value "1"
+}
 # Remove Windows Tips
 Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Name "DisableSoftLanding" -Type Dword -Value "1"
 Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsSpotlightFeatures" -Type Dword -Value "1"
@@ -187,7 +189,7 @@ Add-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" -Name "
 Add-Reg -Path "HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace" -Name "AllowSuggestedAppsInWindowsInkWorkspace" -Type Dword -Value "0"
 
 # Power
-Output-Section -Section "Defaults" -Desc "Power Profile"
+Show-Section -Section "Defaults" -Desc "Power Profile"
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c" -NoNewWindow -Wait | Out-Null
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/h off" -NoNewWindow -Wait | Out-Null
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/X -hibernate-timeout-ac 0" -NoNewWindow -Wait | Out-Null
@@ -206,16 +208,21 @@ Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList 
 Disable-MMAgent -mc | Out-Null
 # Remove Modern Swap
 Add-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "SwapfileControl" -Type Dword -Value "0"
-# Disable Accessabilities
+# Disable Accessibility Options
 Add-Reg -Path "HKCU:\Control Panel\Accessibility\StickyKeys" -Name "Flags" -Type String -Value "506"
 Add-Reg -Path "HKCU:\Control Panel\Accessibility\ToggleKeys" -Name "Flags" -Type String -Value "58"
 Add-Reg -Path "HKCU:\Control Panel\Accessibility\Keyboard Response" -Name "Flags" -Type String -Value "122"
 # Disable Remote Assistance
 Add-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name "fAllowToGetHelp" -Type Dword -Value "0"
+# Remove Add to Favorites / Pin to Quick Access / Pin to Start from right-click
+Remove-Reg -Path "HKCR:\``*\shell\pintohomefile" -Recursive
+Remove-Reg -Path "HKCR:\Drive\shell\pintohome" -Recursive
+Remove-Reg -Path "HKCR:\Folder\shell\pintohome" -Recursive
+Remove-Reg -Path "HKCR:\Network\shell\pintohome" -Recursive
+Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Folder\ShellEx\ContextMenuHandlers\PintoStartScreen" -Recursive
 
 # Create User Folders
 New-Item -Type Directory -Path "${Env:ProgramFiles}\Bin" | Out-Null
-New-Item -Type Directory -Path "${Env:UserProfile}\.ssh" | Out-Null
 New-Item -Type Directory -Path "${Env:AppData}\gnupg" | Out-Null
 
 # Remove Default Apps
@@ -224,8 +231,10 @@ Start-Process -FilePath "${Env:SystemRoot}\system32\WindowsPowerShell\v1.0\power
 # Remove Windows Defender
 . "${PSScriptRoot}\defender.ps1"
 
-# Disable Microsoft Edge
-. "${PSScriptRoot}\msedge.ps1"
+If (-NOT $MicrosoftEdge) {
+    # Disable Microsoft Edge
+    . "${PSScriptRoot}\msedge.ps1"
+}
 
 # Package Manager
 . "${PSScriptRoot}\packages.ps1"
@@ -241,6 +250,15 @@ Start-Process -FilePath "${Env:SystemRoot}\system32\WindowsPowerShell\v1.0\power
 
 # Mapped Network Drives
 . "${PSScriptRoot}\mapdrives.ps1"
+
+# Clean Startup
+Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "GalaxyClient"
+Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "GogGalaxy"
+Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam"
+
+If (-NOT $Microsoft365) {
+    Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "OneDrive"
+}
 
 # Reboot
 Write-Output "[37m [0m"

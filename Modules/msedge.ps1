@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -38,9 +38,9 @@ $EdgeApps = @(
 Get-Process *MicrosoftEdge* | Stop-Process -Force
 Get-Process *MicrosoftEdgeCP* | Stop-Process -Force
 Foreach ($sysapp in $EdgeApps) {
-    [int]$i = "1"
+    #[int]$i = "1"
     #$dis = "_disabled"
-    $MoveTo = "${EdgeAppPath}${sysapp}_disabled"
+    #$MoveTo = "${EdgeAppPath}${sysapp}_disabled"
     $MoveFrom = "${EdgeAppPath}${sysapp}"
     If (Test-Path -Path "${MoveFrom}") {
         Remove-Item "${MoveFrom}" -Recurse -Force -ErrorAction:SilentlyContinue
@@ -68,12 +68,12 @@ Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "
 Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MicrosoftEdge.exe" -Name "Debugger" -Type String -Value "%windir%\System32\taskkill.exe"
 
 If (Test-Path -Path "${Env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application\*\Installer\SETUP.EXE") {
-    Output-Section -Section "MSEdge" "Remove EdgeWebView"
+    Show-Section -Section "MSEdge" "Remove EdgeWebView"
     Start-Process -FilePath "${Env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application\*\Installer\SETUP.EXE" -ArgumentList "--uninstall --msedgewebview --system-level" -NoNewWindow -Wait | Out-Null
 }
 
 If (Test-Path -Path "${Env:ProgramFiles(x86)}\Microsoft\Edge\Application\*\Installer\SETUP.EXE") {
-    Output-Section -Section "MSEdge" "Remove Edge"
+    Show-Section -Section "MSEdge" "Remove Edge"
     Start-Process -FilePath "${Env:ProgramFiles(x86)}\Microsoft\Edge\Application\*\Installer\SETUP.EXE" -ArgumentList "--uninstall --forceuninstall --msedge --channel=stable --system-level" -NoNewWindow -Wait | Out-Null
 }
 
