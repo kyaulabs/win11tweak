@@ -41,6 +41,6 @@ PowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0cleanup.ps1"
 :: Restart Explorer.EXE and exit
 start explorer.exe
 ECHO [37m [0m
-ECHO [37mPress any key to exit...[0m
+ECHO [37mPress [1;37mENTER[0m [37mto reboot [0m
 PAUSE >nul
-exit
+%SystemRoot%\system32\SHUTDOWN.EXE -t 0 -r -f

@@ -85,6 +85,18 @@ Unregister-ScheduledTask -TaskName "Windows Defender Verification" -Confirm:$fal
     Start-ScheduledTask -TaskName KL_WinDefendRemoval | Out-Null
 }
 
+# Fix Sublime Text context menu
+if ("sublimetext4" -in $ChocoPkgs) {
+    Rename-Item -Path "HKCR:\``*\shell\Open with Sublime Text" -NewPath "HKCR:\``*\shell\Edit with Sublime Text" -Force | Out-Null
+    Add-Reg -Path "HKCR:\``*\shell\Open with Sublime Text" -Name "Icon" -Type String -Value "`"${Env:ProgramFiles}\Sublime Text\sublime_text.exe`",0"
+    Add-Reg -Path "HKCR:\``*\shell\Open with Sublime Text" -Name "MuiVerb" -Type String -Value "Edit with &Sublime Text"
+}
+
+# Fix Recycle Bin context menu
+if ("ccleaner" -in $ChocoPkgs) {
+    Remove-Item -Path "HKCR:\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\shell\Run CCleaner" -Recursive
+}
+
 # Remove Git from right-click
 Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_gui" -Recursive
 Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_shell" -Recursive
@@ -154,12 +166,24 @@ Add-UserFolderIcon -Name "${Env:UserProfile}\.local" -Icon "folder-black-coffee.
 New-Item -Type Directory -Path "${Env:UserProfile}\.ssh" | Out-Null
 Add-UserFolderIcon -Name "${Env:UserProfile}\.ssh" -Icon "folder-private.ico" -ImageRest 0
 
-# %ProgramFiles%\Git\usr\lib\winhello.dll
-$URL = Find-GitRelease -Repo "tavrez/openssh-sk-winhello" "winhello.dll"
-Invoke-WebRequest $URL -OutFile ${Env:SystemDrive}\msys64\usr\lib\winhello.dll | Out-Null
+# %SystemDrive%\msys64\usr\bin\gitleaks.exe
+$URL = Find-GitRelease -Repo "zricethezav/gitleaks" -Search "windows_x64.zip"
+Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Downloads\gitleaks.zip | Out-Null
+Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\gitleaks.zip" -DestinationPath "${Env:SystemDrive}\msys64\usr\bin" -Force | Out-Null
+Remove-Item -Path "${Env:UserProfile}\Downloads\gitleaks.zip" | Out-Null
+Remove-Item -Path "${Env:SystemDrive}\msys64\usr\bin\README.md" | Out-Null
+Remove-Item -Path "${Env:SystemDrive}\msys64\usr\bin\LICENSE" | Out-Null
 
-# %ProgramFiles%\Bin\gpg-bridge.exe
-$URL = Find-GitRelease -Repo "BusyJay/gpg-bridge" ".zip$"
+# %SystemDrive%\msys64\usr\bin\jq.exe
+$URL = Find-GitRelease -Repo "stedolan/jq" -Search "-win64.exe"
+Invoke-WebRequest $URL -Outfile "${Env:SystemDrive}\msys64\usr\bin\jq.exe" | Out-Null
+
+# %SystemDrive%\msys64\usr\lib\winhello.dll
+$URL = Find-GitRelease -Repo "tavrez/openssh-sk-winhello" -Search "winhello.dll"
+Invoke-WebRequest $URL -OutFile "${Env:SystemDrive}\msys64\usr\lib\winhello.dll" | Out-Null
+
+# %SystemDrive%\msys64\usr\bin\gpg-bridge.exe
+$URL = Find-GitRelease -Repo "BusyJay/gpg-bridge" -Search ".zip$"
 Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Downloads\gpg-bridge.zip | Out-Null
 Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\gpg-bridge.zip" -DestinationPath "${Env:SystemDrive}\msys64\usr\bin" -Force | Out-Null
 Remove-Item -Path "${Env:UserProfile}\Downloads\gpg-bridge.zip" | Out-Null

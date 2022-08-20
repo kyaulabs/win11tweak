@@ -208,12 +208,18 @@ Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList 
 Disable-MMAgent -mc | Out-Null
 # Remove Modern Swap
 Add-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "SwapfileControl" -Type Dword -Value "0"
-# Disable Accessabilities
+# Disable Accessibility Options
 Add-Reg -Path "HKCU:\Control Panel\Accessibility\StickyKeys" -Name "Flags" -Type String -Value "506"
 Add-Reg -Path "HKCU:\Control Panel\Accessibility\ToggleKeys" -Name "Flags" -Type String -Value "58"
 Add-Reg -Path "HKCU:\Control Panel\Accessibility\Keyboard Response" -Name "Flags" -Type String -Value "122"
 # Disable Remote Assistance
 Add-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name "fAllowToGetHelp" -Type Dword -Value "0"
+# Remove Add to Favorites / Pin to Quick Access / Pin to Start from right-click
+Remove-Reg -Path "HKCR:\``*\shell\pintohomefile" -Recursive
+Remove-Reg -Path "HKCR:\Drive\shell\pintohome" -Recursive
+Remove-Reg -Path "HKCR:\Folder\shell\pintohome" -Recursive
+Remove-Reg -Path "HKCR:\Network\shell\pintohome" -Recursive
+Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Folder\ShellEx\ContextMenuHandlers\PintoStartScreen" -Recursive
 
 # Create User Folders
 New-Item -Type Directory -Path "${Env:ProgramFiles}\Bin" | Out-Null

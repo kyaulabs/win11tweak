@@ -43,6 +43,7 @@
 	<StartButtonSize value="54"/>
 	<StartButtonAlign value="0"/>
 	<SkipMetro value="1"/>
+	<DisablePinExt value="1"/>
 	<MenuItems2>
 		<Line>Items=COLUMN_PADDING,AppsMenu,CustomItem2,SEPARATOR,ShutdownBoxItem,COLUMN_BREAK,COLUMN_PADDING,CustomItem,CustomItem5,CustomItem17,CustomItem7,CustomItem6,CustomItem24,CustomItem8,SEPARATOR,CustomItem18</Line>
 		<Line>AppsMenu.Items=CustomItem15</Line>

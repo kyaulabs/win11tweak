@@ -257,6 +257,8 @@ Finally run the script using `main.cmd`.
 
 The script will take quite a while to finish.
 
+Upon completion it will reboot automatically. After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task).
+
 ### Microsoft Edge Removal (optional)
 
 If chosen, at some point it will ask you to uninstall the two Microsoft Edge components. If this happens you will be presented with the following screen, make sure to select `Uninstall` for both.
@@ -269,8 +271,6 @@ It is possible that the second of which, uninstalling MSEdge itself, will popup 
 errors in the background. These errors will need to be cleared by ALT+TABing and selecting 'OK' before
 the script can continue.
 ```
-
-Upon completion it will reboot automatically. After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task).
 
 ### Anti-Virus Removal (optional)
 
@@ -508,7 +508,7 @@ When updates are detected you will see a new version listed to the right of curr
 
 ## Attribution
 
-Without all of the following this guide would not have been possible.
+Without all of the following this guide/script would not have been possible.
 
 * [Windows 10 Privacy Guide - 1903 Update](https://github.com/adolfintel/Windows10-Privacy)
 * [tweaks & fixes for windows 10 - mostly powershell](https://github.com/equk/windows)
