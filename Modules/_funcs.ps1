@@ -305,3 +305,4 @@ function Find-GitRelease {
     $Match = $Search
     Return Invoke-RestMethod -uri $URI | Select-Object -ExpandProperty assets | Where-Object { $_.name -Match $Match } | Select-Object -expand browser_download_url
 }
+

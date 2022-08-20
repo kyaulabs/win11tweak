@@ -44,3 +44,4 @@ ECHO [37m [0m
 ECHO [37mPress [1;37mENTER[0m [37mto reboot [0m
 PAUSE >nul
 %SystemRoot%\system32\SHUTDOWN.EXE -t 0 -r -f
+
