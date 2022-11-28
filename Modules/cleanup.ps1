@@ -81,8 +81,8 @@ Unregister-ScheduledTask -TaskName "Windows Defender Verification" -Confirm:$fal
     $trigger = New-ScheduledTaskTrigger -AtLogOn
     $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
     $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
-    Register-ScheduledTask KL_WinDefendRemoval -InputObject $task | Out-Null
-    Start-ScheduledTask -TaskName KL_WinDefendRemoval | Out-Null
+    Register-ScheduledTask _WinDefendRemoval -InputObject $task | Out-Null
+    Start-ScheduledTask -TaskName _WinDefendRemoval | Out-Null
 }
 
 # Fix Sublime Text context menu
@@ -90,6 +90,9 @@ if ("sublimetext4" -in $ChocoPkgs) {
     Rename-Item -Path "HKCR:\``*\shell\Open with Sublime Text" -NewPath "HKCR:\``*\shell\Edit with Sublime Text" -Force | Out-Null
     Add-Reg -Path "HKCR:\``*\shell\Open with Sublime Text" -Name "Icon" -Type String -Value "`"${Env:ProgramFiles}\Sublime Text\sublime_text.exe`",0"
     Add-Reg -Path "HKCR:\``*\shell\Open with Sublime Text" -Name "MuiVerb" -Type String -Value "Edit with &Sublime Text"
+    Add-Reg -Path "HKCR:\Directory\shell\Open with Sublime Text" -Name "(Default)" -Type String -Value "Open with &Sublime Text"
+    Add-Reg -Path "HKCR:\Directory\shell\Open with Sublime Text" -Name "Icon" -Type String -Value "`"${Env:ProgramFiles}\Sublime Text\sublime_text.exe`",0"
+    Add-Reg -Path "HKCR:\Directory\shell\Open with Sublime Text\command" -Name "(Default)" -Type String -Value "`"${Env:ProgramFiles}\Sublime Text\sublime_text.exe`" `"%1`""
 }
 
 # Fix Recycle Bin context menu
@@ -107,7 +110,9 @@ Invoke-WebRequest https://laptop-updates.brave.com/latest/winx64 -OutFile ${Env:
 
 # Download OpenShell
 Show-Section -Section "Cleanup" -Desc "Download OpenShell"
-Invoke-WebRequest https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.170/OpenShellSetup_4_4_170.exe -OutFile ${Env:UserProfile}\Desktop\OpenShellSetup.exe | Out-Null
+#Invoke-WebRequest https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.180/OpenShellSetup_4_4_180.exe -OutFile ${Env:UserProfile}\Desktop\OpenShellSetup.exe | Out-Null
+$URL = Find-GitRelease -Repo "Open-Shell/Open-Shell-Menu" -Search ".exe$"
+Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Desktop\Open-Shell-Setup.exe | Out-Null
 
 Show-Section -Section "Cleanup" -Desc "Last Minute Removals"
 If (-NOT $WinDefender) {
@@ -148,23 +153,23 @@ Get-ChildItem ${Env:AppData}\mpv\fonts\*.ttf | %%{ $fonts.CopyHere($_.fullname) 
 
 # %UserProfile%\.cache
 New-Item -Type Directory -Path "${Env:UserProfile}\.cache" | Out-Null
-Add-UserFolderIcon -Name "${Env:UserProfile}\.cache" -Icon "folder-black-poly.ico" -ImageRes 0
+Add-UserFolderIcon -Name "${Env:UserProfile}\.cache" -ImageRes 28 #-Icon "folder-black-poly"
 
 # %UserProfile%\.config
 New-Item -Type Directory -Path "${Env:UserProfile}\.config" | Out-Null
-Add-UserFolderIcon -Name "${Env:UserProfile}\.config" -Icon "folder-black-config.ico" -ImageRes 0
+Add-UserFolderIcon -Name "${Env:UserProfile}\.config" -ImageRes 8 #-Icon "folder-black-config"
 
 # %UserProfile%\.gnupg
 New-Item -ItemType SymbolicLink -Path ($Env:UserProfile + "\.gnupg") -Target ($Env:AppData + "\gnupg") | Out-Null
-Add-UserFolderIcon -Name "${Env:UserProfile}\.gnupg" -Icon "folder-gpg.ico" -ImageRes 0
+Add-UserFolderIcon -Name "${Env:UserProfile}\.gnupg" -ImageRes 18 #-Icon "folder-black-gpg"
 
 # %UserProfile%\.local
 New-Item -Type Directory -Path "${Env:UserProfile}\.local" | Out-Null
-Add-UserFolderIcon -Name "${Env:UserProfile}\.local" -Icon "folder-black-coffee.ico" -ImageRes 0
+Add-UserFolderIcon -Name "${Env:UserProfile}\.local" -ImageRes 7 #-Icon "folder-black-coffee"
 
 # %UserProfile%\.ssh
 New-Item -Type Directory -Path "${Env:UserProfile}\.ssh" | Out-Null
-Add-UserFolderIcon -Name "${Env:UserProfile}\.ssh" -Icon "folder-private.ico" -ImageRest 0
+Add-UserFolderIcon -Name "${Env:UserProfile}\.ssh" -ImageRes 29 #-Icon "folder-black-private"
 
 # %SystemDrive%\msys64\usr\bin\gitleaks.exe
 $URL = Find-GitRelease -Repo "zricethezav/gitleaks" -Search "windows_x64.zip"
@@ -179,22 +184,8 @@ $URL = Find-GitRelease -Repo "stedolan/jq" -Search "-win64.exe"
 Invoke-WebRequest $URL -Outfile "${Env:SystemDrive}\msys64\usr\bin\jq.exe" | Out-Null
 
 # %SystemDrive%\msys64\usr\lib\winhello.dll
-$URL = Find-GitRelease -Repo "tavrez/openssh-sk-winhello" -Search "winhello.dll"
-Invoke-WebRequest $URL -OutFile "${Env:SystemDrive}\msys64\usr\lib\winhello.dll" | Out-Null
-
-# %SystemDrive%\msys64\usr\bin\gpg-bridge.exe
-$URL = Find-GitRelease -Repo "BusyJay/gpg-bridge" -Search ".zip$"
-Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Downloads\gpg-bridge.zip | Out-Null
-Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\gpg-bridge.zip" -DestinationPath "${Env:SystemDrive}\msys64\usr\bin" -Force | Out-Null
-Remove-Item -Path "${Env:UserProfile}\Downloads\gpg-bridge.zip" | Out-Null
-
-# %ProgramFiles%\Bin\gpg-forward.bat
-$gpgforward = @"
-@ECHO OFF
-
-`"%SystemDrive%\msys64\usr\bin\gpg-bridge.exe`" --extra 127.0.0.1:4321 --ssh \\.\pipe\openssh-ssh-agent --detach
-"@
-New-Item -ItemType File -Path "${Env:ProgramFiles}\Bin\" -Name "gpg-forward.bat" -Value $gpgforward | Out-Null
+#$URL = Find-GitRelease -Repo "tavrez/openssh-sk-winhello" -Search "winhello.dll"
+#Invoke-WebRequest $URL -OutFile "${Env:SystemDrive}\msys64\usr\lib\winhello.dll" | Out-Null
 
 # %ProgramFiles%\Bin\ssh.bat
 $ssh = @"
@@ -203,10 +194,12 @@ $ssh = @"
 SET HOST=%1
 :: local ssh color
 SET COLOR=#1e90ff
+SET PROFILE=SSH-Local
 :: remote ssh color (if 2nd argument = 1)
 IF /I `"%2`" EQU `"1`" SET COLOR=#bb3385
+IF /I `"%2`" EQU `"1`" SET PROFILE=SSH-Remote
 
-%LocalAppData%\Microsoft\WindowsApps\wt.exe new-tab --title %HOST% --tabColor %COLOR% --useApplicationTitle %SystemDrive%\msys64\bin\sh.exe -i -l -c `"SSH_AUTH_SOCK=\\.\pipe\openssh-ssh-agent ssh %HOST%`"
+%LocalAppData%\Microsoft\WindowsApps\wt.exe new-tab --profile %PROFILE% --title %HOST% --tabColor %COLOR% --useApplicationTitle `"%SystemDrive%\msys64\msys2_shell.cmd`" -defterm -here -no-start -msys -shell fish -i -c `"ssh %HOST%`"
 "@
 New-Item -ItemType File -Path "${Env:ProgramFiles}\Bin\" -Name "ssh.bat" -Value $ssh | Out-Null
 
@@ -225,13 +218,14 @@ New-Item -ItemType File -Path "${Env:UserProfile}\" -Name ".gitconfig" -Value $g
 Set-ItemProperty "${Env:UserProfile}\.gitconfig" -Name Attributes -Value "ReadOnly,System,Hidden"
 
 # %UserProfile%\.ssh\config
+$gpgsocket = '/' + ${Env:UserProfile} -replace '\:', '' -replace '\\', '/'
+$gpgsocket = $gpgsocket + '/.gnupg/S.gpg-agent.extra'
 $sshconfig = @"
-# `$KYAULabs: config,v 1.0.1 2022/08/13 20:37:49 kyau Exp `$
+# `$KYAULabs: config,v 1.0.2 2022/11/24 19:32:55 kyau Exp `$
 
 # Default Config
 Host *
     User ${UserName}
-    #SecurityKeyProvider winhello.dll
     KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
     ChallengeResponseAuthentication no
     ConnectTimeout 60
@@ -241,10 +235,11 @@ Host *
     MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
     ServerAliveInterval 30
 
-# Forward the local gpg-agent to remote unix socket (requires gpg-bridge on startup)
+# Forward the local gpg-agent to remote unix socket
 Host remote.host.com
+    ForwardAgent yes
     StreamLocalBindUnlink yes
-    #RemoteForward /home/${UserName}/.gnupg/S.gpg-agent 127.0.0.1:4321
+    RemoteForward /home/${UserName}/.gnupg/S.gpg-agent ${gpgsocket}
 
 # vim: ft=sshconfig ts=4 sw=4 noet :
 "@
@@ -288,44 +283,146 @@ use-standard-socket
 "@
 New-Item -ItemType File -Path "${Env:UserProfile}\.gnupg\" -Name "gpg-agent.conf" -Value $gpgagentconf | Out-Null
 
-# Fix GPG under Git Bash
-#$gitbash = "dirmngr.exe","dirmngr-client.exe","gpg.exe","gpg-agent.exe","gpgconf.exe","gpg-connect-agent.exe","gpg-error.exe","gpgparsemail.exe","gpgscm.exe","gpgsm.exe","gpgsplit.exe","gpgtar.exe","gpgv.exe","gpg-wks-server.exe"
-#Foreach ($file in $gitbash) {
-#    Remove-Item "${Env:ProgramFiles}\Git\usr\bin\${file}" -Force | Out-Null
-#}
-# GnuPG added to PATH
-#Add-Reg -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Environment" -Name PATH -Type ExpandString -Value "${Env:PATH};${Env:ProgramData}\chocolatey\lib\nircmd\tools;${Env:ProgramData}\chocolatey\lib\sysinternals\tools;${Env:ProgramFiles(x86)}\GnuPG\bin"
+# %UserProfile%\.config\starship.toml
+$starshiptoml = @"
+# `$KYAULabs: starship.toml,v 1.0.0 2021/07/10 00:37:02 kyau Exp $
+#
+
+[character]
+success_symbol = "[✓](bold green)"
+error_symbol = "[✕](bold red)"
+
+[git_branch]
+format = "on [`$symbol`$branch](`$style) "
+
+[hostname]
+format = "[`$hostname](`$style)∶"
+ssh_only = false
+style = "242"
+
+[line_break]
+disabled = true
+
+[username]
+format = "[`$user](`$style)[ ┅ ](247)"
+style_user = "27"
+style_root = "52"
+
+# vim: ft=toml sts=4 sw=4 ts=4 noet:
+"@
+New-Item -ItemType File -Path "${Env:UserProfile}\.config\" -Name "starship.toml" -Value $starshiptoml | Out-Null
+
+New-Item -Type Directory -Path "${Env:UserProfile}\.config\fish" | Out-Null
+$configfish = @"
+# `$KYAULabs: config.fish,v 1.0.2 2022/11/23 18:27:36 kyau Exp $
+
+# Null the default fish greeting
+set fish_greeting
+
+# Set the platform variable
+set -x FISH_PLATFORM (uname -s)
+
+# Set the window title
+function fish_title
+    set -l _fish_hostname (hostname)
+    echo "`$_fish_hostname:" `$_ ' '
+    dirs
+end
+
+# Aliases
+function aliases -d "Command Aliases"
+    alias c="clear"
+    alias cd..="cd .."
+    alias ..="cd .."
+    alias ...="cd ../.."
+    alias ....="cd ../../.."
+    alias bc="bc -l"
+    alias diff="colordiff -u"
+    alias du="du -ch"
+    alias edit="`$EDITOR"
+    alias g="grep"
+    alias grep="grep --color=auto --exclude-dir=\.git --exclude-dir=\.svn --exclude-dir=\.hg"
+    alias h="history"
+    alias nssh="ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no"
+    alias scp="scp -q"
+    alias nscp="scp -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no"
+    alias tmux="tmux -2 -u"
+    alias vi="`$EDITOR"
+    alias wget="wget -c"
+    alias ls="ls --color=auto --file-type --group-directories-first"
+    alias lsa="ls -A"
+    alias lla="ls -Al --human-readable"
+    alias lld="ls -At1"
+    alias ll="ls -l --human-readable"
+    alias cp="cp -i"
+    alias k="kill"
+    alias k1="kill -1"
+    alias k2="kill -2"
+    alias k9="kill -9"
+    alias ln="ln -i"
+    alias mkdir="mkdir -pv"
+    alias mv="mv -i"
+    alias rm="rm -I --preserve-root"
+end
+function aliases_git -d "Git Command Aliases"
+    alias commit="git commit -S -a"
+    alias gitad="git add -A -n ."
+    alias gitadd="git add -A ."
+    alias gitlog="git log --graph --all --format=format:'%C(bold red)%h%C(reset) %C(white)-%C(reset) %C(reset)%s %C(bold green)(%ar)%C(reset) %C(bold cyan)[%an]%C(reset)%C(bold yellow)%d%C(reset)%n''''    %C(white)%b%C(reset)' --no-abbrev-commit"
+    alias gitls="git ls-files -o --exclude-standard"
+    alias pull="git pull origin"
+    alias push="git push origin"
+end
+
+# Interactive shell
+if status --is-interactive
+    # environmental variables
+    set -x GPG_TTY (tty)
+    set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+    set -x EDITOR "subl -w"
+    set -x PATH "`$HOME/bin" "/c/Program Files/Sublime Text" "/mingw64/bin" "/opt/bin" `$MSYS2_PATH `$ORIGINAL_PATH
+    set -x PAGER "less"
+    set -x LESS "-RSM~gIsw"
+    # gpg-agent + scdaemon check
+    ps -eaf | grep scdaemon >/dev/null 2>&1
+    if test `$status -eq 1
+        set -l _gpg_pid (ps | grep -i gpg-agent | awk '{ print `$1 }')
+        if test -n "`$_gpg_pid"
+            kill -9 `$_gpg_pid
+            gpg --card-status >/dev/null 2>&1
+        end
+    end
+    # command aliases
+    aliases
+    aliases_git
+    starship init fish | source
+end
+"@
+New-Item -ItemType File -Path "${Env:UserProfile}\.config\fish\" -Name "config.fish" -Value $configfish | Out-Null
+
+# Nircmd / Sysinternals added to PATH
 Add-Reg -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Environment" -Name PATH -Type ExpandString -Value "${Env:PATH};${Env:ProgramData}\chocolatey\lib\nircmd\tools;${Env:ProgramData}\chocolatey\lib\sysinternals\tools"
 
 # Install Git for Windows inside of MSYS2
 Show-Section -Section "MSYS2" -Desc "Configuration"
 Show-Package
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Syyuu --noconfirm`""
-#Show-Host " : msys2-update [1;32m${check}[0m" -NoNewline
 Show-Package "msys2-update"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Syyuu --noconfirm`""
-#Show-Host " : pacman-update [1;32m${check}[0m" -NoNewline
 Show-Package "pacman-update"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"sed -i '/^\[mingw32\]/{ s|^|[git-for-windows]\nServer = https://wingit.blob.core.windows.net/x86-64\n\n[git-for-windows-mingw32]\nServer = https://wingit.blob.core.windows.net/i686\n\n|; }' /etc/pacman.conf`""
-#Show-Host " : gitforwindows-repo [1;32m${check}[0m" -NoNewline
 Show-Package "gitforwindows-repo"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"rm -r /etc/pacman.d/gnupg/`""
-#Show-Host " : pacman-db [1;32m${check}[0m" -NoNewline
 Show-Package "pacman-db"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman-key --init`""
-#Show-Host " : key-init [1;32m${check}[0m" -NoNewline
 Show-Package "key-init"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman-key --populate msys2`""
-#Show-Host " : key-populate [1;32m${check}[0m" -NoNewline
 Show-Package "key-populate"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"curl -L https://raw.githubusercontent.com/git-for-windows/build-extra/HEAD/git-for-windows-keyring/git-for-windows.gpg | pacman-key --add - && pacman-key --lsign-key E8325679DFFF09668AD8D7B67115A57376871B1C && pacman-key --lsign-key 3B6D86A1BA7701CD0F23AED888138B9E1A9F3986`""
-#Show-Host " : gitforwindows-gpg [1;32m${check}[0m" -NoNewline
 Show-Package "gitforwindows-gpg"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Syyuu --noconfirm`""
-#Show-Host " : msys2-update [1;32m${check}[0m" -NoNewline
 Show-Package "msys2-update"
 Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Suu --noconfirm`""
-#Show-Host " : pacman-update [1;32m${check}[0m" -NoNewline
 Show-Package "pacman-update"
 
 # %SystemDrive%\msys64\etc\nsswitch.conf
@@ -352,15 +449,19 @@ Foreach ($pkg in $MsysPkgs) {
 }
 Show-Package -NewLine
 
+# MSYS2 Path Fixes (Removable/Network Drives)
+$AddedText = "MSYS=nonativeinnerlinks"
+Get-ChildItem -Path "${Env:SystemDrive}\msys64\*.ini" -Exclude "uninstall*" | ForEach-Object {$AddedText+"`r`n" + (Get-Content $_.FullName -Raw) | Out-File $_.FullName}
+
+# MSYS2 Cleanup
+Move-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}\.bash*" -Destination "${Env:UserProfile}" | Out-Null
+Move-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}\.inputrc" -Destination "${Env:UserProfile}" | Out-Null
+Move-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}\.profile" -Destination "${Env:UserProfile}" | Out-Null
+Remove-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}" -Force -Recurse | Out-Null
+
 # Clear Icon Cache
 Start-Process -FilePath "IE4UINIT.EXE" -ArgumentList "-show" -NoNewWindow -Wait | Out-Null
 Remove-Item "${Env:LocalAppData}\Microsoft\Windows\Explorer\*" -Include "iconcache*.db" -Force
-
-# Clean ContextMenu
-#Remove-Reg -Path "HKCR:\Directory\shell\git_gui" -Recursive
-#Remove-Reg -Path "HKCR:\Directory\shell\git_shell" -Recursive
-#Remove-Reg -Path "HKCR:\LibraryFolder\background\shell\git_gui" -Recursive
-#Remove-Reg -Path "HKCR:\LibraryFolder\background\shell\git_shell" -Recursive
 
 # Clean StartMenu
 Remove-Item -Path "${Env:UserProfile}\Desktop\*.LNK" -Force | Out-Null
@@ -374,6 +475,9 @@ If (Test-Path "${Env:ProgramFiles(x86)}\RivaTuner Statistics Server\Uninstall.ex
 }
 
 Remove-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "PostFix"
+
+# Cleanup Batch files
+Remove-Item -Path "${Env:SystemDrive}\temp.bat" -Force | Out-Null
 
 # Restarting Explorer.EXE
 Show-Section -Section "PostFix" -Desc "Restarting Explorer.EXE"

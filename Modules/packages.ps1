@@ -39,7 +39,7 @@ Start-Process -FilePath "${Env:ProgramData}\chocolatey\bin\CHOCO.EXE" -ArgumentL
 Foreach ($pkg in $ChocoPkgs) {
     $ipkg = $pkg
     $runtest = ""
-    if ($pkg -eq "sharex" -Or $pkg -eq "simplewall") {
+    if ($pkg -eq "sharex" -Or $pkg -eq "simplewall" -Or $pkg -eq "everything") {
         $runtest = "${Env:SystemRoot}\system32\taskkill.exe /F /IM ${pkg}.exe >nul"
     }
     if ($pkg -eq "amazongames") {

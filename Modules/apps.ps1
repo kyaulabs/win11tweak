@@ -28,7 +28,7 @@
 
 Show-Section -Section "Apps" -Desc "Remove Bloated Defaults"
 
-$Whitelist = 'Microsoft.DesktopAppInstaller|Microsoft.GetHelp|Microsoft.MicrosoftSolitaireCollection|Microsoft.Paint|Microsoft.WindowsNotepad|Microsoft.WindowsTerminal'
+$Whitelist = 'Microsoft.DesktopAppInstaller|Microsoft.GetHelp|Microsoft.MicrosoftSolitaireCollection|Microsoft.Net.Native*|Microsoft.Paint|Microsoft.WindowsNotepad|Microsoft.WindowsTerminal'
 $NonRemovable = 'Microsoft.549981C3F5F10|Microsoft.MicrosoftEdge.Stable|Microsoft.StorePurchaseApp|Microsoft.UI*|Microsoft.VCLibs*|Microsoft.Windows.FilePicker*|Microsoft.WindowsStore'
 # remove app packages
 $remove = Get-AppxPackage -AllUsers | Where-Object {$_.Name -NotMatch $Whitelist -and $_.Name -NotMatch $NonRemovable}

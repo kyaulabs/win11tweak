@@ -45,7 +45,7 @@
                 "face": "Agave",
                 "size": 16
             },
-            "icon": "%ProgramData%\\Windows Icons\\Start\\urxvt.ico"
+            "icon": "%ProgramData%\\wt-sh.ico"
         },
         "list": 
         [
@@ -55,7 +55,7 @@
                 "closeOnExit": "graceful",
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
                 "hidden": false,
-                "icon": "%ProgramData%\\Windows Icons\\Apps\\azure.ico",
+                "icon": "%ProgramData%\\wt-azure.ico",
                 "name": "Azure Cloud",
                 "source": "Windows.Terminal.Azure"
             },
@@ -66,7 +66,7 @@
                 "commandline": "cmd.exe",
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
-                "icon": "%ProgramData%\\Windows Icons\\Start\\wterminal.ico",
+                "icon": "%ProgramData%\\wt.ico",
                 "name": "Command Prompt"
             },
             {
@@ -97,8 +97,19 @@
                 "startingDirectory": "%UserProfile%",
                 "guid": "{c1c534f5-3f64-49f3-9f83-223bef656a6e}",
                 "hidden": true,
-                "icon": "%ProgramData%\\Windows Icons\\Start\\urxvt.ico",
-                "name": "SSH"
+                "icon": "%ProgramData%\\wt-ssh-local.ico",
+                "name": "SSH-Local"
+            },
+            {
+                "altGrAliasing": true,
+                "antialiasingMode": "grayscale",
+                "closeOnExit": "graceful",
+                "commandline": "\"%SystemDrive%\\msys64\\bin\\sh.exe\" -li",
+                "startingDirectory": "%UserProfile%",
+                "guid": "{4fe190c8-d513-4942-b0dc-941b89b843a8}",
+                "hidden": true,
+                "icon": "%ProgramData%\\wt-ssh-remote.ico",
+                "name": "SSH-Remote"
             },
             {
                 "altGrAliasing": true,
@@ -107,7 +118,7 @@
                 "source": "Windows.Terminal.PowershellCore",
                 "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
                 "hidden": false,
-                "icon": "%ProgramData%\\Windows Icons\\Apps\\pwsh.ico",
+                "icon": "%ProgramData%\\wt-pwsh.ico",
                 "name": "PowerShell"
             }
         ]
