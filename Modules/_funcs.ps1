@@ -164,7 +164,7 @@ function Add-Shortcut {
         [string] $Target,
         [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
-        [string] $IconName = "",
+        [string] $Icon = "",
         [Parameter(Mandatory=$false)]
         [ValidateNotNull()]
         [string] $Arguments = "",
@@ -183,8 +183,8 @@ function Add-Shortcut {
     $Shortcut.TargetPath = $Target
     $Shortcut.Arguments = $Arguments
 
-    if ([bool]$IconName) {
-        $Shortcut.IconLocation = "${Env:ProgramData}\Windows Icons\Apps\" + $IconName + ".ico,0"
+    if ([bool]$Icon) {
+        $Shortcut.IconLocation = "${Env:ProgramData}\" + $Icon
     } else {
         $Shortcut.IconLocation = $Target + ",0"
     }
@@ -210,7 +210,7 @@ function Set-UserFolderIcon {
     $file = "${Env:USERPROFILE}\${Name}\desktop.ini"
     ATTRIB -H -S $file
     $find = "IconResource=%SystemRoot%\\system32\\imageres.dll,-${ImageRes}"
-    $replace = "IconResource=%ProgramData%\Windows Icons\${Icon}.ico"
+    $replace = "IconResource=%ProgramData%\win11tweak-places.dll,${Icon}"
     Get-Content $file | ForEach-Object{$_ -Replace $find,$replace} | Out-File ${file}2
     Move-Item -Path "${file}2" -Destination "$file" -Force
     ATTRIB +H +S $file
@@ -224,9 +224,6 @@ function Add-UserFolderIcon {
         [string] $Name,
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Icon,
-        [Parameter(Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
         [int] $ImageRes
     )
 
@@ -236,8 +233,7 @@ function Add-UserFolderIcon {
     $File = "${Name}\desktop.ini"
     $Text = @"
 [.ShellClassInfo]
-IconIndex=0
-IconResource=%ProgramData%\Windows Icons\${Icon},${ImageRes}
+IconResource=%ProgramData%\win11tweak-places.dll,${ImageRes}
 ConfirmFileOp=0
 DefaultDropEffect=1
 "@
@@ -292,7 +288,7 @@ function Show-Package {
 
 function Find-GitRelease {
     # PSScriptAnalyzer - ignore unused variables
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "", Justification = "False positive because variable is used inside of Where-Object.")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "Search", Justification = "False positive because variable is used inside of Where-Object.")]
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)]
@@ -301,8 +297,8 @@ function Find-GitRelease {
         [string] $Search
     )
 
-    $URI = "https://api.github.com/repos/${Repo}/releases/latest"
-    $Match = $Search
-    Return Invoke-RestMethod -uri $URI | Select-Object -ExpandProperty assets | Where-Object { $_.name -Match $Match } | Select-Object -expand browser_download_url
+    $URI = "https://api.github.com/repos/${Repo}/releases"
+    $Match = Invoke-RestMethod -uri $URI
+    $Match[0] | Select-Object -ExpandProperty assets | Where-Object { $_.name -Match $Search } | Select-Object -expand browser_download_url
 }
 

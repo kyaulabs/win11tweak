@@ -62,7 +62,7 @@ function Add-Configuration {
     #         DriveLetter = "Z"
     #         RemotePath = "\\server\location"
     #         Name = "SHARENAME"
-    #         Icon = "%ProgramData%\Windows Icons\drive-network.ico"
+    #         Icon = "%ProgramData%\win11tweak-hardware.dll,60"
     #     },
     #     ...
     # )
@@ -71,7 +71,7 @@ function Add-Configuration {
             DriveLetter = "N"
             RemotePath = "\\10.0.10.20\archive"
             Name = "ARCHiVE"
-            Icon = "%ProgramData%\Windows Icons\drive-network.ico"
+            Icon = "%ProgramData%\win11tweak-hardware.dll,60"
         }
     )
 
@@ -83,9 +83,11 @@ function Add-Configuration {
     # Default Chocolatey Packages to Install
     $script:ChocoPkgs = @(
         # default applications
-        "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","hashcheck","heidisql",
-        "imageglass","kdiff3","marktext","mediainfo","mpv","nfopad","reshack","scrcpy","sharex","simplewall","speedcrunch",
-        "sublimetext4","sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
+        "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","everything",
+        "hashcheck","imageglass","mediainfo","mpv","nfopad","nircmd","scrcpy","sharex","simplewall","speedcrunch",
+        "sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
+        # development
+        "heidisql","kdiff3","marktext","reshack","sublimetext4","shellcheck",
         # gaming
         "playnite","amazongames","battle.net","epicgameslauncher","goggalaxy","origin","steam","ubisoft-connect",
         # hardware applications/drivers
@@ -97,7 +99,7 @@ function Add-Configuration {
 
     # Default MSYS2/Mingw64 Packages to Install
     $script:MsysPkgs = @(
-        "mingw-w64-x86_64-{git,git-doc-html,git-doc-man,starship,toolchain,zstd}",
+        "mingw-w64-x86_64-{git,git-doc-html,git-doc-man,lua,starship,toolchain,zstd}",
         "colordiff","fish","openssh","p7zip","rsync","tmux","unrar","vim"
     )
 
@@ -124,4 +126,3 @@ function Add-Configuration {
 }
 
 Add-Configuration
-

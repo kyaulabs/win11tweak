@@ -1,8 +1,8 @@
-# Windows 11 Tweaks - Build 22621.382
+# Windows 11 Tweaks - Build 22621.819
 
 ![LOGO](README_media/LOGO.png)
 
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.2-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/workflow/status/kyaulabs/win11tweak/CI)](https://github.com/kyaulabs/win11tweak/actions)
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.3-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/workflow/status/kyaulabs/win11tweak/CI)](https://github.com/kyaulabs/win11tweak/actions)
 
 ## Disclaimer
 
@@ -27,7 +27,6 @@ damage that may ensue.
   * [Microsoft Edge Removal (optional)](#microsoft-edge-removal-optional)
   * [Anti-Virus Removal (optional)](#anti-virus-removal-optional)
   * [Configuring Windows](#configuring-windows)
-  * [Windows Terminal](#windows-terminal)
   * [OpenShell](#openshell)
   * [Brave](#brave)
   * [Firewall](#firewall)
@@ -135,7 +134,7 @@ Finally on the privacy settings screen, make sure you deselect every single opti
 
 ### Windows Update
 
-Eventually you will be able to login and will be presented with the desktop.
+Eventually you will be able to login and will then be presented with the desktop.
 
 ```
 📌NOTE
@@ -302,25 +301,15 @@ Set the accent color to `Manual` then click `View colors`. Selecting `More` will
 
 ![Config_03](README_media/Config_03.png)
 
-### Windows Terminal
+### OpenShell
 
-Windows Terminal (WT) is now the defacto Windows terminal and can easily be used for CMD, PowerShell, SSH, WSL and more. To access WT right-click the Start Menu and select `Terminal (Admin)`. Select `Open Settings` from the toolbar warning about the default terminal application.
-
-![WT_01](README_media/WT_01.png)
-
-Once open, use the dropdown menu underneath `Default terminal application` and select `Windows Terminal`, then click `Save` in the bottom right.
-
-![WT_02](README_media/WT_02.png)
+OpenShell, which is the continued version of ClassicShell, should be on the desktop with a settings XML file ready for import. Install OpenShell, removing the un-needed modules.
 
 ```
 📌 NOTE
 After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the
 KYAU Labs section (feel free to rename to the name of your network).
 ```
-
-### OpenShell
-
-OpenShell, which is the continued version of ClassicShell, should be on the desktop with a settings XML file ready for import. Install OpenShell, removing the un-needed modules.
 
 ![OpenShell_01](README_media/OpenShell_01.png)
 
@@ -518,6 +507,5 @@ Without all of the following this guide/script would not have been possible.
 * [Flat-Remix Icon Theme](https://github.com/daniruiz/flat-remix)
 * [agave font](https://github.com/agarick/agave)
 * [Mixed wallpaper](https://www.deviantart.com/i5yal/art/Mixed-wallpaper-744877376)
-* [gpg-bridge](https://github.com/BusyJay/gpg-bridge)
 * [openssh-sk-winhello](https://github.com/tavrez/openssh-sk-winhello)
 * [Git for Windows inside MSYS2 proper](https://github.com/git-for-windows/git/wiki/Install-inside-MSYS2-proper)
