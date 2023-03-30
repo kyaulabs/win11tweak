@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2022 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -46,9 +46,10 @@ function Add-Configuration {
     $script:SecurityHealth = $true
 
     # Keep Microsoft 365 / OneDrive ($true/$false)
-    $script:Microsoft365 = $false
+    $script:Microsoft365 = $true
 
     # Keep Microsoft Edge? ($true / $false)
+    # NOTE: Removal not recommended.
     $script:MicrosoftEdge = $true
 
     # Desktop / Lock Screen Wallpaper
@@ -84,8 +85,8 @@ function Add-Configuration {
     $script:ChocoPkgs = @(
         # default applications
         "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","everything",
-        "hashcheck","imageglass","mediainfo","mpv","nfopad","nircmd","scrcpy","sharex","simplewall","speedcrunch",
-        "sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
+        "hashcheck","imageglass","mediainfo","mpv","msedgeredirect","nfopad","nircmd","scrcpy","sharex","simplewall",
+        "speedcrunch","sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
         # development
         "heidisql","kdiff3","marktext","reshack","sublimetext4","shellcheck",
         # gaming
