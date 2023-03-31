@@ -9,7 +9,7 @@
 :: ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 ::
 :: Win11Tweaks (KYAU Labs Edition)
-:: Copyright (C) 2022 KYAU Labs (https://kyaulabs.com)
+:: Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
 ::
 :: This program is free software: you can redistribute it and/or modify
 :: it under the terms of the GNU Affero General Public License as
@@ -35,23 +35,13 @@ if not '%errorlevel%' == '0' (
 :: "runas" start with forced C:\Windows\System32 workdir
 cd /d %~dp0
 
-:: Script
-ECHO [1;36m■[1;37m PostFix:[0m Terminating Explorer.exe...
-taskkill /F /IM explorer.exe >nul
-
-ECHO [1;36m■[1;37m PostFix:[0m This Window Will Close When Finished
+:: Execute PowerShell Script
 PowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0cleanup.ps1"
 
-IF EXIST "%ProgramFiles(x86)%\RivaTuner Statistics Server\Uninstall.exe" (
-	ECHO [1;36m■[1;37m PostFix:[0m Remove RivaTuner
-	"%ProgramFiles(x86)%\RivaTuner Statistics Server\Uninstall.exe" /S /SUPPRESSMSGBOXES
-	RD "%ProgramFiles(x86)%\RivaTuner Statistics Server" /Q /S >nul
-)
-REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "PostFix" /F >nul
-ECHO [1;36m■[1;37m PostFix:[0m Restarting Explorer.exe
+:: Restart Explorer.EXE and exit
 start explorer.exe
-
 ECHO [37m [0m
-ECHO [37mPress any key to exit...[0m
+ECHO [37mPress [1;37mENTER[0m [37mto reboot [0m
 PAUSE >nul
-exit
+%SystemRoot%\system32\SHUTDOWN.EXE -t 0 -r -f
+

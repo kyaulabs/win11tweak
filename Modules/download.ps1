@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2022 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,6 @@
 #>
 
 Invoke-WebRequest https://github.com/kyaulabs/win11tweak/archive/refs/heads/master.zip -OutFile ${Env:UserProfile}\Downloads\win11tweak.zip | Out-Null
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory("${Env:UserProfile}\Downloads\win11tweak.zip", "${Env:UserProfile}\Desktop")
+Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\win11tweak.zip" -DestinationPath "${Env:UserProfile}\Desktop"
 Rename-Item -Path "${Env:UserProfile}\Desktop\win11tweak-master" -NewName "${Env:UserProfile}\Desktop\win11tweak"
 Remove-Item -Path "${Env:UserProfile}\Downloads\win11tweak.zip" -Force | Out-Null

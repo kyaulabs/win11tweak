@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2022 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -24,84 +24,106 @@
  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #>
 
-<#
- # Windows Defaults
- #>
+function Add-Configuration {
+    # PSScriptAnalyzer - ignore unused variables
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "", Justification = "Settings assignments are imported by other scripts.")]
+    param()
 
-# Computer Name
-$ComputerName = "WIN11TWEAK"
+    <#
+     # Windows Defaults
+     #>
 
-# Network WorkGroup
-$WorkGroupName = "KYAULABS"
+    # Computer Name
+    $script:ComputerName = "WIN11TWEAK"
 
-# Keep Windows Defender? ($true / $false)
-$WinDefender = $false
+    # Network WorkGroup
+    $script:WorkGroupName = "KYAULABS"
 
-# Keep Windows Security? ($true/$false)
-$SecurityHealth = $true
+    # Keep Windows Defender? ($true / $false)
+    $script:WinDefender = $false
 
-# Keep Microsoft 365 / OneDrive ($true/$false)
-$Microsoft365 = $false
+    # Keep Windows Security? ($true/$false)
+    $script:SecurityHealth = $true
 
-# Desktop / Lock Screen Wallpaper
-$WallpaperPath = "${Env:WINDIR}\Web\4K\Wallpaper\Windows\img19_1920x1200.jpg"
-#$imagePath =  "${env:USERPROFILE}\Pictures\wallpaper-21_9.png"
+    # Keep Microsoft 365 / OneDrive ($true/$false)
+    $script:Microsoft365 = $true
 
-# Mapped Network Drives
-#
-# $MappedDrives = @(
-#     [PSCustomObject]@{
-#         DriveLetter = "Z"
-#         RemotePath = "\\server\location"
-#         Name = "SHARENAME"
-#         Icon = "%ProgramData%\Windows Icons\drive-network.ico"
-#     },
-#     ...
-# )
-$MappedDrives = @(
-    [PSCustomObject]@{
-        DriveLetter = "N"
-        RemotePath = "\\10.0.10.20\archive"
-        Name = "ARCHiVE"
-        Icon = "%ProgramData%\Windows Icons\drive-network.ico"
-    }
-)
+    # Keep Microsoft Edge? ($true / $false)
+    # NOTE: Removal not recommended.
+    $script:MicrosoftEdge = $true
 
+    # Desktop / Lock Screen Wallpaper
+    $script:WallpaperPath = "${Env:WINDIR}\Web\4K\Wallpaper\Windows\img19_1920x1200.jpg"
+    #$imagePath =  "${env:USERPROFILE}\Pictures\wallpaper-21_9.png"
 
-<#
- # Chocolatey
- #>
-
-# Default Packages to Install
-$ChocoPkgs = @(
-    # default applications
-    "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","hashcheck","heidisql",
-    "imageglass","kdiff3","mediainfo","mpv","nfopad","reshack","scrcpy","sharex","simplewall","speedcrunch",
-    "sublimetext4","sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
-    # gaming
-    "playnite","amazongames","battle.net","epicgameslauncher","goggalaxy","origin","steam","ubisoft-connect",
-    # hardware applications/drivers
-    "adb","cpu-z.install","ddu","eartrumpet","msiafterburner","voicemeeter-potato",
-    # security applications
-    "gpg4win","git","keepassxc","yubico-authenticator","yubikey-manager","yubikey-piv-manager"
-)
+    # Mapped Network Drives
+    #
+    # $MappedDrives = @(
+    #     [PSCustomObject]@{
+    #         DriveLetter = "Z"
+    #         RemotePath = "\\server\location"
+    #         Name = "SHARENAME"
+    #         Icon = "%ProgramData%\win11tweak-hardware.dll,60"
+    #     },
+    #     ...
+    # )
+    $script:MappedDrives = @(
+        [PSCustomObject]@{
+            DriveLetter = "N"
+            RemotePath = "\\10.0.10.20\archive"
+            Name = "ARCHiVE"
+            Icon = "%ProgramData%\win11tweak-hardware.dll,60"
+        }
+    )
 
 
-<#
- # Git
- #>
+    <#
+     # Packages
+     #>
 
-# Git - UserName (default: Windows login username)
-$UserName = ${Env:UserName}.ToLower()
+    # Default Chocolatey Packages to Install
+    $script:ChocoPkgs = @(
+        # default applications
+        "7zip","autoruns","ccleaner","ccenhancer","choco-protocol-support","chocolateygui","exiftool","everything",
+        "hashcheck","imageglass","mediainfo","mpv","msedgeredirect","nfopad","nircmd","scrcpy","sharex","simplewall",
+        "speedcrunch","sumatrapdf","sysinternals","virt-viewer","windirstat","yt-dlp",
+        # development
+        "heidisql","kdiff3","marktext","reshack","sublimetext4","shellcheck",
+        # gaming
+        "playnite","amazongames","battle.net","epicgameslauncher","goggalaxy","origin","steam","ubisoft-connect",
+        # hardware applications/drivers
+        "adb","cpu-z.install","eartrumpet","msiafterburner","voicemeeter-potato",
+        # security applications
+        #"gpg4win"
+        "keepassxc","yubico-authenticator","yubikey-manager","yubikey-piv-manager"
+    )
 
-# Git - Email Address
-$Email = "kyau@kyau.net"
+    # Default MSYS2/Mingw64 Packages to Install
+    $script:MsysPkgs = @(
+        "mingw-w64-x86_64-{git,git-doc-html,git-doc-man,lua,starship,toolchain,zstd}",
+        "colordiff","fish","openssh","p7zip","rsync","tmux","unrar","vim"
+    )
 
-# Git - GPG Key
-#
-# Run the following command and look for the "sec#" line and get the key 
-# listed after the encryption type
-# (ex. "sec#  ed25519/GPG_SHORT_KEY DATE-MM-DD [C]")
-#
-# gpg --list-secret-keys --keyid-format LONG
-$GPG_Key = "1F125B5425110CCE"
+
+    <#
+     # Git
+     #>
+
+    # Git - UserName (default: Windows login username)
+    $script:UserName = ${Env:UserName}.ToLower()
+
+    # Git - Email Address
+    $script:Email = "kyau@kyau.net"
+
+    # Git - GPG Key
+    #
+    # Run the following command and look for the "sec#" line and get the key
+    # listed after the encryption type
+    # (ex. "sec#  ed25519/GPG_SHORT_KEY DATE-MM-DD [C]")
+    #
+    # gpg --list-secret-keys --keyid-format LONG
+    $script:GPG_Key = "1F125B5425110CCE"
+
+}
+
+Add-Configuration

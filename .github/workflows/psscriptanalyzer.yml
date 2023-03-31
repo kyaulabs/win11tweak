@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master", "develop", "feature/**", "release/**" ]
+  pull_request:
+    branches: [ "master", "develop", "feature/**", "release/**" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: PSScriptAnalyzer
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run PSScriptAnalyzer
+      uses: devblackops/github-action-psscriptanalyzer@master
+      with:
+        repoToken: ${{ secrets.GITHUB_TOKEN }}

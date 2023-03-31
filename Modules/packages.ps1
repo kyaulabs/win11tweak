@@ -1,4 +1,4 @@
-<#
+﻿<#
  ▄▄▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
  █ ▄▄ ▄ ▄▄ ▄ ▄▄▄▄ ▄▄ ▄    ▄▄   ▄▄▄▄ ▄▄▄▄  ▄▄▄ ▀
  █ ██ █ ██ █ ██ █ ██ █    ██   ██ █ ██ █ ██▀  █
@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2022 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -30,41 +30,43 @@
 [Environment]::SetEnvironmentVariable('Path', '%USERPROFILE%\AppData\Local\Microsoft\WindowsApps;%ProgramData%\chocolatey', 'User')
 
 # Install Chocolatey Packages
-Output-Section -Section "Packages" -Desc "Install Chocolatey"
+Show-Section -Section "Packages" -Desc "Install Chocolatey"
 Start-Process -FilePath "PowerShell.EXE" -ArgumentList "-Command `"Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))`"" -NoNewWindow -Wait -RedirectStandardOutput "${Env:UserProfile}\choco_install.txt"
 
-Output-Section -Section "Packages" -Desc "Install"
-Write-Host " " -NoNewline
+Show-Section -Section "Packages" -Desc "Install"
+Show-Package
 Start-Process -FilePath "${Env:ProgramData}\chocolatey\bin\CHOCO.EXE" -ArgumentList "install powershell-core --install-arguments=`"ENABLE_PSREMOTING=1`" -y -r" -NoNewWindow -Wait -RedirectStandardOutput "${Env:UserProfile}\choco_install.txt"
 Foreach ($pkg in $ChocoPkgs) {
     $ipkg = $pkg
     $runtest = ""
-    if ($pkg -eq "sharex" -Or $pkg -eq "simplewall") {
+    if ($pkg -eq "sharex" -Or $pkg -eq "simplewall" -Or $pkg -eq "everything") {
         $runtest = "${Env:SystemRoot}\system32\taskkill.exe /F /IM ${pkg}.exe >nul"
     }
     if ($pkg -eq "amazongames") {
-        $pkg = "${pkg} --checksum 49DD00B312A87B9E40695D68D0680360C97189251EE2EF91C8BDABEC40FFFDD7"
+        #$pkg = "${pkg} --ignorechecksum"
         $runtest = "${Env:SystemRoot}\system32\taskkill.exe /F /IM `"Amazon Games UI.exe`" >nul"
     }
     $runcmd = @"
 @ECHO OFF
 
-`"%ProgramData%\chocolatey\bin\choco.exe`" install $pkg -y -r >nul
+`"%ProgramData%\chocolatey\bin\choco.exe`" install $pkg -y -r --no-progress >nul
 $runtest
 "@
     New-Item -Path "${Env:UserProfile}" -Name "runcmd.bat" -ItemType File -Value $runcmd | Out-Null
     Start-Process -FilePath "${Env:UserProfile}\runcmd.bat" -NoNewWindow -Wait
     Remove-Item -Path "${Env:UserProfile}\runcmd.bat" -Force | Out-Null
     #Start-Process -FilePath "${Env:ProgramData}\chocolatey\bin\CHOCO.EXE" -ArgumentList "install $pkg -y -r --ignore-package-codes" -NoNewWindow -Wait -RedirectStandardOutput "${Env:UserProfile}\choco_install.txt"
-    Write-Host " : ${ipkg} [1;32m${check}[0m" -NoNewline
-    if ($ipkg -eq "amazongames") {
-
-    }
+    Show-Package "${ipkg}"
 }
-Write-Host "`n" -NoNewline
+Show-Package -NewLine
 
 # Change Calculator Keyboard Key to Speedcrunch
 Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AppKey\18" -Name "ShellExecute" -Type String -Value "%ProgramFiles(x86)%\SpeedCrunch\speedcrunch.exe"
 
 # Cleanup
 Remove-Item -Path "${Env:UserProfile}\choco_install.txt" -Force | Out-Null
+
+# MSYS2
+Show-Section -Section "Packages" -Desc "Install MSYS2"
+Invoke-WebRequest https://repo.msys2.org/distrib/msys2-x86_64-latest.exe -OutFile ${Env:UserProfile}\Downloads\msys2-x86_64-latest.exe | Out-Null
+Show-RunAsUser -Command "${Env:UserProfile}\Downloads\msys2-x86_64-latest.exe in --confirm-command --accept-messages --root ${Env:SystemDrive}/msys64"
