@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2022 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -79,6 +79,7 @@ Add-Shortcut "Utilities\Autoruns" "${Env:ProgramData}\chocolatey\lib\AutoRuns\to
 Add-Shortcut "Utilities\CCEnhancer" "${Env:ProgramFiles(x86)}\CCEnhancer\CCEnhancer.exe" ""
 Add-Shortcut "Utilities\CCleaner" "${Env:ProgramFiles}\CCleaner\CCleaner64.exe" ""
 Add-Shortcut "Utilities\Chocolatey GUI" "${Env:ProgramFiles(x86)}\Chocolatey GUI\ChocolateyGui.exe" ""
+Add-Shortcut "Utilities\MSEdgeRedirect" "${Env:ProgramFiles}\MSEdgeRedirect\MSEdgeRedirect.exe" "" "/settings"
 Add-Shortcut "Utilities\NFOPad" "${Env:ProgramFiles(x86)}\NFOPad\NFOPad.exe" ""
 Add-Shortcut "Utilities\Process Explorer" "${Env:ProgramData}\chocolatey\lib\sysinternals\tools\procexp64.exe" ""
 Add-Shortcut "Utilities\ShareX" "${Env:ProgramFiles}\ShareX\ShareX.exe" ""
@@ -86,7 +87,11 @@ Add-Shortcut "Utilities\SimpleWall" "${Env:ProgramFiles}\simplewall\simplewall.e
 Add-Shortcut "Utilities\WinDirStat" "${Env:ProgramFiles(x86)}\WinDirStat\windirstat.exe" "win11tweak-hardware.dll,69"
 
 # Remove Startup / Add Postfix
+Remove-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "CCleaner Smart Cleaning"
 Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "KeePassXC"
 $edgerun = Get-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" | Select-Object -ExpandProperty Property | Where-Object { $_ -like "MicrosoftEdgeAutoLaunch*" }
 Remove-Reg -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name $edgerun
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "PostFix" -Type String -Value "`"${PSScriptRoot}\postfix.cmd`""
+
+# Shrink Search Button
+Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type Dword -Value "3"

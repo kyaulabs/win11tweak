@@ -1,8 +1,8 @@
-# Windows 11 Tweaks - Build 22621.819
+# Windows 11 Tweaks - Build 22621.1485
 
 ![LOGO](README_media/LOGO.png)
 
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.3-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/workflow/status/kyaulabs/win11tweak/CI)](https://github.com/kyaulabs/win11tweak/actions)
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.4-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/actions/workflow/status/kyaulabs/win11tweak/psscriptanalyzer.yml)](https://github.com/kyaulabs/win11tweak/actions)
 
 ## Disclaimer
 
@@ -31,6 +31,9 @@ damage that may ensue.
   * [Brave](#brave)
   * [Firewall](#firewall)
   * [Chocolatey](#chocolatey)
+  * [Everything](#everything)
+  * [CCleaner](#ccleaner)
+  * [MSEdgeRedirect](#msedgeredirect)
 * [Attribution & References](#attribution--references)
 
 ## Introduction
@@ -221,7 +224,7 @@ When asked if you want an extra layer of protection, select `NO THANKS`.
 
 ![AntiVirus_03](README_media/AntiVirus_03.png)
 
-Once installation is finished, feel free to delete the `Adaware.exe` on your desktop.  If by chance MSEdge pops up with incoherent text, go to the Task Manager by right clicking on the Start Menu and selecting `Task Manager`. Find `Microsoft Edge` and expand it to find `Browser`, right-click on this and choose `End task`.
+Once installation is finished, feel free to delete the `Adaware.exe` on your desktop.  If by chance MSEdge pops up with incoherent text, go to the Task Manager by right-clicking on the Start Menu and selecting `Task Manager`. Find `Microsoft Edge` and expand it to find `Browser`, right-click on this and choose `End task`.
 
 ![AntiVirus_04](README_media/AntiVirus_04.png)
 
@@ -334,9 +337,9 @@ Naturally this can be replaced with a browser of your choosing, I would recommen
 a try if you have never used it.
 ```
 
-Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Skip welcome tour` in the bottom-left corner.
+Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Set Brave as default browser`, then `Skip` importing settings and finally uncheck both telemetry sharing options and select `Finish`.
 
-Next scroll down a little to bring up the Brave News banner and select `No thanks`. The select the 3dots menu for `Brave Rewards` and select `Hide Brave Rewards`.
+Next scroll down a little to bring up the Brave News banner and select `No thanks`. Then select the 3dots menu for `Brave Rewards` and select `Hide Brave Rewards`.
 
 Navigate to the hamburger menu in the upper-right and select `Extensions`. In the center you should see `Find extensions and themes in the Web Store`, click on `Web Store` to continue, this should launch in a separate tab.
 
@@ -350,7 +353,7 @@ Navigate to the hamburger menu again and select Settings. Under `Appearance` set
 
 ![Brave_01a](README_media/Brave_01a.png)
 
-Then deselect `Show top sites in autocomplete suggestions` and select `Always show full URLs`.
+Then select `Always show full URLs` and deselect `Top sites` under `Show autocomplete suggestions in address bar`.
 
 ![Brave_01b](README_media/Brave_01b.png)
 
@@ -366,7 +369,7 @@ Under `Privacy and security` deselect everything.
 
 ![Brave_04](README_media/Brave_04.png)
 
-Under `Search engine` swap the `Search engine used in the address bar` to the one of your choice, I recommend `DuckDuckGo` personally.
+Under `Search engine` swap the `Search engine used in the address bar` for `Normal Window` and `Private Window` to the one of your choice, I recommend `DuckDuckGo` personally.
 
 ![Brave_05](README_media/Brave_05.png)
 
@@ -402,9 +405,13 @@ In the `Settings` menu enable `Load on system startup`,  `Start minimized`, and 
 
 ![Simplewall_02](README_media/Simplewall_02.png)
 
-Click `Enable filters` in the toolbar, making sure to uncheck `Disable Windows Firewall` then again clicking `Enable filters` in the popup dialog in order to permanently activate simplewall.
+In the `Blocklist` menu enable `Microsoft update` by selecting `Allow` in the sub-menu.
 
 ![Simplewall_03](README_media/Simplewall_03.png)
+
+Click `Enable filters` in the toolbar, making sure to uncheck `Disable Windows Firewall` then again clicking `Enable filters` in the popup dialog in order to permanently activate simplewall.
+
+![Simplewall_04](README_media/Simplewall_04.png)
 
 ```
 📌 NOTE
@@ -491,9 +498,90 @@ Scroll down near the bottom and enable the option `Prevent Usage of Update All B
 
 ![Choco_03](README_media/Choco_04.png)
 
-When updates are detected you will see a new version listed to the right of current versions highlighted with the color red. To update, simple right click the application and choose `Update`.
+When updates are detected you will see a new version listed to the right of current versions highlighted with the color red. To update, simple right-click the application and choose `Update`.
 
 ![Choco_04](README_media/Choco_05.png)
+
+### Everything
+
+Everything is a modern replacement for Windows Search with extended functionality. However, always running this in the background is a waste of resources. Open the System Tray and right-click on the Everything icon and select `Options`.
+
+![Everything_01](README_media/Everything_01.png)
+
+Disable the settings `Start Everything on system startup` and `Everything Service` while enabling `Run as administrator` and then select `OK` at the bottom of the window. Select `Yes` for the UAC popup, finally return to the Everything System Tray icon and select `Exit`.
+
+![Everything_02](README_media/Everything_02.png)
+
+### CCleaner
+
+Open `CCEnhancer` under `Utilities` in the Start Menu. Select `Yes` for the UAC popup, and `Allow` for the simplewall popup.
+
+Select `Settings` at the bottom of the window.
+
+![CCleaner_01](README_media/CCleaner_01.png)
+
+Enable the setting `Trim definition file to improve performance` and then select `Save and Close`.
+
+![CCleaner_02](README_media/CCleaner_02.png)
+
+Select `Download Latest`, when asked to run CCleaner select `Yes`. Select `Allow` on the simplewall popup for CCleaner.
+
+![CCleaner_03](README_media/CCleaner_03.png)
+
+Since this is the first time CCleaner has run, select `Continue` and finally `Start CCleaner`.
+
+Navigate down to `Options` and then the sub-tab `Settings`. Change `CCleaner Home Screen` to `Custom Clean` and disable the setting `Add "Run CCleaner" option to Recycle Bin context menu`.
+
+![CCleaner_04](README_media/CCleaner_04.png)
+
+Navigate to the `Smart Cleaning` sub-tab and disable all options, selecting `Yes` for the `Are you sure?` popup.
+
+![CCleaner_05](README_media/CCleaner_05.png)
+
+Navigate to the `Privacy` sub-tab and disable all options yet again.
+
+![CCleaner_06](README_media/CCleaner_06.png)
+
+Navigate to the `Custom Clean` tab and select `Analyze`. Upon completion of the analysis, select `Run Cleaner`.
+
+```
+📌 NOTE
+You might receive a warning stating that Microsoft OneDrive or some other application needs to be closed in order for CCleaner to continue. Go ahead and select Yes to the popup.
+```
+
+![CCleaner_07](README_media/CCleaner_07.png)
+
+Upon completion you should see `Cleaning Complete` next to a green checkbox.
+
+Navigate to the `Registry` tab and select `Scan for Issues`. Once it has found all the issues, select `Review selected Issues...`.
+
+![CCleaner_08](README_media/CCleaner_08.png)
+
+CCleaner will ask if you want to make a back up of the registry before making changes, since we just installed a fresh copy of Windows this is not necessary, select `No`. Once the fix window comes up select `Fix All Selected Issues` and then `Close`.
+
+![CCleaner_09](README_media/CCleaner_09.png)
+
+Run this process again repeatedly until you keep receiving the same few results left over or a completely clean slate (sometimes this is not possible).
+
+Finally close out of CCleaner.
+
+### MSEdgeRedirect
+
+Open `MSEdgeRedirect` under `Utilities` in the Start Menu. Select `Allow` for the simplewall popup.
+
+Change the settings `Bing Search`, `Bing Images` and `MSN News (ALPHA)` to the search engine and news provider of choice, I will be using `DuckDuckGo` for them all. Then change the `MSN Weather` setting to your weather provider of choice, I will be using `AccuWeather`.
+
+Enable the `PDF Viewer` setting then pull down the drop-down and select `Custom`, this will open a file dialog box, navigate to `%ProgramFiles%\SumatraPDF\SumatraPDF.exe` and select `Open`.
+
+Close the program by selecting `Save`.
+
+![MSEdgeRedirect_01](README_media/MSEdgeRedirect_01.png)
+
+Hover over the weather widget in the taskbar to open the News/Weather Widget window selecting the Settings icon in the upper right (it looks like a blank avatar). Disable the setting `Open Widgets board on hover`, this will change the icon to require a click in order to show the widget.
+
+![MSEdgeRedirect_02](README_media/MSEdgeRedirect_02.png)
+
+Reboot the machine to continue.
 
 ## Attribution
 
