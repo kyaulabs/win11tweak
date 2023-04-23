@@ -29,7 +29,6 @@
 If (-NOT $WinDefender) {
     Show-Section -Section "Anti-Virus" -Desc "Removing Defender"
 
-    Remove-Reg -Path "HKLM:\Software\Policies\Microsoft\Windows\Windows Defender" -Recursive
     Remove-WService -Name "WdNisSvc"
     Remove-WService -Name "WinDefend"
     Remove-WService -Name "Sense"
@@ -76,18 +75,15 @@ If (-NOT $WinDefender) {
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableScanOnRealtimeEnable" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableAntiSpyware" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableAntiVirus" -Type Dword -Value "1"
-    #Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" -Name "MpEnginePlus" -Type Dword -Value "0"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" -Name "MpEnablePus" -Type Dword -Value "0"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" -Name "DisableEnhancedNotifications" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" -Name "DisableBlockAtFirstSeen" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" -Name "SpyNetReporting" -Type Dword -Value "0"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" -Name "SubmitSamplesConsent" -Type Dword -Value "2"
-    #Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" -Name "DontReportInfectionInformation" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Services\WdFilter" -Name "Start" -Type Dword -Value "4"
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Services\WdNisDrv" -Name "Start" -Type Dword -Value "4"
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Services\WdNisSvc" -Name "Start" -Type Dword -Value "4"
     Add-Reg -Path "HKLM:\System\CurrentControlSet\Services\WinDefend" -Name "Start" -Type Dword -Value "4"
-    #Add-Reg -Path "HKLM:\Software\Microsoft\Windows Defender\Features" -Name "TamperProtection" -Type Dword -Value "0"
     Remove-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Sense" -Recursive
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontReportInfectionInformation" -Type Dword -Value "1"
     Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontOfferThroughWUAU" -Type Dword -Value "1"

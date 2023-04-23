@@ -43,13 +43,15 @@ function Add-Configuration {
     $script:WinDefender = $false
 
     # Keep Windows Security? ($true/$false)
+    # NOTE: Removal not recommended, breaks Windows Defender & Windows Update.
     $script:SecurityHealth = $true
 
     # Keep Microsoft 365 / OneDrive ($true/$false)
     $script:Microsoft365 = $true
 
     # Keep Microsoft Edge? ($true / $false)
-    # NOTE: Removal not recommended.
+    # NOTE: Removal not recommended, breaks search, widgets, etc.
+    #       MSEdgeRedirect Recommended.
     $script:MicrosoftEdge = $true
 
     # Desktop / Lock Screen Wallpaper
