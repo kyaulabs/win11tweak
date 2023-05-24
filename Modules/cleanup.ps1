@@ -447,6 +447,8 @@ Foreach ($pkg in $MsysPkgs) {
     Show-Package "${pkg}"
     Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S ${pkg} --noconfirm`""
 }
+Show-Package "msys/openssh-fix"
+Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S mingw64/mingw-w64-x86_64-curl mingw64/mingw-w64-x86_64-gnutls mingw64/mingw-w64-x86_64-openssl msys/libopenssl msys/libgnutls msys/openssl msys/openssh --noconfirm`""
 Show-Package -NewLine
 
 # MSYS2 Path Fixes (Removable/Network Drives)

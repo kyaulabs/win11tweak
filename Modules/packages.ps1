@@ -58,6 +58,17 @@ $runtest
     #Start-Process -FilePath "${Env:ProgramData}\chocolatey\bin\CHOCO.EXE" -ArgumentList "install $pkg -y -r --ignore-package-codes" -NoNewWindow -Wait -RedirectStandardOutput "${Env:UserProfile}\choco_install.txt"
     Show-Package "${ipkg}"
 }
+
+# Install PowerToys
+$runcmd = @"
+@ECHO OFF
+
+`"%LocalAppData%\Microsoft\WindowsApps\winget.exe`" install --scope machine Microsoft.PowerToys -s winget >nul
+"@
+New-Item -Path "${Env:UserProfile}" -Name "runcmd.bat" -ItemType File -Value $runcmd | Out-Null
+Start-Process -FilePath "${Env:UserProfile}\runcmd.bat" -NoNewWindow -Wait
+Remove-Item -Path "${Env:UserProfile}\runcmd.bat" -Force | Out-Null
+Show-Package "powertoys"
 Show-Package -NewLine
 
 # Change Calculator Keyboard Key to Speedcrunch

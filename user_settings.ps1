@@ -40,7 +40,8 @@ function Add-Configuration {
     $script:WorkGroupName = "KYAULABS"
 
     # Keep Windows Defender? ($true / $false)
-    $script:WinDefender = $false
+    # NOTE: Removal breaks Windows Update.
+    $script:WinDefender = $true
 
     # Keep Windows Security? ($true/$false)
     # NOTE: Removal not recommended, breaks Windows Defender & Windows Update.
@@ -94,7 +95,7 @@ function Add-Configuration {
         # gaming
         "playnite","amazongames","battle.net","epicgameslauncher","goggalaxy","origin","steam","ubisoft-connect",
         # hardware applications/drivers
-        "adb","cpu-z.install","eartrumpet","msiafterburner","voicemeeter-potato",
+        "adb","cpu-z.install","msiafterburner","voicemeeter-potato",
         # security applications
         #"gpg4win"
         "keepassxc","yubico-authenticator","yubikey-manager","yubikey-piv-manager"
