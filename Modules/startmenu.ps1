@@ -63,7 +63,6 @@ Add-Shortcut "Development\Resource Hacker" "${Env:ProgramFiles(x86)}\Resource Ha
 Add-Shortcut "Development\Sublime Text" "${Env:ProgramFiles}\Sublime Text\sublime_text.exe" ""
 Add-Shortcut "Hardware\Core Temp" "${Env:ProgramData}\chocolatey\lib\coretemp\tools\Core Temp.exe" "win11tweak-hardware.dll,138"
 Add-Shortcut "Hardware\CPU-Z" "${Env:ProgramFiles}\CPUID\CPU-Z\cpuz.exe" ""
-Add-Shortcut "Hardware\EarTrumpet" "${Env:ProgramData}\chocolatey\lib\eartrumpet\tools\EarTrumpet\EarTrumpet.exe" ""
 Add-Shortcut "Hardware\MSI Afterburner" "${Env:ProgramFiles(x86)}\MSI Afterburner\MSIAfterburner.exe" ""
 Add-Shortcut "Hardware\ScrCpy" "${Env:ProgramData}\chocolatey\lib\scrcpy\tools\scrcpy.exe" "win11tweak-hardware.dll,3"
 Add-Shortcut "Hardware\Voicemeeter Potato" "${Env:ProgramFiles(x86)}\VB\Voicemeeter\voicemeeter8x64.exe" ""

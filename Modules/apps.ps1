@@ -73,7 +73,7 @@ Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "Bi
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "CortanaConsent" -Type Dword -Value "0"
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type Dword -Value "1"
 
-# Remove Movies-TypeV/Xbox
+# Remove Xbox/GameBar (not included in Windows N versions)
 Remove-WService -Name "XblAuthManager"
 Remove-WService -Name "XblGameSave"
 Remove-WService -Name "XboxNetApiSvc"
@@ -122,7 +122,7 @@ Foreach ($tmp in $tmpdel) {
     REG.EXE delete $tmp /f | Out-Null
 }
 
-# Reset Icon Cache / Cleanup OneDrive
+# Reset Icon Cache
 TASKKILL.EXE /F /IM explorer.exe | Out-Null
 
 If (-NOT $Microsoft365) {

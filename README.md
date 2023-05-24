@@ -1,8 +1,9 @@
-# Windows 11 Tweaks - Build 22621.1555
+# Windows 11 Tweaks - Build 22621.1778
 
 ![LOGO](README_media/LOGO.png)
 
-[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![Semantic Versioning](https://img.shields.io/badge/semantic%20versioning-1.2.5-333333.svg)](https://semver.org) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/actions/workflow/status/kyaulabs/win11tweak/psscriptanalyzer.yml)](https://github.com/kyaulabs/win11tweak/actions)
+[![Contributor Covenant](https://img.shields.io/badge/contributor%20covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) &nbsp; [![GitHub](https://img.shields.io/github/license/kyaulabs/win11tweak)](LICENSE) &nbsp; [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/zricethezav/gitleaks) &nbsp; [![CI](https://img.shields.io/github/actions/workflow/status/kyaulabs/win11tweak/psscriptanalyzer.yml)](https://github.com/kyaulabs/win11tweak/actions)\
+[![Semantic Versioning](https://img.shields.io/github/v/release/kyaulabs/win11tweak?include_prereleases&logo=semver&sort=semver)](https://semver.org) &nbsp; [![Discord](https://img.shields.io/discord/88713030895943680?logo=discord&color=blue&logoColor=white)](https://discord.gg/DSvUNYm)
 
 ## Disclaimer
 
@@ -34,7 +35,8 @@ damage that may ensue.
   * [Everything](#everything)
   * [CCleaner](#ccleaner)
   * [MSEdgeRedirect](#msedgeredirect)
-* [Attribution & References](#attribution--references)
+* [Further Setup](#further-setup)
+* [Attribution](#attribution)
 
 ## Introduction
 
@@ -179,9 +181,13 @@ With the computer updated and activated it is now time to download the script. D
 ### Windows Defender (optional)
 
 ```
+📌 NOTE
+If you choose to keep Windows Defender installed, the script used to remove it 'defender.ps1' will get
+flagged by Defender itself, this is normal behavior.
+```
+```
 🚧 WARNING
-If you choose to keep Windows Defender installed, the script used to disable Defender 'defender.ps1' will
-get flagged by Defender itself, this is normal behavior.
+Removal of Windows Defender WILL break the ability to use Windows Update!
 ```
 
 Before the main script can be run Windows Defender needs to be disabled along with tamper protection.
@@ -582,6 +588,10 @@ Hover over the weather widget in the taskbar to open the News/Weather Widget win
 ![MSEdgeRedirect_02](README_media/MSEdgeRedirect_02.png)
 
 Reboot the machine to continue.
+
+## Further Setup
+
+Additional setup and software configuration can be found on the [Wiki](https://github.com/kyaulabs/win11tweak/wiki).
 
 ## Attribution
 
