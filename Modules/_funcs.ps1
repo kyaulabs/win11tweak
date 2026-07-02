@@ -290,7 +290,7 @@ function Add-Shortcut {
     $Shortcut.TargetPath = $Target
     $Shortcut.Arguments = $Arguments
 
-    if ($Icon -like "win11tweak-*") {        
+    if ($Icon -like "win11tweak-*") {
         $Shortcut.IconLocation = "${Env:ProgramData}\" + $Icon
     } elseif ([bool]$Icon) {
         $Shortcut.IconLocation = $Icon
@@ -452,27 +452,28 @@ function Find-GitRelease {
 }
 
 function Add-ToUserPath {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]
         [string[]]$Paths,
-        
+
         [switch]$RefreshSession
     )
-    
+
     $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
     if (-not $currentPath) { $currentPath = "" }
-    
+
     $pathArray = @($currentPath -split ";" | Where-Object { $_ -ne "" })
     $pathsAdded = @()
-    
+
     foreach ($path in $Paths) {
         # Validate path exists
         if (-not (Test-Path $path)) {
             Write-Host " : Path does not exist: ${path} [1;31m${cross}[0m"
             continue
         }
-        
+
         # Check if already in PATH (case-insensitive)
         if ($pathArray -icontains $path) {
             Write-Host " : Already in PATH: ${path} [1;32m${check}[0m"
@@ -482,13 +483,13 @@ function Add-ToUserPath {
             Write-Host " : Added to PATH: ${path} [1;32m${check}[0m"
         }
     }
-    
+
     # Only update if changes were made
     if ($pathsAdded.Count -gt 0) {
         $newPath = $pathArray -join ";"
         [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
         Write-Host " : User PATH updated successfully [1;32m${check}[0m"
-        
+
         # Refresh current session if requested
         if ($RefreshSession) {
             $env:PATH = [Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [Environment]::GetEnvironmentVariable("PATH", "User")
