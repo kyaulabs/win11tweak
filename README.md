@@ -1,4 +1,4 @@
-# Windows 11 Tweaks - Build 22621.1778
+# Windows 11 Tweaks
 
 ![LOGO](README_media/LOGO.png)
 
@@ -9,7 +9,7 @@
 
 Let's be honest, Windows has become a mammoth of an OS that is generically geared toward everyone. My goal with this set of scripts is to put the User back in control of the OS. That said, these scripts have been heavily customized to my own personal needs, it is highly recommended that if you are to use them you review them in their entirety first.
 
-```
+```text
 🚧 WARNING
 This repository is provided for archival/educational purposes, I am not responsible for any data loss or
 damage that may ensue.
@@ -17,25 +17,26 @@ damage that may ensue.
 
 * [Introduction](#introduction)
 * [Features](#features)
-  * [Configuration](#configuration)
 * [Windows 11 Tweaks Guide](#windows-11-tweaks-guide)
   * [Installation](#installation)
   * [Windows Update](#windows-update)
   * [Windows Defender (optional)](#windows-defender-optional)
   * [Download Win11Tweaks](#download-win11tweaks)
-  * [Anti-Virus (optional)](#anti-virus-optional)
+  * [Win11Tweaks Configuration](#win11tweaks-configuration)
+  * [Anti-Virus Install (optional)](#anti-virus-note-optional)
   * [Running Win11Tweaks](#running-win11tweaks)
   * [Microsoft Edge Removal (optional)](#microsoft-edge-removal-optional)
-  * [Anti-Virus Removal (optional)](#anti-virus-removal-optional)
   * [Configuring Windows](#configuring-windows)
   * [OpenShell](#openshell)
+  * [UniGetUI](#unigetui)
   * [Brave](#brave)
   * [Firewall](#firewall)
-  * [Chocolatey](#chocolatey)
   * [Everything](#everything)
   * [CCleaner](#ccleaner)
   * [MSEdgeRedirect](#msedgeredirect)
 * [Further Setup](#further-setup)
+* [Customization](#customization)
+  * [Winget App Customization](#winget-app-customization)
 * [Attribution](#attribution)
 
 ## Introduction
@@ -48,21 +49,21 @@ This set of scripts attempts to maintain a vanilla appearance while gutting most
 
 * Microsoft Bloat Removed
 
+* Microsoft Copilot/Recall Removed
+
 * Microsoft Telemetry/Tracking Stripped
 
-* *(Optional)* Microsoft Edge Completed Removed
+* *Optional* Microsoft Edge Removal &mdash; **Not Recommended**
 
-* *(Optional)* Windows Defender Completed Removed
+* *Optional* Windows Defender Removal &mdash; **Not Recommended**
 
-* Chocolatey Package Manger, manage packages like a Linux system
+* MSYS2 is used for a Linux terminal (Git for Windows integrated) [^1]
 
-* MSYS2 is used for a Linux terminal
-
-* Git for Windows directly integrated into MSYS2, this uses the faster native version of Git with the added benefit of being able to use the default MSYS2 package manager `pacman` [^1]
+* Winget / UniGetUI Package Manger, manage packages like a Linux system
 
 * YubiKey Ready! [^2]
 
-* *(Optional)* GPG and SSH key forwarding over SSH
+* *Optional* GPG and SSH key forwarding over SSH
 
 * Many Visual Changes!
   
@@ -72,20 +73,10 @@ This set of scripts attempts to maintain a vanilla appearance while gutting most
   
   * OpenShell is used for a customizable start menu experience
 
-[^1]: Install Git for Windows inside MSYS2 proper [git-for-windows/git](https://github.com/git-for-windows/git/wiki/Install-inside-MSYS2-proper)
+  * Many more!
+
+[^1]: Install Git for Windows inside MSYS2 proper [git-for-windows/git](https://gitforwindows.org/Install-inside-MSYS2-proper)
 [^2]: This assumes you followed [drduh's YubiKey Guide](https://github.com/drduh/YubiKey-Guide) in order to setup your YubiKey
-
-### Configuration
-
-While not required, in order to personalize your installation, it is recommended to edit `user_settings.ps1`.  Use any text editor or regular old Notepad to edit the file. This step will need to be done before the script can be run on a fresh installation. However, as Win11Tweaks can be baked into an installation to be run automatically, I have added this section up near the top so it does not get skipped over.
-
-```
-📌 NOTE
-By default this file contains all of my own personal settings. At the very least you should change the Git
-Email, GPG Public Key and then review over the list of software that Chocolatey is going to be installing.
-```
-
-![Features_01](README_media/Features_01.png)
 
 ## Windows 11 Tweaks Guide
 
@@ -93,11 +84,17 @@ Email, GPG Public Key and then review over the list of software that Chocolatey 
 
 While this can be used with any version of Windows 11, this guide revolves around Windows 11 Pro N. In order to bypass the Microsoft Account requirements it is advised that you pull your network cable until Windows 11 is fully installed.
 
-```
+```text
 ❗ DO NOT SKIP ❗
 If you do not plan on pulling your network cable you will be forced into logging in with a Microsoft
 Account.
 ```
+
+On the third screen of the initial setup there will be an option you can select to return to the previous version of Setup. Select it.
+
+![PreInstall_03](README_media/PreInstall_01.png)
+
+Then go through Setup normally.
 
 ![Install_01](README_media/Install_01.png)
 
@@ -117,10 +114,6 @@ Windows will now prompt you about having no internet connection, select `I don't
 
 ![Install_05](README_media/Install_04.png)
 
-It will double check that you are sure about using an offline account, select `Continue with limited setup`.
-
-![Install_05](README_media/Install_05.png)
-
 Set your desired username.
 
 ![Install_08](README_media/Install_08.png)
@@ -133,7 +126,7 @@ Fill in the three security questions.
 
 ![Install_10](README_media/Install_10.png)
 
-Finally on the privacy settings screen, make sure you deselect every single option (scroll down for more options). Only after you have turned off all of Microsoft's tracking should you select `Accept` to complete the Windows 11 configuration.
+Finally on the privacy settings screen, make sure you de-select every single option (scroll down for more options). Only after you have turned off all of Microsoft's tracking should you select `Accept` to complete the Windows 11 configuration.
 
 ![Install_11](README_media/Install_11.png)
 
@@ -141,7 +134,7 @@ Finally on the privacy settings screen, make sure you deselect every single opti
 
 Eventually you will be able to login and will then be presented with the desktop.
 
-```
+```text
 📌NOTE
 Now would be an acceptable time to plug your network cable back in.
 ```
@@ -180,12 +173,13 @@ With the computer updated and activated it is now time to download the script. D
 
 ### Windows Defender (optional)
 
-```
+```text
 📌 NOTE
 If you choose to keep Windows Defender installed, the script used to remove it 'defender.ps1' will get
 flagged by Defender itself, this is normal behavior.
 ```
-```
+
+```text
 🚧 WARNING
 Removal of Windows Defender WILL break the ability to use Windows Update!
 ```
@@ -212,89 +206,67 @@ Right-click on the Start Menu icon and select `Terminal (Admin)`. Run the follow
 iex ((New-Object System.Net.WebClient).DownloadString('https://github.com/kyaulabs/win11tweak/raw/master/Modules/download.ps1'))
 ```
 
-![Download_01](README_media/Download_01.png)
+![Win11Tweaks_01](README_media/Win11Tweaks_01.png)
 
 This will download a copy of Win11Tweaks and place it on your desktop. You can then close out of Windows Terminal.
 
-### Anti-Virus (optional)
+### Win11Tweaks Configuration
 
-Run `download_av.cmd` inside of the `win11tweak` folder on the desktop.
+While not required, in order to personalize your installation, it is recommended to edit `user_settings.ps1` in the `win11tweak` folder on the Desktop.  Use any text editor or regular old Notepad to edit the file.
 
-![AntiVirus_01](README_media/AntiVirus_01.png)
-
-This will download Adaware Antivirus to your desktop, then run the installer `Adaware.exe`. Select `Install` to install Adaware.
-
-![AntiVirus_02](README_media/AntiVirus_02.png)
-
-When asked if you want an extra layer of protection, select `NO THANKS`.
-
-![AntiVirus_03](README_media/AntiVirus_03.png)
-
-Once installation is finished, feel free to delete the `Adaware.exe` on your desktop.  If by chance MSEdge pops up with incoherent text, go to the Task Manager by right-clicking on the Start Menu and selecting `Task Manager`. Find `Microsoft Edge` and expand it to find `Browser`, right-click on this and choose `End task`.
-
-![AntiVirus_04](README_media/AntiVirus_04.png)
-
-Given a bit of time Adaware should finish its initial scan and present you with a screen similar to the following.
-
-![AntiVirus_05](README_media/AntiVirus_05.png)
-
-Close out of Adaware.
-
-```
+```text
 📌 NOTE
-Installation of a 3rd party Anti-Virus product has been added in order to get Windows Defender to disable
-itself. Without this step you will be unable to completely remove Windows Defender from Windows 11.
+By default this file contains all of my own personal settings. At the very least you should change the Git
+Email, GPG Public Key and then review over the list of software that Chocolatey is going to be installing.
 ```
+
+![Win11Tweaks_02](README_media/Win11Tweaks_02.png)
+
+### Anti-Virus Install (Optional)
+
+If you want to completely remove Windows Defender, you must first install a third-party anti-virus product that Windows 11 recognizes as active protection. This can be installed temporarily so Defender can be fully disabled/removed during this process, then uninstalled again after you finish the guide.
 
 ### Running Win11Tweaks
 
 Assuming the scripts have been extracted to your Desktop... Open the start menu and search for `cmd`, this should bring up the listing for Command Prompt. Make sure you choose the option on the right `Run as administrator`.
 
-```
+```text
 🚧 WARNING
 Do not simply run the script from Windows Explorer, this will fail and/or produce unintentional results.
 ```
 
-![Windows_08](README_media/Windows_08.png)
+![Win11Tweaks_03](README_media/Win11Tweaks_03.png)
 
-Change directory into the extracted folder `cd %USERPROFILE%\Desktop\win11tweak`. 
+Change directory into the extracted folder `cd %UserProfile%\Desktop\win11tweak`.
 
 Finally run the script using `main.cmd`.
 
-![Windows_09](README_media/Windows_09.png)
+![Win11Tweaks_04](README_media/Win11Tweaks_04.png)
 
-The script will take quite a while to finish.
+The script will take quite a while to finish. When finished press `ENTER` and/or `RETURN` to reboot.
 
-Upon completion it will reboot automatically. After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task).
+![Win11Tweaks_05](README_media/Win11Tweaks_05.png)
+
+After the reboot the last part of the script will run automatically after login and then remove itself (via scheduled task). This will utilize UAC for Administrative permission to continue. Click `Yes` on the UAC dialog.
+
+![Win11Tweaks_06](README_media/Win11Tweaks_06.png)
+
+Wait for the post-reboot portion of the script to complete. When finished press `ENTER` and/or `RETURN` to reboot.
+
+![Win11Tweaks_07](README_media/Win11Tweaks_07.png)
 
 ### Microsoft Edge Removal (optional)
 
-If chosen, at some point it will ask you to uninstall the two Microsoft Edge components. If this happens you will be presented with the following screen, make sure to select `Uninstall` for both.
+If chosen, at some point it during the first part of the Win11Tweaks installation it will ask you to uninstall the two Microsoft Edge components. If this happens you will be presented with the following screen, make sure to select `Uninstall` for both.
 
 ![Script_01](README_media/Script_01.png)
 
-```
+```text
 ❗ DO NOT SKIP ❗
 It is possible that the second of which, uninstalling MSEdge itself, will popup two Internet Explorer
 errors in the background. These errors will need to be cleared by ALT+TABing and selecting 'OK' before
 the script can continue.
 ```
-
-### Anti-Virus Removal (optional)
-
-Once Win11Tweaks is completely done with all of its scripts, you will be left at the Windows Desktop. If you wish to remove all anti-virus completely, right-click the Start Menu and select `Installed apps`. Select the three-dot menu to the right of `adaware antivirus` and choose `Uninstall`.
-
-![AntiVirus_06](README_media/AntiVirus_06.png)
-
-Make sure to select `SKIP` when asked if you want to reenable Windows Defender.
-
-![AntiVirus_07](README_media/AntiVirus_07.png)
-
-Go ahead and reboot to complete the uninstallation.
-
-Post reboot, if you open Security Center and navigate to `Virus & threat protection > Virus & threat protection settings` you will see that Windows Defender is completely disabled.
-
-![AntiVirus_08](README_media/AntiVirus_08.png)
 
 ### Configuring Windows
 
@@ -312,94 +284,177 @@ Set the accent color to `Manual` then click `View colors`. Selecting `More` will
 
 ### OpenShell
 
-OpenShell, which is the continued version of ClassicShell, should be on the desktop with a settings XML file ready for import. Install OpenShell, removing the un-needed modules.
+OpenShell, which is the continuation of ClassicShell, should be installed by default with a settings XML file ready for import on the Desktop.
 
-```
+```text
 📌 NOTE
 After OpenShell is installed you will find example shortcuts for SSH and RDP in the Start Menu under the
 KYAU Labs section (feel free to rename to the name of your network).
 ```
 
+Press the Windows key on your keyboard in order to open the settings dialog for Open-Shell. Click `Backup` and then `Load from an XML file...` choosing the provided XML file on the desktop.
+
 ![OpenShell_01](README_media/OpenShell_01.png)
-
-After installation press the Windows key on your keyboard in order to open the settings dialog for Open-Shell. Click `Backup` and then `Load from an XML file...` choosing the provided XML file on the desktop.
-
-![OpenShell_02](README_media/OpenShell_02.png)
-
-```
-📌 NOTE
-OpenShell has not yet been fully updated for Windows 11, there are still quite a few bugs/glitches.
-```
 
 If you need to make changes to the Start Menu, enable `Show all settings` and then navigate to the `Customize Start Menu` tab.
 
-When finished, select `OK` in the bottom right to save the changes. It will prompt you to Exit and reload OpenShell. Right-click the Start Menu and choose `Exit` (maybe twice). Then click the Start Menu and re-launch `Open-Shell Menu Settings`. Finally, select `OK` to close settings.
+When finished, select `OK` in the bottom right to save the changes. It will prompt you to Exit and reload OpenShell.
+
+Shift + Right-click on the Start Menu and select `Exit`.
+
+![OpenShell_02](README_media/OpenShell_02.png)
+
+Then click the Start Menu and re-launch `Open-Shell Menu Settings`. Finally, selecting `OK` to close settings.
+
+### UniGetUI
+
+UniGetUI will usually popup a notification about updates found, select `Open UniGETUI`. If not navigate to it from Start Menu > Utilities > UniGetUI.
+
+![UniGet_01](README_media/UniGet_01.png)
+
+Once open you should see a callout about anonymous usage data at the top, select `Settings`.
+
+![UniGet_02](README_media/UniGet_02.png)
+
+Decline sharing usage data.
+
+![UniGet_03](README_media/UniGet_03.png)
+
+Select the gear icon to open Settings.
+
+![UniGet_04](README_media/UniGet_04.png)
+
+Navigate to `Administrator rights and other dangerous settings` and enable `Ask for administrator privileges once for each batch of operations` if you want to make multiple updates easier on yourself.
+
+![UniGet_05](README_media/UniGet_05.png)
+
+Finally, navigate to `Software Updates` and select `Update selection`.
+
+![UniGet_06](README_media/UniGet_06.png)
 
 ### Brave
 
-```
+```text
 🚧 WARNING
 Naturally this can be replaced with a browser of your choosing, I would recommend you at least give Brave
 a try if you have never used it.
 ```
 
-Next, install the Brave web browser with the `BraveSetup.exe` on the desktop which has been pre-downloaded for you. Once open, feel free to click `Set Brave as default browser`, then `Skip` importing settings and finally uncheck both telemetry sharing options and select `Finish`.
+The Brave web browser is installed by default unless you modified this.  Mavigate to `Start > Apps > Brave`.
 
-Next scroll down a little to bring up the Brave News banner and select `No thanks`. Then select the 3dots menu for `Brave Rewards` and select `Hide Brave Rewards`.
+Once open, click `Set Brave as default browser`, which should open the following dialog.
 
-Navigate to the hamburger menu in the upper-right and select `Extensions`. In the center you should see `Find extensions and themes in the Web Store`, click on `Web Store` to continue, this should launch in a separate tab.
+![Brave_01](README_media/Brave_01.png)
 
-Extensions are typical revolve heavily around personal choice, however there are a few extensions that deal with privacy/security that I would recommend to everyone.
+While there, might as well set some other sane defaults. When finished close the window.
+
+![Brave_02](README_media/Brave_02.png)
+
+`Skip` importing settings from other browsers as none exist.
+
+![Brave_03](README_media/Brave_03.png)
+
+Next select `Maybe later` for Search Telemetry.
+
+![Brave_04](README_media/Brave_04.png)
+
+Finally, un-check both telemetry options on the final screen and select `Finish`.
+
+![Brave_05](README_media/Brave_05.png)
+
+Next scroll down a little to bring up the Brave News banner and select `No thanks`.
+
+![Brave_06](README_media/Brave_06.png)
+
+Then click on the gear icon in the upper-right corner of the New Tab window.
+
+![Brave_07](README_media/Brave_07.png)
+
+De-select `Show new tab page ads`.
+
+![Brave_08](README_media/Brave_08.png)
+
+Navigate to `Search` and choose your Search Engine of choice.
+
+![Brave_09](README_media/Brave_09.png)
+
+Navigate to `Top Sites` and change it to `Favorites`.
+
+![Brave_10](README_media/Brave_10.png)
+
+Navigate to `Clock` and select `Show clock`.
+
+![Brave_11](README_media/Brave_11.png)
+
+Finally, navigate to `Cards` and de-select all of them except `Brave Stats`.
+
+Then close out of `Customize New Tab Page` with the `X` in the upper right corner of the dialog.
+
+![Brave_12](README_media/Brave_12.png)
+
+Navigate to the hamburger menu in the upper-right and select `Extensions > Visit Web Store` to continue, this should launch in the current tab.
+
+Extensions typical revolve heavily around personal choice, however there are a few extensions that deal with privacy/security that I would recommend to everyone.
 
 * [Cookie AutoDelete](https://chrome.google.com/webstore/detail/cookie-autodelete/fhcgjolkccmbidfldomjliifgaodjagh)
 * [Decentraleyes](https://chrome.google.com/webstore/detail/decentraleyes/ldpochfccmkkmhdbclfhpagapcfdljkj)
 * [Privacy Badger](https://chrome.google.com/webstore/detail/privacy-badger/pkehgijcmpdhfbdbbnkijodmdjhbjlgp)
 
-Navigate to the hamburger menu again and select Settings. Under `Appearance` set `Brave colors` to `Dark` to force Brave into dark mode.
+Other extensions that I also use:
 
-![Brave_01a](README_media/Brave_01a.png)
+* [Don't F*** With Paste](https://chromewebstore.google.com/detail/dont-f-with-paste/efaagigdgamehbpimpiagfpoihlkgamh)
+* [Enhancer for Youtube](https://chromewebstore.google.com/detail/enhancer-for-youtube/ponfpcnoihfmfllpaingbgckeeldkhle)
+* [KeePassXC-Browser](https://chromewebstore.google.com/detail/keepassxc-browser/oboonakemofpalcgghocfoadofidjkkk)
+* [Stylebot](https://chromewebstore.google.com/detail/stylebot/oiaejidbmkiecgbjeifoejpgmdaleoha)
+* [uBlacklist](https://chromewebstore.google.com/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe)
 
-Then select `Always show full URLs` and deselect `Top sites` under `Show autocomplete suggestions in address bar`.
+Navigate to the hamburger menu again and select Settings. Under `Appearance` set `Show bookmarks bar` to `Always`.
 
-![Brave_01b](README_media/Brave_01b.png)
+![Brave_13](README_media/Brave_13.png)
 
-Under `Shields` change `Trackers & ad blocking` to `Aggressive`.
+Scroll down and de-select `Leo AI Assistant` under `Show autocomplete suggestions in address bar`. Also and select `Always show full URLs` to enable it.
 
-![Brave_02](README_media/Brave_02.png)
+![Brave_14](README_media/Brave_14.png)
 
-Under `Social media blocking` deselect all platforms that you do not use.
+Under `Shields` change `Trackers & ad blocking` to `Aggressive`. Also de-select `Store contact information for future broken site reports`.
 
-![Brave_03](README_media/Brave_03.png)
+![Brave_15](README_media/Brave_15.png)
 
-Under `Privacy and security` deselect everything.
+Scroll to the bottom of the `Shields` section to find `Social media blocking`, de-select all platforms that you do not use.
 
-![Brave_04](README_media/Brave_04.png)
+![Brave_16](README_media/Brave_16.png)
 
-Under `Search engine` swap the `Search engine used in the address bar` for `Normal Window` and `Private Window` to the one of your choice, I recommend `DuckDuckGo` personally.
+Under `Privacy and security` de-select everything in the `Data collection` section.
 
-![Brave_05](README_media/Brave_05.png)
+![Brave_17](README_media/Brave_17.png)
 
-Under `Extensions` deselect `WebTorrent` if you use an external torrent client, and select `Widevine` if you plan on using streaming services with this browser.
+Under `Search engine` swap the `Search engine used in the address bar` for `Normal Window` and `Private Window` to the one of your choice, I use `DuckDuckGo` personally. Also de-select `Improve search suggestions` as this is also telemtry related.
 
-```
+![Brave_18](README_media/Brave_18.png)
+
+Under `Extensions` select `Widevine` if you plan on using streaming services with this browser.
+
+```text
 📌 NOTE
 Enabling Widevine DRM will require a restart of Brave, you will be returned to where you left off in
 Settings after the restart.
 ```
 
-![Brave_06](README_media/Brave_06.png)
+![Brave_06](README_media/Brave_19.png)
 
-Under `Autofill` > `Passwords` deselect `Offer to save passwords` and `Auto Sign-In`.
+Under `Autofill and passwords` > `Password Manager` then open the Hamburger menu in the upper left and select `Settings`. De-select `Offer to save passwords` and `Sign in automatically`. Finally, close the `Password Manager` tab to return to `Settings`.
 
-![Brave_07](README_media/Brave_07.png)
+![Brave_20](README_media/Brave_20.png)
 
-Under `Autofill` > `Payment methods` deselect `Save and fill payment methods` and `Allow sites to check if you have payment methods saved`.
+Under `Autofill and passwords` > `Payment methods` de-select `Save and fill payment methods` and `Allow sites to check if you have payment methods saved`.
 
-![Brave_08](README_media/Brave_08.png)
+![Brave_21](README_media/Brave_21.png)
 
-Under `Autofill` > `Addresses and more` deselect `Save and fill addresses`.
+Under `Autofill and passwords` > `Addresses and more` de-select `Save and fill addresses`.
 
-![Brave_09](README_media/Brave_09.png)
+![Brave_22](README_media/Brave_22.png)
+
+Brave can be closed for now as configuration is complete.
 
 ### Firewall
 
@@ -409,17 +464,19 @@ In the Utilities section of the Start Menu is simplewall, launch it and allow it
 
 In the `Settings` menu enable `Load on system startup`,  `Start minimized`, and `Skip "User Account Control" prompt warning`.
 
+Optionally, also enable `Check apps for sha-256 hash` and `Monitor apps changing`.
+
 ![Simplewall_02](README_media/Simplewall_02.png)
 
 In the `Blocklist` menu enable `Microsoft update` by selecting `Allow` in the sub-menu.
 
 ![Simplewall_03](README_media/Simplewall_03.png)
 
-Click `Enable filters` in the toolbar, making sure to uncheck `Disable Windows Firewall` then again clicking `Enable filters` in the popup dialog in order to permanently activate simplewall.
+Click `Enable filters` in the toolbar, making sure to uncheck `Disable Windows Firewall` if you do not want to overwrite the Windows Firewall. Then clicking `Enable filters` in the popup dialog in order to permanently activate simplewall.
 
 ![Simplewall_04](README_media/Simplewall_04.png)
 
-```
+```text
 📌 NOTE
 simplewall can fully replace Windows Firewall however in Windows 11 this will trip the firewall
 failure inside of Windows Security (what use to be called Security Center).
@@ -433,7 +490,10 @@ Applications will popup asking for internet access, stuff that is required for W
 * `Microsoft Store`: the store uwp app
 * `mousocoreworker.exe`: Windows update client
 * `microsoftedgeupdate.exe`: Microsoft Web Browser Update
+* `mpdefendercoreservice.exe`: Windows Defender
 * `msedge.exe`: Microsoft Web Browser (if you are using a different one feel free to block this and the update above)
+* `msedgewebview2.exe`: Application level embedded web content
+* `msmpeng.exe`: Windows Defender
 * `mstsc.exe`: remote desktop connection
 * `pwsh.exe`: PowerShell v7.x
 * `sihclient.exe`: Windows update background installer
@@ -445,15 +505,13 @@ Applications will popup asking for internet access, stuff that is required for W
 * `systemsettings.exe`: Windows update related
 * `taskhostw.exe`: scheduled tasks are needed for windows update
 * `usocoreworker.exe`: Windows update client
+* `windowspackagemangerserver.exe`: Microsoft Windows Store
 
 NVIDIA Graphics Cards Allow List:
 
 * `nvcontainer.exe`: NVIDIA display driver
-* `nvdisplay.container.exe` NVIDIA display driver
-* `nvidia geforce experience.exe`: NVIDIA display driver
-* `nvidia notification.exe`: NVIDIA display driver
-* `nvidia share.exe`: NVIDIA display driver
-* `nvidia web helper.exe`: NVIDIA display driver
+* `nvidia app.exe`: NVIDIA App
+* `nvidia overlay.exe`: NVIDIA Overlay
 
 Default Application Allow List:
 
@@ -461,21 +519,19 @@ Default Application Allow List:
 * `brave.exe`: Web browser
 * `braveupdate.exe`: Web browser auto-updater
 * `ccenhancer.exe`: CCEnhancer downloader
+* `cleaner_service.exe`: CCleaner
 * `ccleaner64.exe`: Utilities > CCleaner
-* `chocolateygui.exe`: Chocolatey GUI is the interface for the package manager
 * `heidisql.exe`: SQL client
 * `igcmd.exe`: ImageGlass image viewer update checker
-* `nextcloud.exe`: Nextcloud cloud service client
 * `sharex.exe`: ShareX screenshot auto uploading
 * `sublime_text.exe`: Sublime Text 4 package manager and update checker
+* `unigetui.exe`: UniGetUI is the interface for the package manager
 
 Things to block:
 
 * `ccupdate`: CCleaner update checker
 * `devicecensus.exe`: Microsoft telemetry
 * `dxdiag.exe`: DirectX diagnostic
-* `foxitpdfreader.exe`: Foxit PDF Reader (pdf's themselves do not need internet)
-* `foxitpdfreaderupdater.exe`: Foxit PDF Reader update checker
 * `keepassxc.exe`: KeePassXC update checker
 * `msiexec.exe`: Microsoft Installer (system32 and syswow64)
 * `onedrivesetup.exe`: if you are not using OneDrive
@@ -486,37 +542,17 @@ Past this, things to allow are at your discretion. Generally I won't allow any i
 
 When in doubt, choose the `X` instead of block and if the program fails to work, re-launch the program and you will be asked again and can this time select allow.
 
-### Chocolatey
-
-Launch the package manager `Chocolatey GUI` from the Start Menu in the Utilities sub-menu. The popup is from simplewall, this is what you will receive anytime a new application tries to access the internet. For Chocolatey GUI we naturally need it to access the internet so selecting `Allow` is the preferred option here.
-
-![Choco_01](README_media/Choco_01.png)
-
-Click the `settings` button in the upper right of the application.
-
-![Choco_01](README_media/Choco_02.png)
-
-Turn off the options `Default to Tile View for Local Source` and `Default to Tile View for Remote Source`, then turn on the option `Default to Dark Mode`.
-
-![Choco_02](README_media/Choco_03.png)
-
-Scroll down near the bottom and enable the option `Prevent Usage of Update All Button`. Closing setting by clicking the round left arrow button to the left of the Settings title.
-
-![Choco_03](README_media/Choco_04.png)
-
-When updates are detected you will see a new version listed to the right of current versions highlighted with the color red. To update, simple right-click the application and choose `Update`.
-
-![Choco_04](README_media/Choco_05.png)
-
 ### Everything
 
-Everything is a modern replacement for Windows Search with extended functionality. However, always running this in the background is a waste of resources. Open the System Tray and right-click on the Everything icon and select `Options`.
+Everything is a modern replacement for Windows Search with extended functionality. However, always running this in the background is a waste of resources. Open it via the Start Menu, navigate to `Apps > Everything`. Then choose `Options`  from the `Tools` menu.
 
 ![Everything_01](README_media/Everything_01.png)
 
-Disable the settings `Start Everything on system startup` and `Everything Service` while enabling `Run as administrator` and then select `OK` at the bottom of the window. Select `Yes` for the UAC popup, finally return to the Everything System Tray icon and select `Exit`.
+Disable the setting `Everything Service` while enabling `Run as administrator` and then select `OK` at the bottom of the window. Select `Yes` for the UAC popup(s).
 
 ![Everything_02](README_media/Everything_02.png)
+
+Finally select `Exit` from the `File` menu.
 
 ### CCleaner
 
@@ -530,44 +566,44 @@ Enable the setting `Trim definition file to improve performance` and then select
 
 ![CCleaner_02](README_media/CCleaner_02.png)
 
-Select `Download Latest`, when asked to run CCleaner select `Yes`. Select `Allow` on the simplewall popup for CCleaner.
+Select `Download Latest`, when asked to run CCleaner select `Yes`. If it does not open automatically, right-click the icon in the System Trayto open it.1
 
 ![CCleaner_03](README_media/CCleaner_03.png)
 
-Since this is the first time CCleaner has run, select `Continue` and finally `Start CCleaner`.
+Since this is the first time CCleaner has run, select `Next`, then `Not Now` to require prompts. Finally choose `Let's start` with your desired theme selected.
 
-Navigate down to `Options` and then the sub-tab `Settings`. Change `CCleaner Home Screen` to `Custom Clean` and disable the setting `Add "Run CCleaner" option to Recycle Bin context menu`.
+Clicking on the gear icon will bring up `Settings`.
 
 ![CCleaner_04](README_media/CCleaner_04.png)
 
-Navigate to the `Smart Cleaning` sub-tab and disable all options, selecting `Yes` for the `Are you sure?` popup.
+Under the `General` tab de-select both options under `Shortcuts` and `Show tray icon`.
 
 ![CCleaner_05](README_media/CCleaner_05.png)
 
-Navigate to the `Privacy` sub-tab and disable all options yet again.
+Navigate to the `Scheduling` tab and select `Got it` after reading the help page. Then navigate to `Updates` and select `I'll update manually` since we have winget managing this.
 
 ![CCleaner_06](README_media/CCleaner_06.png)
 
-Navigate to the `Custom Clean` tab and select `Analyze`. Upon completion of the analysis, select `Run Cleaner`.
+Navigate to the `Privacy` tab and de-select all of the telemetry options.
 
-```
+![CCleaner_08](README_media/CCleaner_07.png)
+
+Navigate to the `Custom Clean` and select `Scan now`. Upon completion of the analysis, select `Clean and fix`.
+
+```text
 📌 NOTE
 You might receive a warning stating that Microsoft OneDrive or some other application needs to be closed in order for CCleaner to continue. Go ahead and select Yes to the popup.
 ```
 
-![CCleaner_07](README_media/CCleaner_07.png)
-
-Upon completion you should see `Cleaning Complete` next to a green checkbox.
-
-Navigate to the `Registry` tab and select `Scan for Issues`. Once it has found all the issues, select `Review selected Issues...`.
-
 ![CCleaner_08](README_media/CCleaner_08.png)
 
-CCleaner will ask if you want to make a back up of the registry before making changes, since we just installed a fresh copy of Windows this is not necessary, select `No`. Once the fix window comes up select `Fix All Selected Issues` and then `Close`.
+Upon completion you should see `CYou freed up xxx.x MB`. Click `Done`.
+
+Navigate to the `Registry` tab and select `Select all` at the top of the list to the left and then click `Scan now`. Once it has found all the issues, select `Clean and fix`. Confirm with `Continue` that you understand that the registry will be backed up. Select `Done` when finished.
 
 ![CCleaner_09](README_media/CCleaner_09.png)
 
-Run this process again repeatedly until you keep receiving the same few results left over or a completely clean slate (sometimes this is not possible).
+CCleaner will ask if you want to make a back up of the registry before making changes, since we just installed a fresh copy of Windows this is not necessary, select `No`. Once the fix window comes up select `Fix All Selected Issues` and then `Close`.
 
 Finally close out of CCleaner.
 
@@ -583,15 +619,63 @@ Close the program by selecting `Save`.
 
 ![MSEdgeRedirect_01](README_media/MSEdgeRedirect_01.png)
 
-Hover over the weather widget in the taskbar to open the News/Weather Widget window selecting the Settings icon in the upper right (it looks like a blank avatar). Disable the setting `Open Widgets board on hover`, this will change the icon to require a click in order to show the widget.
+### Widgets
 
-![MSEdgeRedirect_02](README_media/MSEdgeRedirect_02.png)
+Hover over the weather widget in the taskbar to open the News/Weather Widget window selecting the gear icon in the upper right.
+
+![Widgets_01](README_media/Widgets_01.png)
+
+Disable the setting `Open Widgets board on hover`, this will change the icon to require a click in order to show the widgets. Then select `Feed` under Personalize.
+
+![Widgets_02](README_media/Widgets_02.png)
+
+Navigate to the `Notifications` tab and de-select all of the notifications you do not want to recieve. I personally only leave weather notifications on.
+
+![Widgets_03](README_media/Widgets_03.png)
+
+Close out of all the widgets windows.
+
+### PowerToys
+
+Click on the PowerToys icon in the System Tray to open its quick launch menu. Then click on the gear icon to open the PowerToys Settings window.
+
+![PowerToys_01](README_media/PowerToys_01.png)
 
 Reboot the machine to continue.
 
 ## Further Setup
 
 Additional setup and software configuration can be found on the [Wiki](https://github.com/kyaulabs/win11tweak/wiki).
+
+## Customization
+
+This section covers optional customization points for Win11Tweaks so you can tailor behavior to your own environment and workflow. More customization guides will be added here over time as additional script components become configurable.
+
+### Winget App Customization
+
+If you modify the default applications installed by `winget`, you must update more than one place in this project.
+
+Customize Apps Checklist:
+
+* [ ] Add/remove package IDs in `user_settings.ps1`.
+* [ ] Add/remove matching `Add-Shortcut` entries in `Modules/startmenu.ps1` under `Creating Shortcuts`.
+* [ ] Verify each shortcut target path exists after install.
+* [ ] Run the script and confirm Open-Shell has no dead shortcuts.
+
+#### Detailed Notes
+
+1. Update the package list in `user_settings.ps1`.
+   This is the source list consumed by the scripts for `winget` installs.
+2. Update Open-Shell shortcuts in `Modules/startmenu.ps1` under the `Creating Shortcuts` section (starts around line 50).
+   Each application you want visible in the Start Menu should have a matching `Add-Shortcut` entry.
+3. Follow the shortcut syntax shown directly under that section header (line 51):
+
+```powershell
+# Add-Shortcut "SubMenu\Application OR Startup" "target.exe" "icon-name" "arguments" "working-directory"
+Add-Shortcut "Apps\Example App" "${Env:ProgramFiles}\Vendor\Example\example.exe" "win11tweak-apps.dll,123"
+```
+
+If a package is removed from `user_settings.ps1`, also remove or adjust its corresponding `Add-Shortcut` entry so Open-Shell does not show dead shortcuts.
 
 ## Attribution
 
@@ -606,4 +690,4 @@ Without all of the following this guide/script would not have been possible.
 * [agave font](https://github.com/agarick/agave)
 * [Mixed wallpaper](https://www.deviantart.com/i5yal/art/Mixed-wallpaper-744877376)
 * [openssh-sk-winhello](https://github.com/tavrez/openssh-sk-winhello)
-* [Git for Windows inside MSYS2 proper](https://github.com/git-for-windows/git/wiki/Install-inside-MSYS2-proper)
+* [Git for Windows inside MSYS2 proper](https://gitforwindows.org/Install-inside-MSYS2-proper)

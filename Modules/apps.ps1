@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -28,21 +28,22 @@
 
 Show-Section -Section "Apps" -Desc "Remove Bloated Defaults"
 
-$Whitelist = 'Microsoft.DesktopAppInstaller|Microsoft.GetHelp|Microsoft.MicrosoftSolitaireCollection|Microsoft.Net.Native*|Microsoft.Paint|Microsoft.WindowsNotepad|Microsoft.WindowsTerminal'
-$NonRemovable = 'Microsoft.549981C3F5F10|Microsoft.MicrosoftEdge.Stable|Microsoft.StorePurchaseApp|Microsoft.UI*|Microsoft.VCLibs*|Microsoft.Windows.FilePicker*|Microsoft.WindowsStore'
+$AppxException = 'Microsoft.WindowsCalculator|Microsoft.Windows.Photos'
+$Whitelist = 'Microsoft.*ImageExtension|Microsoft.*VideoExtension|Microsoft.NET.Native.*|Microsoft.VCLibs.*|Microsoft.UI.Xaml.*|Microsoft.WindowsAppRuntime.*|Microsoft.WidgetsPlatformRuntime|Microsoft.WebMediaExtensions|Microsoft.DesktopAppInstaller|Microsoft.WindowsStore|Microsoft.StorePurchaseApp|Microsoft.Services.Store.Engagement|Microsoft.WindowsTerminal|Microsoft.WindowsNotepad|Microsoft.WindowsCamera|Microsoft.Paint|Microsoft.WindowsSoundRecorder|Microsoft.WindowsAlarms|Microsoft.HEIFImageExtension|Microsoft.WebpImageExtension|Microsoft.RawImageExtension|Microsoft.AV1VideoExtension|Microsoft.HEVCVideoExtension|Microsoft.VP9VideoExtensions|Microsoft.Xbox.*|Microsoft.OneDriveSync'
+$NonRemovable = 'windows.immersivecontrolpanel|MicrosoftWindows.*|Microsoft.Windows.*|Microsoft.UI.Xaml.CBS|Microsoft.WindowsAppRuntime.CBS.*|Microsoft.SecHealthUI|Microsoft.AAD.BrokerPlugin|Microsoft.AccountsControl|Microsoft.BioEnrollment|Microsoft.CredDialogHost|Microsoft.LockApp|Microsoft.AsyncTextService|Microsoft.ECApp|Microsoft.MicrosoftEdge.*|Microsoft.Win32WebViewHost|Windows.CBSPreview|Windows.PrintDialog|^[0-9a-fA-F]{8}-.*|Microsoft.ApplicationCompatibilityEnhancements'
 # remove app packages
-$remove = Get-AppxPackage -AllUsers | Where-Object {$_.Name -NotMatch $Whitelist -and $_.Name -NotMatch $NonRemovable}
+$remove = Get-AppxPackage -AllUsers | Where-Object {($_.Name -NotMatch $Whitelist -and $_.Name -NotMatch $NonRemovable) -or $_.Name -Match $AppxException}
 Foreach ($app in $remove) {
     #Write-Output " - RemoveAppx (allusers): ${app}"
     Remove-AppxPackage -Package $app -AllUsers -WarningAction:SilentlyContinue -ErrorAction:SilentlyContinue | Out-Null
 }
-$remove = Get-AppxPackage | Where-Object {$_.Name -NotMatch $Whitelist -and $_.Name -NotMatch $NonRemovable}
+$remove = Get-AppxPackage | Where-Object {($_.Name -NotMatch $Whitelist -and $_.Name -NotMatch $NonRemovable) -or $_.Name -Match $AppxException}
 Foreach ($app in $remove) {
     #Write-Output " - RemoveAppx: ${app}"
     Remove-AppxPackage -Package $app -WarningAction:SilentlyContinue -ErrorAction:SilentlyContinue | Out-Null
 }
 # built-in apps
-$remove = Get-AppxProvisionedPackage -Online | Where-Object {$_.PackageName -NotMatch $Whitelist -and $_.PackageName -NotMatch $NonRemovable}
+$remove = Get-AppxProvisionedPackage -Online | Where-Object {($_.PackageName -NotMatch $Whitelist -and $_.PackageName -NotMatch $NonRemovable) -or $_.PackageName -Match $AppxException}
 Foreach ($pkg in $remove) {
     #Write-Output " - RemoveAppxProvisioned: ${pkg}"
     Remove-AppxProvisionedPackage -PackageName $pkg.PackageName -Online -WarningAction:SilentlyContinue -ErrorAction:SilentlyContinue | Out-Null
@@ -73,15 +74,8 @@ Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "Bi
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "CortanaConsent" -Type Dword -Value "0"
 Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type Dword -Value "1"
 
-# Remove Xbox/GameBar (not included in Windows N versions)
-Remove-WService -Name "XblAuthManager"
-Remove-WService -Name "XblGameSave"
-Remove-WService -Name "XboxNetApiSvc"
-Remove-WService -Name "XboxGipSvc"
-Unregister-ScheduledTask -TaskName "XblGameSaveTask" -Confirm:$false
-Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type Dword -Value "0"
-Add-Reg -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -Type Dword -Value "0"
-Add-Reg -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Type Dword -Value "0"
+# Remove Recall
+Disable-WindowsOptionalFeature -Online -FeatureName "Recall" -NoRestart -WarningAction:SilentlyContinue | Out-Null
 
 # Remove Maps
 Remove-WService -Name "MapsBroker"

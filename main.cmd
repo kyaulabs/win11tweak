@@ -9,7 +9,7 @@
 :: ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 ::
 :: Win11Tweaks (KYAU Labs Edition)
-:: Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+:: Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 ::
 :: This program is free software: you can redistribute it and/or modify
 :: it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,8 @@
 :: along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 :: Install Agave Terminal Font
+PowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command "$ScriptRoot = '%~dp0'; . \"$ScriptRoot\Modules\_funcs.ps1\"; $URL = Find-GitRelease -Repo 'ryanoasis/nerd-fonts' -Search 'Agave.zip$'; Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Desktop\Agave.zip | Out-Null"
+PowerShell -Command "$ZipPath = Join-Path ${Env:UserProfile} 'Desktop\Agave.zip'; $FontPath = Join-Path '%~dp0' 'Resources\Fonts'; New-Item -Path $FontPath -ItemType Directory -Force | Out-Null; Expand-Archive -Path $ZipPath -DestinationPath $FontPath -Force; Remove-Item -Path $ZipPath -Force"
 PowerShell -Command "$fonts = (New-Object -ComObject Shell.Application).Namespace(0x14); dir Resources/Fonts/*.ttf | %%{ $fonts.CopyHere($_.fullname) }"
 
 :: Enable PowerShell External Script Usage

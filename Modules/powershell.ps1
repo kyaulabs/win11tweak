@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -29,14 +29,14 @@
 Add-Reg -Path "HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" -Name "CodePage" -Type Dword -Value 65001
 Add-Reg -Path "HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe" -Name "CodePage" -Type Dword -Value 65001
 Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Command Processor" -Name "AutoRun" -Type String -Value "@chcp 65001>nul"
-Add-Reg -Path "HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" -Name "FaceName" -Type String -Value "Agave"
+Add-Reg -Path "HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" -Name "FaceName" -Type String -Value "Agave Nerd Font Propo"
 Add-Reg -Path "HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" -Name "FontWeight" -Type Dword -Value 400
 Add-Reg -Path "HKCU:\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" -Name "FontFamily" -Type Dword -Value 54
-Add-Reg -Path "HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe" -Name "FaceName" -Type String -Value "Agave"
+Add-Reg -Path "HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe" -Name "FaceName" -Type String -Value "Agave Nerd Font Propo"
 Add-Reg -Path "HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe" -Name "FontWeight" -Type Dword -Value 400
 Add-Reg -Path "HKCU:\Console\%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe" -Name "FontFamily" -Type Dword -Value 54
-Add-Reg -Path "HKCU:\Console" -Name "FaceName" -Type String -Value "Agave"
+Add-Reg -Path "HKCU:\Console" -Name "FaceName" -Type String -Value "Agave Nerd Font Propo"
 Add-Reg -Path "HKCU:\Console" -Name "FontFamily" -Type Dword -Value 54
 Add-Reg -Path "HKCU:\Console" -Name "FontSize" -Type Dword -Value 1179648
 Add-Reg -Path "HKCU:\Console" -Name "FontWeight" -Type Dword -Value 400
-Add-Reg -Path "HKCU:\Software\Microsoft\Notepad" -Name "lfFaceName" -Type String -Value "Agave"
+Add-Reg -Path "HKCU:\Software\Microsoft\Notepad" -Name "lfFaceName" -Type String -Value "Agave Nerd Font Propo"
