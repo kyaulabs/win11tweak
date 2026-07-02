@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,20 @@ If (-NOT $MicrosoftEdge) {
 # Mapped Network Drives
 . "${PSScriptRoot}\mapdrives.ps1"
 
+# Install PowerShell 7
+$WingetExe = "${Env:LocalAppData}\Microsoft\WindowsApps\winget.exe"
+if (-NOT (Test-Path $WingetExe)) {
+    $WingetExe = "winget.exe"
+}
+$runcmd = @"
+@ECHO OFF
+
+`"${WingetExe}`" install --id Microsoft.PowerShell --exact --source winget --scope machine --silent --accept-package-agreements --accept-source-agreements --disable-interactivity >nul
+"@
+New-Item -Path "${Env:UserProfile}" -Name "runcmd.bat" -ItemType File -Value $runcmd -Force | Out-Null
+Start-Process -FilePath "${Env:UserProfile}\runcmd.bat" -NoNewWindow -Wait
+Remove-Item -Path "${Env:UserProfile}\runcmd.bat" -Force | Out-Null
+
 # ScheduledTask: Mapped Network Drives
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "NoLogo -NoProfile -ExecutionPolicy Bypass -File `"${PSScriptRoot}\mapdrives.ps1"`"
 $trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -59,15 +73,15 @@ Unregister-ScheduledTask -TaskName KL_MapDrives -Confirm:$false | Out-Null
 # ScheduledTask: Remove Windows Defender Tasks
 If (-NOT $WinDefender) {
     $windefend = @"
-$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='WdNisSvc'" | Out-Null
+$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='WdNisSvc'"
 If (-NOT ($null -eq $Service)) {
     $Service.Delete() | Out-Null
 }
-$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='WinDefend'" | Out-Null
+$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='WinDefend'"
 If (-NOT ($null -eq $Service)) {
     $Service.Delete() | Out-Null
 }
-$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='Sense'" | Out-Null
+$Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='Sense'"
 If (-NOT ($null -eq $Service)) {
     $Service.Delete() | Out-Null
 }
@@ -85,44 +99,20 @@ Unregister-ScheduledTask -TaskName "Windows Defender Verification" -Confirm:$fal
     Start-ScheduledTask -TaskName _WinDefendRemoval | Out-Null
 }
 
-# Fix Sublime Text context menu
-if ("sublimetext4" -in $ChocoPkgs) {
-    Rename-Item -Path "HKCR:\``*\shell\Open with Sublime Text" -NewPath "HKCR:\``*\shell\Edit with Sublime Text" -Force | Out-Null
-    Add-Reg -Path "HKCR:\``*\shell\Open with Sublime Text" -Name "Icon" -Type String -Value "`"${Env:ProgramFiles}\Sublime Text\sublime_text.exe`",0"
-    Add-Reg -Path "HKCR:\``*\shell\Open with Sublime Text" -Name "MuiVerb" -Type String -Value "Edit with &Sublime Text"
-    Add-Reg -Path "HKCR:\Directory\shell\Open with Sublime Text" -Name "(Default)" -Type String -Value "Open with &Sublime Text"
-    Add-Reg -Path "HKCR:\Directory\shell\Open with Sublime Text" -Name "Icon" -Type String -Value "`"${Env:ProgramFiles}\Sublime Text\sublime_text.exe`",0"
-    Add-Reg -Path "HKCR:\Directory\shell\Open with Sublime Text\command" -Name "(Default)" -Type String -Value "`"${Env:ProgramFiles}\Sublime Text\sublime_text.exe`" `"%1`""
-}
-
-# Fix Recycle Bin context menu
-if ("ccleaner" -in $ChocoPkgs) {
-    Remove-Item -Path "HKCR:\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\shell\Run CCleaner" -Recursive
-}
+# KYAU Labs Branding
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation" -Name "Model" -Type String -Value "KYAU Labs Edition"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation" -Name "SupportURL" -Type String -Value "https://github.com/kyaulabs/win11tweak"
 
 # Remove Git from right-click
 Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_gui" -Recursive
 Remove-Reg -Path "HKLM:\SOFTWARE\Classes\Directory\background\shell\git_shell" -Recursive
 
-# Download Brave
-Show-Section -Section "Cleanup" -Desc "Download Brave"
-Invoke-WebRequest https://laptop-updates.brave.com/latest/winx64 -OutFile ${Env:UserProfile}\Desktop\BraveSetup.exe | Out-Null
-
-# Download OpenShell
-Show-Section -Section "Cleanup" -Desc "Download OpenShell"
-#Invoke-WebRequest https://github.com/Open-Shell/Open-Shell-Menu/releases/download/v4.4.180/OpenShellSetup_4_4_180.exe -OutFile ${Env:UserProfile}\Desktop\OpenShellSetup.exe | Out-Null
-$URL = Find-GitRelease -Repo "Open-Shell/Open-Shell-Menu" -Search ".exe$"
-Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Desktop\Open-Shell-Setup.exe | Out-Null
-
+# OneDrive & Microsoft 365
 Show-Section -Section "Cleanup" -Desc "Last Minute Removals"
 If (-NOT $WinDefender) {
     Remove-WService -Name "WinDefend"
     Remove-WService -Name "Sense"
 }
-Remove-WService -Name "XblAuthManager"
-Remove-WService -Name "XblGameSave"
-Remove-WService -Name "XboxNetApiSvc"
-Remove-WService -Name "XboxGipSvc"
 
 If (-NOT $Microsoft365) {
     Remove-Item "${Env:UserProfile}\OneDrive" -Recurse -Force -ErrorAction:SilentlyContinue
@@ -134,11 +124,39 @@ If (-NOT $Microsoft365) {
     Unregister-ScheduledTask -TaskName $onedrivetask -Confirm:$false
 }
 
+# Disable program data collection and reporting
 Unregister-ScheduledTask -TaskName "ProgramDataUpdater" -Confirm:$false
 Unregister-ScheduledTask -TaskName "Microsoft Compatibility Appraiser" -Confirm:$false
 
+# %SystemDrive%\msys64\etc\nsswitch.conf
+$nsswitch = @"
+passwd: files db
+group: files db
+
+db_enum: cache builtin
+
+db_home: windows cygwin desc
+db_shell: cygwin desc
+db_gecos: cygwin desc
+"@
+New-Item -ItemType File -Path "${Env:SystemDrive}\msys64\etc\" -Name "nsswitch.conf" -Value $nsswitch -Force | Out-Null
+
+# Dotfiles Repository Validation
+$UsesDotfiles = $false
+if (-not [string]::IsNullOrWhiteSpace($DotfilesRepo) -and $DotfilesRepo -match '^https://github\.com/[^/]+/[^/]+') {
+    $RepoApiPath = [regex]::Match($DotfilesRepo, 'github\.com/(.+?)(?:\.git)?$').Groups[1].Value
+    try {
+        Invoke-RestMethod -Uri "https://api.github.com/repos/${RepoApiPath}" -ErrorAction Stop | Out-Null
+        $UsesDotfiles = $true
+    } catch {
+        $UsesDotfiles = $false
+    }
+}
+
 Show-Section -Section "Cleanup" -Desc "User Configs"
+# Copy OpenShell.xml to Desktop
 Copy-Item ${Location}\..\Tools\OpenShell.xml ${Env:UserProfile}\Desktop -Force | Out-Null
+# Copy Windows Terminal settings
 Copy-Item ${Location}\..\Tools\wt.json ${Env:LocalAppData}\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json -Force | Out-Null
 
 # %AppData%\mpv
@@ -171,21 +189,17 @@ Add-UserFolderIcon -Name "${Env:UserProfile}\.local" -ImageRes 7 #-Icon "folder-
 New-Item -Type Directory -Path "${Env:UserProfile}\.ssh" | Out-Null
 Add-UserFolderIcon -Name "${Env:UserProfile}\.ssh" -ImageRes 29 #-Icon "folder-black-private"
 
-# %SystemDrive%\msys64\usr\bin\gitleaks.exe
+# %SystemDrive%\msys64\ucrt64\bin\gitleaks.exe
 $URL = Find-GitRelease -Repo "zricethezav/gitleaks" -Search "windows_x64.zip"
 Invoke-WebRequest $URL -OutFile ${Env:UserProfile}\Downloads\gitleaks.zip | Out-Null
-Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\gitleaks.zip" -DestinationPath "${Env:SystemDrive}\msys64\usr\bin" -Force | Out-Null
+Expand-Archive -LiteralPath "${Env:UserProfile}\Downloads\gitleaks.zip" -DestinationPath "${Env:SystemDrive}\msys64\ucrt64\bin" -Force | Out-Null
 Remove-Item -Path "${Env:UserProfile}\Downloads\gitleaks.zip" | Out-Null
-Remove-Item -Path "${Env:SystemDrive}\msys64\usr\bin\README.md" | Out-Null
-Remove-Item -Path "${Env:SystemDrive}\msys64\usr\bin\LICENSE" | Out-Null
+Remove-Item -Path "${Env:SystemDrive}\msys64\ucrt64\bin\README.md" | Out-Null
+Remove-Item -Path "${Env:SystemDrive}\msys64\ucrt64\bin\LICENSE" | Out-Null
 
-# %SystemDrive%\msys64\usr\bin\jq.exe
+# %SystemDrive%\msys64\ucrt64\bin\jq.exe
 $URL = Find-GitRelease -Repo "stedolan/jq" -Search "-win64.exe"
-Invoke-WebRequest $URL -Outfile "${Env:SystemDrive}\msys64\usr\bin\jq.exe" | Out-Null
-
-# %SystemDrive%\msys64\usr\lib\winhello.dll
-#$URL = Find-GitRelease -Repo "tavrez/openssh-sk-winhello" -Search "winhello.dll"
-#Invoke-WebRequest $URL -OutFile "${Env:SystemDrive}\msys64\usr\lib\winhello.dll" | Out-Null
+Invoke-WebRequest $URL -Outfile "${Env:SystemDrive}\msys64\ucrt64\bin\jq.exe" | Out-Null
 
 # %ProgramFiles%\Bin\ssh.bat
 $ssh = @"
@@ -203,6 +217,40 @@ IF /I `"%2`" EQU `"1`" SET PROFILE=SSH-Remote
 "@
 New-Item -ItemType File -Path "${Env:ProgramFiles}\Bin\" -Name "ssh.bat" -Value $ssh | Out-Null
 
+# %ProgramFiles%\Bin\zZz.ps1
+$zzz = @'
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+
+public class Monitor {
+    [DllImport("user32.dll")]
+    public static extern IntPtr SendMessage(
+        IntPtr hWnd,
+        uint Msg,
+        IntPtr wParam,
+        IntPtr lParam
+    );
+
+    [DllImport("user32.dll")]
+    public static extern bool LockWorkStation();
+}
+"@
+
+[Monitor]::LockWorkStation()
+
+Start-Sleep -Milliseconds 1500
+
+[Monitor]::SendMessage(
+    [IntPtr]0xffff,
+    0x0112,
+    [IntPtr]0xF170,
+    [IntPtr]2
+)
+'@
+New-Item -ItemType File -Path "${Env:ProgramFiles}\Bin\" -Name "zZz.ps1" -Value $zzz | Out-Null
+
+if (-not $UsesDotfiles) {
 # %UserProfile%\.gitconfig
 $gitconfig = @"
 [User]
@@ -380,7 +428,7 @@ if status --is-interactive
     set -x GPG_TTY (tty)
     set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
     set -x EDITOR "subl -w"
-    set -x PATH "`$HOME/bin" "/c/Program Files/Sublime Text" "/mingw64/bin" "/opt/bin" `$MSYS2_PATH `$ORIGINAL_PATH
+    set -x PATH "`$HOME/bin" "/c/Program Files/Sublime Text" "/ucrt64/bin" "/clang64/bin" "/mingw64/bin" "/opt/bin" `$MSYS2_PATH `$ORIGINAL_PATH
     set -x PAGER "less"
     set -x LESS "-RSM~gIsw"
     # gpg-agent + scdaemon check
@@ -399,46 +447,22 @@ if status --is-interactive
 end
 "@
 New-Item -ItemType File -Path "${Env:UserProfile}\.config\fish\" -Name "config.fish" -Value $configfish | Out-Null
+}
 
-# Nircmd / Sysinternals added to PATH
-Add-Reg -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Environment" -Name PATH -Type ExpandString -Value "${Env:PATH};${Env:ProgramData}\chocolatey\lib\nircmd\tools;${Env:ProgramData}\chocolatey\lib\sysinternals\tools"
-
-# Install Git for Windows inside of MSYS2
+# Configure Default MSYS2 Environment
 Show-Section -Section "MSYS2" -Desc "Configuration"
-Show-Package
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Syyuu --noconfirm`""
-Show-Package "msys2-update"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Syyuu --noconfirm`""
-Show-Package "pacman-update"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"sed -i '/^\[mingw32\]/{ s|^|[git-for-windows]\nServer = https://wingit.blob.core.windows.net/x86-64\n\n[git-for-windows-mingw32]\nServer = https://wingit.blob.core.windows.net/i686\n\n|; }' /etc/pacman.conf`""
-Show-Package "gitforwindows-repo"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"rm -r /etc/pacman.d/gnupg/`""
-Show-Package "pacman-db"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman-key --init`""
-Show-Package "key-init"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman-key --populate msys2`""
-Show-Package "key-populate"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"curl -L https://raw.githubusercontent.com/git-for-windows/build-extra/HEAD/git-for-windows-keyring/git-for-windows.gpg | pacman-key --add - && pacman-key --lsign-key E8325679DFFF09668AD8D7B67115A57376871B1C && pacman-key --lsign-key 3B6D86A1BA7701CD0F23AED888138B9E1A9F3986`""
-Show-Package "gitforwindows-gpg"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Syyuu --noconfirm`""
-Show-Package "msys2-update"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -Suu --noconfirm`""
-Show-Package "pacman-update"
-
-# %SystemDrive%\msys64\etc\nsswitch.conf
-$nsswitch = @"
-passwd: files db
-group: files db
-
-db_enum: cache builtin
-
-db_home: windows cygwin desc
-db_shell: cygwin desc
-db_gecos: cygwin desc
+$dotprofile = @"
+export PATH="/ucrt64/bin:/usr/bin:/bin:/usr/local/bin:/clang64/bin:/mingw64/bin:/opt/bin:`$PATH"
 "@
-New-Item -ItemType File -Path "${Env:SystemDrive}\msys64\etc\" -Name "nsswitch.conf" -Value $nsswitch -Force | Out-Null
-Show-Package "nsswitch.conf"
-Show-Package -NewLine
+New-Item -ItemType File -Path "${Env:UserProfile}" -Name ".profile" -Value $dotprofile | Out-Null
+if ($UsesDotfiles) {
+    $defaultfish = @"
+if status is-interactive
+    set -x PATH "`$HOME/bin" "/c/Program Files/Sublime Text" "/ucrt64/bin" "/clang64/bin" "/mingw64/bin" "/usr/local/bin" "/usr/bin" "/bin" "/opt/bin" `$ORIGINAL_PATH
+end
+"@
+    New-Item -ItemType File -Path "${Env:UserProfile}\.config\fish\" -Name "config.fish" -Value $defaultfish -Force | Out-Null
+}
 
 # MSYS2 Additional Packages
 Show-Section -Section "MSYS2" -Desc "Packages"
@@ -448,18 +472,28 @@ Foreach ($pkg in $MsysPkgs) {
     Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S ${pkg} --noconfirm`""
 }
 Show-Package "msys/openssh-fix"
-Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S mingw64/mingw-w64-x86_64-curl mingw64/mingw-w64-x86_64-gnutls mingw64/mingw-w64-x86_64-openssl msys/libopenssl msys/libgnutls msys/openssl msys/openssh --noconfirm`""
+Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"pacman -S ucrt64/mingw-w64-ucrt-x86_64-curl ucrt64/mingw-w64-ucrt-x86_64-gnutls ucrt64/mingw-w64-ucrt-x86_64-openssl msys/libopenssl msys/libgnutls msys/openssl msys/openssh --noconfirm`""
 Show-Package -NewLine
+
+# MSYS2 Dotfiles Customization
+if ($UsesDotfiles) {
+    $RepoName = ($DotfilesRepo -split '/')[-1] -replace '\.git$', ''
+    Show-Section -Section "Dotfiles" -Desc "Cloning Repository"
+    Show-Package "${RepoName}"
+    Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"git clone ${DotfilesRepo} ~/${RepoName}`""
+    Show-Package -NewLine
+    Show-Section -Section "Dotfiles" -Desc "Running Setup Script"
+    Show-Package "${DotfilesScript}"
+    Show-RunAsUser -Command "${Env:SystemDrive}\msys64\msys2_shell.cmd -defterm -here -no-start -msys -c `"cd ~/${RepoName} && ${DotfilesScript}`""
+    Show-Package -NewLine
+}
 
 # MSYS2 Path Fixes (Removable/Network Drives)
 $AddedText = "MSYS=nonativeinnerlinks"
 Get-ChildItem -Path "${Env:SystemDrive}\msys64\*.ini" -Exclude "uninstall*" | ForEach-Object {$AddedText+"`r`n" + (Get-Content $_.FullName -Raw) | Out-File $_.FullName}
 
 # MSYS2 Cleanup
-Move-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}\.bash*" -Destination "${Env:UserProfile}" | Out-Null
-Move-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}\.inputrc" -Destination "${Env:UserProfile}" | Out-Null
-Move-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}\.profile" -Destination "${Env:UserProfile}" | Out-Null
-Remove-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}" -Force -Recurse | Out-Null
+Remove-Item -Path "${Env:SystemDrive}\msys64\home\${Env:UserName}" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
 
 # Clear Icon Cache
 Start-Process -FilePath "IE4UINIT.EXE" -ArgumentList "-show" -NoNewWindow -Wait | Out-Null
@@ -469,6 +503,7 @@ Remove-Item "${Env:LocalAppData}\Microsoft\Windows\Explorer\*" -Include "iconcac
 Remove-Item -Path "${Env:UserProfile}\Desktop\*.LNK" -Force | Out-Null
 Remove-Item -Path "${Env:Public}\Desktop\*.LNK" -Force | Out-Null
 Remove-Item -Path "${Env:ProgramData}\Microsoft\Windows\Start Menu\*.LNK" -Force | Out-Null
+Remove-Item -Path "${Env:ProgramData}\Microsoft\Windows\Start Menu\Corsair" -Recurse -Force -ErrorAction:SilentlyContinue | Out-Null
 
 If (Test-Path "${Env:ProgramFiles(x86)}\RivaTuner Statistics Server\Uninstall.exe") {
     Show-Section -Section "PostFix" -Desc "Remove RivaTuner"
@@ -476,6 +511,8 @@ If (Test-Path "${Env:ProgramFiles(x86)}\RivaTuner Statistics Server\Uninstall.ex
     Remove-Item "${Env:ProgramFiles(x86)}\RivaTuner Statistics Server" -Recurse -Force | Out-Null
 }
 
+Remove-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "EADM"
+Remove-Reg -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "Everything"
 Remove-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "PostFix"
 
 # Cleanup Batch files

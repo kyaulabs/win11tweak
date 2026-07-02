@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -38,26 +38,9 @@ $EdgeApps = @(
 Get-Process *MicrosoftEdge* | Stop-Process -Force
 Get-Process *MicrosoftEdgeCP* | Stop-Process -Force
 Foreach ($sysapp in $EdgeApps) {
-    #[int]$i = "1"
-    #$dis = "_disabled"
-    #$MoveTo = "${EdgeAppPath}${sysapp}_disabled"
     $MoveFrom = "${EdgeAppPath}${sysapp}"
     If (Test-Path -Path "${MoveFrom}") {
         Remove-Item "${MoveFrom}" -Recurse -Force -ErrorAction:SilentlyContinue
-
-        # Rename _disabled
-        <#
-        If (Test-Path -Path "${MoveTo}") {
-            Do {
-                mv ${MoveFrom} ${MoveTo}${i} -EA SilentlyContinue
-                $i++
-                }
-            Until (!(Test-Path -Path "${MoveFrom}"))
-        }
-        Else {
-            mv ${MoveFrom} ${MoveTo}
-        }
-        #>
     }
 }
 

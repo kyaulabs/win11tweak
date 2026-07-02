@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -136,6 +136,36 @@ Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -Type Dword -Value "0"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -Type Dword -Value "0"
 Add-Reg -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Type Dword -Value "1"
+
+# Remove Gallery from Explorer Navigation Pane
+Add-RegLiteral -Key "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}" -Type "REG_SZ" -Value "Gallery"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}" -Name "HiddenByDefault" -Type Dword -Value "1"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}" -Type Dword -Value "1"
+
+
+# Remove Desktop from Explorer Navigation Pane
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" -Type Dword -Value "1"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" -Name "HiddenByDefault" -Type Dword -Value "1"
+
+# Remove Documents from Explorer Navigation Pane
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" -Type Dword -Value "1"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}" -Name "HiddenByDefault" -Type Dword -Value "1"
+
+# Remove Music from Explorer Navigation Pane
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" -Type Dword -Value "1"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{1CF1260C-4DD0-4ebb-811F-33C572699FDE}" -Name "HiddenByDefault" -Type Dword -Value "1"
+
+# Remove Pictures from Explorer Navigation Pane
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" -Type Dword -Value "1"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}" -Name "HiddenByDefault" -Type Dword -Value "1"
+
+# Remove Videos from Explorer Navigation Pane
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{A0953C92-50DC-43bf-BE83-3742FED03C9C}" -Type Dword -Value "1"
+Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}" -Name "HiddenByDefault" -Type Dword -Value "1"
+
+# Remove Duplicate Removable Drives from Explorer Navigation Pane
+Add-Reg -Path "HKCU:\Software\Classes\WOW6432Node\CLSID\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83}\ShellFolder" -Name "Attributes" -Type Dword -Value "0xb0100000"
+Add-Reg -Path "HKCU:\Software\Classes\CLSID\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83}\ShellFolder" -Name "Attributes" -Type Dword -Value "0xb0100000"
 
 Show-Section -Section "Theme" -Desc "Install Mouse Theme"
 Start-Process -FilePath "${Env:SystemRoot}\System32\RUNDLL32.EXE" -ArgumentList "setupapi,InstallHinfSection DefaultInstall 132 ${PSScriptRoot}\..\Resources\Cursors\Install.inf" -NoNewWindow | Out-Null

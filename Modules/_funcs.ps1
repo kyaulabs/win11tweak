@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -45,6 +45,8 @@ $fb = [System.Char]::ConvertFromUtf32([System.Convert]::toInt32("2588",16))
 $dot = [System.Char]::ConvertFromUtf32([System.Convert]::toInt32("25A0",16))
 # U+2713: Check Mark
 $check = [System.Char]::ConvertFromUtf32([System.Convert]::toInt32("2713",16))
+# U+2717: Ballot X
+$cross = [System.Char]::ConvertFromUtf32([System.Convert]::toInt32("2717",16))
 
 # Create HKEY_CLASSES_ROOT PSDrive
 New-PSDrive -Name "HKCR" -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" | Out-Null
@@ -96,16 +98,121 @@ function Add-Reg {
         [ValidateNotNullOrEmpty()]
         [string] $Type,
         [Parameter(Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
-        [string] $Value
+        [ValidateNotNull()]
+        [object] $Value
     )
 
     If (-NOT (Test-Path $Path)) {
         New-Item -Path $Path -Force | Out-Null
     }
-    If ([bool]$Name -And [bool]$Type -And [bool]$Value) {
-        Set-ItemProperty -Path $Path -Name $Name -Type $Type -Value $Value -Force | Out-Null
+    If ($PSBoundParameters.ContainsKey("Name") -And $PSBoundParameters.ContainsKey("Type") -And $PSBoundParameters.ContainsKey("Value")) {
+        $regValue = $Value
+
+        If ($Type -ieq "DWord") {
+            If ($Value -is [string]) {
+                $raw = $Value.Trim()
+
+                If ($raw -match '^0x[0-9a-fA-F]+$') {
+                    $regValue = [UInt32]::Parse($raw.Substring(2), [System.Globalization.NumberStyles]::HexNumber, [System.Globalization.CultureInfo]::InvariantCulture)
+                } ElseIf ($raw -match '^[0-9]+$') {
+                    $regValue = [UInt32]::Parse($raw, [System.Globalization.CultureInfo]::InvariantCulture)
+                } Else {
+                    $regValue = [UInt32]$raw
+                }
+            } Else {
+                $regValue = [UInt32]$Value
+            }
+        }
+
+        Set-ItemProperty -Path $Path -Name $Name -Type $Type -Value $regValue -Force | Out-Null
     }
+}
+
+function Add-RegLiteral {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Key,
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Type,
+        [Parameter(Mandatory=$true)]
+        [AllowEmptyString()]
+        [string] $Value,
+        [Parameter(Mandatory=$false)]
+        [string] $Name = "(Default)"
+    )
+
+    $firstSlash = $Key.IndexOf("\")
+    if ($firstSlash -lt 0) {
+        return
+    }
+
+    $hiveName = $Key.Substring(0, $firstSlash).ToUpperInvariant()
+    $subKey = $Key.Substring($firstSlash + 1)
+
+    $baseHive = $null
+    switch ($hiveName) {
+        "HKCR" { $baseHive = [Microsoft.Win32.Registry]::ClassesRoot }
+        "HKCU" { $baseHive = [Microsoft.Win32.Registry]::CurrentUser }
+        "HKLM" { $baseHive = [Microsoft.Win32.Registry]::LocalMachine }
+        "HKU"  { $baseHive = [Microsoft.Win32.Registry]::Users }
+        "HKCC" { $baseHive = [Microsoft.Win32.Registry]::CurrentConfig }
+        default { return }
+    }
+
+    $valueKind = [Microsoft.Win32.RegistryValueKind]::String
+    $typedValue = $Value
+    switch ($Type.ToUpperInvariant()) {
+        "REG_SZ" { }
+        "REG_EXPAND_SZ" {
+            $valueKind = [Microsoft.Win32.RegistryValueKind]::ExpandString
+        }
+        "REG_DWORD" {
+            $valueKind = [Microsoft.Win32.RegistryValueKind]::DWord
+            if ($Value -match '^0x[0-9a-fA-F]+$') {
+                $typedValue = [UInt32]::Parse($Value.Substring(2), [System.Globalization.NumberStyles]::HexNumber, [System.Globalization.CultureInfo]::InvariantCulture)
+            }
+            else {
+                $typedValue = [UInt32]$Value
+            }
+        }
+        "REG_QWORD" {
+            $valueKind = [Microsoft.Win32.RegistryValueKind]::QWord
+            if ($Value -match '^0x[0-9a-fA-F]+$') {
+                $typedValue = [UInt64]::Parse($Value.Substring(2), [System.Globalization.NumberStyles]::HexNumber, [System.Globalization.CultureInfo]::InvariantCulture)
+            }
+            else {
+                $typedValue = [UInt64]$Value
+            }
+        }
+        "REG_MULTI_SZ" {
+            $valueKind = [Microsoft.Win32.RegistryValueKind]::MultiString
+            $typedValue = @($Value -split '\\0')
+        }
+        "REG_BINARY" {
+            $valueKind = [Microsoft.Win32.RegistryValueKind]::Binary
+            $hex = ($Value -replace '[^0-9a-fA-F]', '')
+            if (($hex.Length % 2) -ne 0) {
+                $hex = "0" + $hex
+            }
+            $bytes = New-Object byte[] ($hex.Length / 2)
+            for ($i = 0; $i -lt $bytes.Length; $i++) {
+                $bytes[$i] = [Convert]::ToByte($hex.Substring($i * 2, 2), 16)
+            }
+            $typedValue = $bytes
+        }
+    }
+
+    $regKey = $baseHive.CreateSubKey($subKey)
+    if ($null -eq $regKey) {
+        return
+    }
+
+    $valueName = if ($Name -eq "(Default)") { "" } else { $Name }
+    $regKey.SetValue($valueName, $typedValue, $valueKind)
+    $regKey.Close()
 }
 
 function Remove-Reg {
@@ -147,7 +254,7 @@ function Remove-WService {
         [string] $Name
     )
 
-    $Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='$Name'" | Out-Null
+    $Service = Get-CimInstance -ClassName Win32_Service -Filter "Name='$Name'"
     If (-NOT ($null -eq $Service)) {
         $Service.Delete() | Out-Null
     }
@@ -183,8 +290,10 @@ function Add-Shortcut {
     $Shortcut.TargetPath = $Target
     $Shortcut.Arguments = $Arguments
 
-    if ([bool]$Icon) {
+    if ($Icon -like "win11tweak-*") {
         $Shortcut.IconLocation = "${Env:ProgramData}\" + $Icon
+    } elseif ([bool]$Icon) {
+        $Shortcut.IconLocation = $Icon
     } else {
         $Shortcut.IconLocation = $Target + ",0"
     }
@@ -250,18 +359,20 @@ function Show-RunAsUser {
         [string] $Command
     )
 
+    $cmdPath = Join-Path $Env:TEMP ("win11tweak-runas-" + [System.Guid]::NewGuid().ToString() + ".bat")
     $cmdfile = @"
 @ECHO OFF
 ${Command}
-start /b "" cmd /c del "%~f0"&exit /b
 "@
-    New-Item -ItemType File -Path "${Env:SystemDrive}\" -Name "temp.bat" -Value $cmdfile -Force | Out-Null
-    Start-Process -FilePath "explorer.exe" -Argument "${Env:SystemDrive}\temp.bat" -Verb runas -WindowStyle Hidden
-    Write-Host -NoNewLine ""
-    Start-Sleep -Seconds 2
-    while ((Get-Process cmd).Length -eq 2) {
-        Write-Host -NoNewLine ""
-        Start-Sleep -Seconds 1
+    New-Item -ItemType File -Path $cmdPath -Value $cmdfile -Force | Out-Null
+
+    try {
+        Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"${cmdPath}`"" -Verb RunAs -WindowStyle Hidden -Wait | Out-Null
+    }
+    finally {
+        if (Test-Path $cmdPath) {
+            Remove-Item -Path $cmdPath -Force -ErrorAction SilentlyContinue | Out-Null
+        }
     }
 }
 
@@ -272,7 +383,9 @@ function Show-Package {
         [string] $Text = " ",
         [Parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
-        [switch] $NewLine
+        [switch] $NewLine,
+        [Parameter(Mandatory=$false)]
+        [Nullable[bool]] $Installed = $null
     )
 
     if ($NewLine) {
@@ -281,7 +394,43 @@ function Show-Package {
         if ($Text -eq " ") {
             Write-Host "${Text}" -NoNewline
         } else {
-            Write-Host " : ${Text} [1;32m${check}[0m" -NoNewline
+            $displayText = $Text
+            $isInstalled = $true
+            $wingetId = $null
+
+            # Winget package IDs are validated and shortened here for display.
+            if ($Text -match '^[^.\s]+\.[^\s]+$') {
+                $wingetId = $Text
+                $pkgParts = $wingetId -split '\.', 2
+                if ($pkgParts.Count -eq 2 -and $pkgParts[0] -eq $pkgParts[1]) {
+                    $displayText = $pkgParts[1]
+                }
+            }
+
+            if ($null -ne $Installed) {
+                $isInstalled = [bool]$Installed
+            }
+            elseif ($null -ne $wingetId) {
+                $WingetExe = "${Env:LocalAppData}\Microsoft\WindowsApps\winget.exe"
+                if (-NOT (Test-Path $WingetExe)) {
+                    $WingetExe = "winget.exe"
+                }
+
+                try {
+                    & $WingetExe list --id $wingetId --exact --accept-source-agreements --disable-interactivity *> $null
+                    $isInstalled = ($LASTEXITCODE -eq 0)
+                }
+                catch {
+                    $isInstalled = $false
+                }
+            }
+
+            if ($isInstalled) {
+                Write-Host " : ${displayText} [1;32m${check}[0m" -NoNewline
+            }
+            else {
+                Write-Host " : ${displayText} [1;31m${cross}[0m" -NoNewline
+            }
         }
     }
 }
@@ -302,3 +451,51 @@ function Find-GitRelease {
     $Match[0] | Select-Object -ExpandProperty assets | Where-Object { $_.name -Match $Search } | Select-Object -expand browser_download_url
 }
 
+function Add-ToUserPath {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string[]]$Paths,
+
+        [switch]$RefreshSession
+    )
+
+    $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+    if (-not $currentPath) { $currentPath = "" }
+
+    $pathArray = @($currentPath -split ";" | Where-Object { $_ -ne "" })
+    $pathsAdded = @()
+
+    foreach ($path in $Paths) {
+        # Validate path exists
+        if (-not (Test-Path $path)) {
+            Write-Host " : Path does not exist: ${path} [1;31m${cross}[0m"
+            continue
+        }
+
+        # Check if already in PATH (case-insensitive)
+        if ($pathArray -icontains $path) {
+            Write-Host " : Already in PATH: ${path} [1;32m${check}[0m"
+        } else {
+            $pathArray += $path
+            $pathsAdded += $path
+            Write-Host " : Added to PATH: ${path} [1;32m${check}[0m"
+        }
+    }
+
+    # Only update if changes were made
+    if ($pathsAdded.Count -gt 0) {
+        $newPath = $pathArray -join ";"
+        [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
+        Write-Host " : User PATH updated successfully [1;32m${check}[0m"
+
+        # Refresh current session if requested
+        if ($RefreshSession) {
+            $env:PATH = [Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [Environment]::GetEnvironmentVariable("PATH", "User")
+            Write-Host " : Current session PATH refreshed [1;32m${check}[0m"
+        }
+    } else {
+        Write-Host " : No new paths added [1;31m${cross}[0m"
+    }
+}

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
-<Settings component="StartMenu" version="4.4.180">
+<Settings component="StartMenu" version="4.4.198">
 	<MenuStyle value="Classic2"/>
+	<ShiftRight value="1"/>
 	<Computer value="Drives"/>
 	<Documents value="Hide"/>
 	<UserFiles value="Hide"/>
@@ -126,7 +127,7 @@
 		<Line>CustomItem32.Label=Windows Update</Line>
 		<Line>CustomItem32.Icon=shell32.dll, 16739</Line>
 		<Line>CustomItem32.Settings=NOTRACK_RECENT</Line>
-		<Line>ShutdownBoxItem.Items=SwitchUserItem,LogOffItem,LockItem,SEPARATOR,CustomItem3,SEPARATOR,RestartNUItem,RestartItem,UndockItem,DisconnectItem,ShutdownNUItem,ShutdownItem</Line>
+		<Line>ShutdownBoxItem.Items=SwitchUserItem,LogOffItem,LockItem,SEPARATOR,CustomItem40,CustomItem41,SEPARATOR,RestartNUItem,RestartItem,UndockItem,DisconnectItem,ShutdownNUItem,ShutdownItem</Line>
 		<Line>ShutdownBoxItem.Command=shutdown_box</Line>
 		<Line>ShutdownBoxItem.Label=&amp;</Line>
 		<Line>ShutdownBoxItem.Icon=%ProgramData%\win11tweak-start.dll,131</Line>
@@ -146,10 +147,14 @@
 		<Line>LockItem.Tip=$Menu.LockTip</Line>
 		<Line>LockItem.Icon=%ProgramData%\win11tweak-start.dll,119</Line>
 		<Line>LockItem.Settings=NOTRACK_RECENT</Line>
-		<Line>CustomItem3.Command=monitor_off</Line>
-		<Line>CustomItem3.Label=Monitors Off</Line>
-		<Line>CustomItem3.Icon=%ProgramData%\win11tweak-start.dll,134</Line>
-		<Line>CustomItem3.Settings=NOTRACK_RECENT</Line>
+		<Line>CustomItem40.Command=pwsh.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "%ProgramFiles%\Bin\zZz.ps1"</Line>
+		<Line>CustomItem40.Label=Displays off</Line>
+		<Line>CustomItem40.Icon=%ProgramData%\win11tweak-start.dll,134</Line>
+		<Line>CustomItem40.Settings=NOTRACK_RECENT</Line>
+		<Line>CustomItem41.Command=rundll32.exe powrprof.dll,SetSuspendState Sleep</Line>
+		<Line>CustomItem41.Label=Sleep</Line>
+		<Line>CustomItem41.Icon=%ProgramData%\win11tweak-start.dll, 133</Line>
+		<Line>CustomItem41.Settings=NOTRACK_RECENT</Line>
 		<Line>RestartNUItem.Command=restart_noupdate</Line>
 		<Line>RestartNUItem.Label=$Menu.Restart</Line>
 		<Line>RestartNUItem.Tip=$Menu.RestartTip</Line>
@@ -219,18 +224,18 @@
 		<Line>CustomItem9.Label=Battle.NET</Line>
 		<Line>CustomItem9.Icon=%ProgramData%\win11tweak-apps.dll,200</Line>
 		<Line>CustomItem9.Settings=NOTRACK_RECENT</Line>
-		<Line>CustomItem35.Command=%ProgramFiles(x86)%\Epic Games\Launcher\Portal\Binaries\Win32\EpicGamesLauncher.exe</Line>
+		<Line>CustomItem37.Command=%ProgramFiles%\Electronic Arts\EA Desktop\EA Desktop\EA Desktop.exe</Line>
+		<Line>CustomItem37.Label=EA Desktop</Line>
+		<Line>CustomItem37.Icon=%ProgramFiles%\Electronic Arts\EA Desktop\EA Desktop\EA Desktop.exe, 101</Line>
+		<Line>CustomItem37.Settings=NOTRACK_RECENT</Line>
+		<Line>CustomItem35.Command=%ProgramFiles%\Epic Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe</Line>
 		<Line>CustomItem35.Label=Epic Games</Line>
-		<Line>CustomItem35.Icon=%ProgramFiles(x86)%\Epic Games\Launcher\Portal\Binaries\Win32\EpicGamesLauncher.exe, 123</Line>
+		<Line>CustomItem35.Icon=%ProgramFiles%\Epic Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe, 123</Line>
 		<Line>CustomItem35.Settings=NOTRACK_RECENT</Line>
 		<Line>CustomItem36.Command=%ProgramFiles(x86)%\GOG Galaxy\GalaxyClient.exe</Line>
 		<Line>CustomItem36.Label=GOG Galaxy</Line>
 		<Line>CustomItem36.Icon=%ProgramFiles(x86)%\GOG Galaxy\GalaxyClient.exe, 104</Line>
 		<Line>CustomItem36.Settings=NOTRACK_RECENT</Line>
-		<Line>CustomItem37.Command=%ProgramFiles(x86)%\Origin\Origin.exe</Line>
-		<Line>CustomItem37.Label=Origin</Line>
-		<Line>CustomItem37.Icon=%ProgramFiles(x86)%\Origin\Origin.exe, 101</Line>
-		<Line>CustomItem37.Settings=NOTRACK_RECENT</Line>
 		<Line>CustomItem4.Command=%PROGRAMFILES(X86)%\Steam\Steam.exe</Line>
 		<Line>CustomItem4.Label=Steam</Line>
 		<Line>CustomItem4.Icon=%ProgramData%\win11tweak-apps.dll,1234</Line>
@@ -270,10 +275,10 @@
 		<Line>CustomItem28.Label=RDP/Spice (remote)</Line>
 		<Line>CustomItem28.Icon=%ProgramData%\win11tweak-hardware.dll,193</Line>
 		<Line>CustomItem28.Settings=NOTRACK_RECENT</Line>
-		<Line>CustomItem22.Command=%windir%\System32\mmc.exe "%windir%\System32\virtmgmt.msc"</Line>
-		<Line>CustomItem22.Label=HyperV Manager</Line>
-		<Line>CustomItem22.Tip=Hyper-V Manager provides management access to your virtualization platform.</Line>
-		<Line>CustomItem22.Icon=%ProgramData%\win11tweak-apps.dll,1365</Line>
+		<Line>CustomItem22.Command=%ProgramFiles%\VMware\VMware Workstation\vmware.exe</Line>
+		<Line>CustomItem22.Label=VMware Workstation</Line>
+		<Line>CustomItem22.Tip=VMware Workstation provides management access to your virtualization platform.</Line>
+		<Line>CustomItem22.Icon=%ProgramFiles%\VMware\VMware Workstation\vmware.exe, 1</Line>
 		<Line>CustomItem22.Settings=NOTRACK_RECENT</Line>
 		<Line>CustomItem23.Command=wt</Line>
 		<Line>CustomItem23.Label=Terminal</Line>

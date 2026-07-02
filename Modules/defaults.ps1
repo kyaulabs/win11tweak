@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -56,7 +56,6 @@ Add-Reg "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
 Add-Reg "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0"
 Add-Reg "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "MaxTelemetryAllowed" -Type Dword -Value "0"
 Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Type Dword -Value "0"
-Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" -Name "AllowBuildPreview" -Type Dword -Value "0"
 Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" -Name "NoGenTicket" -Type Dword -Value "1"
 Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\SQMClient\Windows" -Name "CEIPEnable" -Type Dword -Value "0"
 Add-Reg "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "AITEnable" -Type Dword -Value "0"
@@ -102,8 +101,6 @@ Remove-WService -Name wercplsupport
 Remove-WService -Name PcaSvc
 #Microsoft Account Sign-in Assistant
 SC.EXE config wlidsvc start=demand | Out-Null
-#Windows Insider Service
-Remove-WService -Name wisvc
 #Retail Demo Experience (RDX)
 Remove-WService -Name RetailDemo
 #Diagnostic Execution Service
@@ -144,7 +141,9 @@ Unregister-ScheduledTask -TaskPath "\Microsoft\Windows\Subscription\" -TaskName 
 Unregister-ScheduledTask -TaskPath "\Microsoft\Windows\Diagnosis\" -TaskName "RecommendedTroubleshootingScanner" -Confirm:$false
 Unregister-ScheduledTask -TaskPath "\Microsoft\Windows\Diagnosis\" -TaskName "Scheduled" -Confirm:$false
 Unregister-ScheduledTask -TaskPath "\Microsoft\Windows\NetTrace\" -TaskName "GatherNetworkInfo" -Confirm:$false
-Remove-Item -Path "C:\Windows\System32\Tasks\Microsoft\Windows\SettingSync\" -Recurse -Force | Out-Null
+Get-ScheduledTask -TaskPath "\Microsoft\Windows\SettingSync\" | ForEach-Object {
+    Disable-ScheduledTask -TaskName $_.TaskName -TaskPath $_.TaskPath | Out-Null
+}
 
 # Disable Windows Spotlight
 Show-Section -Section "Defaults" -Desc "Disable Windows Spotlight"
@@ -191,6 +190,11 @@ Add-Reg -Path "HKLM:\Software\Policies\Microsoft\WindowsInkWorkspace" -Name "All
 # Power
 Show-Section -Section "Defaults" -Desc "Power Profile"
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c" -NoNewWindow -Wait | Out-Null
+if ($EnableEnergySaver) {
+    # Energy Saver on battery: 100 applies it for the full battery range.
+    Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/SETDCVALUEINDEX SCHEME_CURRENT SUB_ENERGYSAVER ESBATTTHRESHOLD ${EnergySaverBatteryThreshold}" -NoNewWindow -Wait | Out-Null
+    Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/SETACTIVE SCHEME_CURRENT" -NoNewWindow -Wait | Out-Null
+}
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/h off" -NoNewWindow -Wait | Out-Null
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/X -hibernate-timeout-ac 0" -NoNewWindow -Wait | Out-Null
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/X -hibernate-timeout-dc 0" -NoNewWindow -Wait | Out-Null
@@ -200,10 +204,6 @@ Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList 
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/X -standby-timeout-dc 0" -NoNewWindow -Wait | Out-Null
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/X monitor-timeout-ac 10" -NoNewWindow -Wait | Out-Null
 Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/X monitor-timeout-dc 5" -NoNewWindow -Wait | Out-Null
-# Disable Sleep
-Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Name "ShowSleepOption" -Type Dword -Value "0"
-Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/SETACVALUEINDEX SCHEME_CURRENT SUB_BUTTONS SBUTTONACTION 0" -NoNewWindow -Wait | Out-Null
-Start-Process -FilePath "${Env:SystemRoot}\System32\POWERCFG.EXE" -ArgumentList "/SETDCVALUEINDEX SCHEME_CURRENT SUB_BUTTONS SBUTTONACTION 0" -NoNewWindow -Wait | Out-Null
 # Disable Memory Compression
 Disable-MMAgent -mc | Out-Null
 # Remove Modern Swap
@@ -227,6 +227,16 @@ New-Item -Type Directory -Path "${Env:AppData}\gnupg" | Out-Null
 
 # Remove Default Apps
 Start-Process -FilePath "${Env:SystemRoot}\system32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-NoLogo -NoProfile -ExecutionPolicy Bypass -File `"${PSScriptRoot}\apps.ps1`"" -NoNewWindow -Wait
+
+if ($RemoveMicrosoftCopilotApp) {
+    Show-Section -Section "Defaults" -Desc "Disable/Remove Copilot"
+    # Newer policy path for Copilot app lifecycle
+    Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI" -Name "RemoveMicrosoftCopilotApp" -Type Dword -Value "1"
+    Add-Reg -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI" -Name "RemoveMicrosoftCopilotApp" -Type Dword -Value "1"
+    # Legacy policy fallback for older Copilot-in-Windows behavior
+    Add-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -Name "TurnOffWindowsCopilot" -Type Dword -Value "1"
+    Add-Reg -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -Name "TurnOffWindowsCopilot" -Type Dword -Value "1"
+}
 
 # Remove Windows Defender
 . "${PSScriptRoot}\defender.ps1"

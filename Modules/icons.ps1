@@ -8,7 +8,7 @@
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀▀
 
  Win11Tweaks (KYAU Labs Edition)
- Copyright (C) 2023 KYAU Labs (https://kyaulabs.com)
+ Copyright (C) 2026 KYAU Labs (https://kyaulabs.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
@@ -27,20 +27,6 @@
 #. "${PSScriptRoot}\_funcs.ps1"
 
 Show-Section -Section "Icons" -Desc "Copying Icon Theme"
-<#
-New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Apps" | Out-Null
-New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Emblems" | Out-Null
-New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Hardware" | Out-Null
-New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Mimetypes" | Out-Null
-New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Places" | Out-Null
-New-Item -Type Directory -Path "${Env:ProgramData}\Windows Icons\Start" | Out-Null
-Copy-Item ${PSScriptRoot}\..\Resources\Icons\Apps\*.ico -Destination "${Env:ProgramData}\Windows Icons\Apps\" -Force | Out-Null
-Copy-Item ${PSScriptRoot}\..\Resources\Icons\Emblems\*.ico -Destination "${Env:ProgramData}\Windows Icons\Emblems\" -Force | Out-Null
-Copy-Item ${PSScriptRoot}\..\Resources\Icons\Hardware\*.ico -Destination "${Env:ProgramData}\Windows Icons\Hardware\" -Force | Out-Null
-Copy-Item ${PSScriptRoot}\..\Resources\Icons\Mimetypes\*.ico -Destination "${Env:ProgramData}\Windows Icons\Mimetypes\" -Force | Out-Null
-Copy-Item ${PSScriptRoot}\..\Resources\Icons\Places\*.ico -Destination "${Env:ProgramData}\Windows Icons\Places\" -Force | Out-Null
-Copy-Item ${PSScriptRoot}\..\Resources\Icons\Start\*.ico -Destination "${Env:ProgramData}\Windows Icons\Start\" -Force | Out-Null
-#>
 Copy-Item ${PSScriptRoot}\..\Resources\Icons\*.dll -Destination "${Env:ProgramData}" -Force | Out-Null
 Copy-Item ${PSScriptRoot}\..\Resources\Icons\*.ico -Destination "${Env:ProgramData}" -Force | Out-Null
 
@@ -60,7 +46,8 @@ Set-UserFolderIcon -Name "Pictures" -ImageRes 113 -Icon 63 #"folder-blue-images"
 Set-UserFolderIcon -Name "Saved Games" -ImageRes 186 -Icon 57 #"folder-blue-games"
 Set-UserFolderIcon -Name "Searches" -ImageRes 18 -Icon 75 #"folder-blue-saved-search"
 Set-UserFolderIcon -Name "Videos" -ImageRes 189 -Icon 83 #"folder-blue-video"
-New-Item -ItemType SymbolicLink -Path ($Env:UserProfile + "\Documents\My Games") -Target ($Env:UserProfile + "\Saved Games") | Out-Null
+#New-Item -ItemType SymbolicLink -Path ($Env:UserProfile + "\Documents\My Games") -Target ($Env:UserProfile + "\Saved Games") | Out-Null
+New-Item -ItemType SymbolicLink -Path ($Env:UserProfile + "\Saved Games") -Target ($Env:UserProfile + "\Documents\My Games") | Out-Null
 # Desktop
 Add-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Icons"
 Add-Reg -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Shell Icons"
